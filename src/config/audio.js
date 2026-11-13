@@ -1,5 +1,5 @@
 export const AUDIO_CONFIG = {
-  baseURL: '/audio/',
+  baseURL: `${import.meta.env.BASE_URL}audio/`,
   volumes: {
     master: 1.0,
     lift: 0.8,

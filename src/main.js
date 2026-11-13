@@ -556,7 +556,7 @@ function renderShellChips(category) {
     chip.className = 'shell-chip';
     chip.textContent = category === 'big' ? `${t('shell_big_label', currentLang)} ${i}` : `S-${i}`;
     chip.title = `${t('shell_chip_title', currentLang)} ${folder}/shell${i}.json`;
-    chip.dataset.path = `/scripts/fireworks/${folder}/shell${i}.json`;
+    chip.dataset.path = `${import.meta.env.BASE_URL}scripts/fireworks/${folder}/shell${i}.json`;
 
     chip.addEventListener('click', async (e) => {
       e.stopPropagation();
@@ -718,14 +718,14 @@ async function startShow(card, useBlobUrl = null, isSilent = false) {
   const folder = card.dataset.folder;
   const scriptFile = card.dataset.script;
   const showName = card.querySelector('.item-title')?.textContent || folder;
-  const scriptUrl = `/scripts/shows/${folder}/${scriptFile}`;
+  const scriptUrl = `${import.meta.env.BASE_URL}scripts/shows/${folder}/${scriptFile}`;
 
   if (stageStatusText) stageStatusText.textContent = t('status_loading', currentLang, { name: showName });
 
   try {
     let res = await fetch(scriptUrl);
     if (!res.ok && scriptFile === 'secret-base-trial-v7.json') {
-      res = await fetch(`/scripts/shows/${folder}/secret-base.json`);
+      res = await fetch(`${import.meta.env.BASE_URL}scripts/shows/${folder}/secret-base.json`);
     }
     if (!res.ok) throw new Error(`Failed to fetch show script: ${scriptUrl}`);
     const scriptData = await res.json();
