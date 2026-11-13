@@ -11,6 +11,7 @@ import { SmokeSystem } from './systems/SmokeSystem.js';
 import { SkyLightReactionSystem } from './systems/SkyLightReactionSystem.js';
 import { FireworkSequencer } from './directors/FireworkSequencer.js';
 import { ShowDirector } from './directors/ShowDirector.js';
+import { AudioSystem } from './systems/AudioSystem.js';
 import { renderingConfig } from './config/rendering.js';
 import './style.css';
 
@@ -54,6 +55,7 @@ const cometSystem = new CometSystem(
 // Sequencer & Show Director for live choreography
 const fireworkSequencer = new FireworkSequencer(fireworkSystem, cometSystem);
 const showDirector = new ShowDirector(fireworkSequencer, fireworkSystem);
+const audioSystem = new AudioSystem(cameraManager);
 
 const postProcessing = renderingConfig?.post?.enabled
   ? new PostProcessingPipeline(
@@ -73,9 +75,23 @@ if (postProcessing) {
 // Camera targets per section (wide panoramic view for experience block)
 const camTargets = {
   0: { pos: new THREE.Vector3(0, 22, 340), look: new THREE.Vector3(0, 95, 0) },  // Intro block
-  1: { pos: new THREE.Vector3(0, 30, 300), look: new THREE.Vector3(0, 105, 0) }, // Experience block: z=300 view
+  1: { pos: new THREE.Vector3(0, 30, 300), look: new THREE.Vector3(0, 105, 0) }, // Experience block: dock visible
   2: { pos: new THREE.Vector3(0, 28, 360), look: new THREE.Vector3(0, 105, 0) }  // Community block
 };
+
+// When dock is closed with X button, camera angles up higher to fill viewport
+const camTargetExperienceHidden = {
+  pos: new THREE.Vector3(0, 22, 300),
+  look: new THREE.Vector3(0, 145, 0)
+};
+
+let isDockHidden = false;
+
+function updateExperienceCamera() {
+  if (currentBlockIndex === 1) {
+    currentCamTarget = isDockHidden ? camTargetExperienceHidden : camTargets[1];
+  }
+}
 
 let currentCamTarget = camTargets[0];
 let currentLookTarget = camTargets[0].look.clone();
@@ -100,7 +116,9 @@ let scrollLockTimeout = null;
 
 function setActiveIndicator(index) {
   currentBlockIndex = index;
-  if (camTargets[index]) {
+  if (index === 1) {
+    updateExperienceCamera();
+  } else if (camTargets[index]) {
     currentCamTarget = camTargets[index];
   }
 
@@ -212,6 +230,7 @@ pageBlocks.forEach((block) => blockObserver.observe(block));
 // ==========================================================================
 
 window.addEventListener('click', (event) => {
+  if (audioSystem) audioSystem.resumeContext();
   const target = event.target;
   if (
     target &&
@@ -262,11 +281,144 @@ const btnFireRandom = document.getElementById('btn-fire-random');
 let currentActiveShowCard = null;
 let showDurationTotal = 0;
 
+let currentLang =
+  (typeof localStorage !== 'undefined' &&
+    localStorage.getItem('fdshow_web_lang')) ||
+  'vi';
+
 function formatTime(seconds) {
   const s = Math.max(0, Math.floor(seconds || 0));
   const m = Math.floor(s / 60);
   const remS = s % 60;
   return `${m < 10 ? '0' : ''}${m}:${remS < 10 ? '0' : ''}${remS}`;
+}
+
+// Timeline Scrubber DOM & State
+const dockScrubberBar = document.getElementById('dock-scrubber-bar');
+const scrubberTrackWrap = document.getElementById('scrubber-track-wrap');
+const scrubberTrack = document.getElementById('scrubber-track');
+const scrubberProgress = document.getElementById('scrubber-progress');
+const scrubberThumb = document.getElementById('scrubber-thumb');
+const scrubberTooltip = document.getElementById('scrubber-tooltip');
+const scrubberTimeCurrent = document.getElementById('scrubber-time-current');
+const scrubberTimeTotal = document.getElementById('scrubber-time-total');
+
+let isScrubbing = false;
+let scrubbedTime = 0;
+let lastThrottledSeekTime = 0;
+
+function updateScrubberUI(currentTime, totalTime) {
+  if (isScrubbing) return;
+  const validTotal = Math.max(0, totalTime || 0);
+  const validCurrent = Math.min(validTotal, Math.max(0, currentTime || 0));
+  const pct = validTotal > 0 ? (validCurrent / validTotal) * 100 : 0;
+
+  if (scrubberProgress) scrubberProgress.style.width = `${pct}%`;
+  if (scrubberThumb) scrubberThumb.style.left = `${pct}%`;
+  if (scrubberTimeCurrent) scrubberTimeCurrent.textContent = formatTime(validCurrent);
+  if (scrubberTimeTotal) scrubberTimeTotal.textContent = formatTime(validTotal);
+}
+
+function getScrubberRatio(e) {
+  if (!scrubberTrack) return 0;
+  const rect = scrubberTrack.getBoundingClientRect();
+  const clientX = e.clientX ?? (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
+  return Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+}
+
+function updateScrubberVisual(ratio, time) {
+  const pct = ratio * 100;
+  if (scrubberProgress) scrubberProgress.style.width = `${pct}%`;
+  if (scrubberThumb) scrubberThumb.style.left = `${pct}%`;
+  if (scrubberTimeCurrent) scrubberTimeCurrent.textContent = formatTime(time);
+  if (showTimeDisplay) {
+    showTimeDisplay.textContent = `${formatTime(time)} / ${formatTime(showDurationTotal)}`;
+  }
+}
+
+async function ensureShowLoadedForScrubbing() {
+  if (showDurationTotal > 0 && showDirector.scriptConfig && showDirector.scriptConfig.length > 0) {
+    return true;
+  }
+  const firstPlayBtn = document.querySelector('.dock-show-item .btn-dock-play');
+  if (firstPlayBtn) {
+    firstPlayBtn.click();
+    await new Promise((r) => setTimeout(r, 180));
+    return true;
+  }
+  return false;
+}
+
+if (scrubberTrackWrap) {
+  scrubberTrackWrap.addEventListener('pointermove', (e) => {
+    const ratio = getScrubberRatio(e);
+    const hoverTime = ratio * (showDurationTotal || 0);
+
+    if (scrubberTooltip) {
+      const rect = scrubberTrackWrap.getBoundingClientRect();
+      const clientX = e.clientX ?? 0;
+      const offsetX = Math.max(12, Math.min(rect.width - 12, clientX - rect.left));
+      scrubberTooltip.style.left = `${offsetX}px`;
+      scrubberTooltip.textContent = formatTime(hoverTime);
+    }
+
+    if (isScrubbing) {
+      scrubbedTime = hoverTime;
+      updateScrubberVisual(ratio, scrubbedTime);
+
+      const now = performance.now();
+      if (now - lastThrottledSeekTime > 75) {
+        if (showDirector && (showDirector.isPlaying || showDirector.scriptConfig)) {
+          showDirector.seek(scrubbedTime);
+        }
+        lastThrottledSeekTime = now;
+      }
+    }
+  });
+
+  scrubberTrackWrap.addEventListener('pointerdown', async (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    await ensureShowLoadedForScrubbing();
+
+    isScrubbing = true;
+    scrubberTrackWrap.classList.add('is-dragging');
+    try {
+      scrubberTrackWrap.setPointerCapture(e.pointerId);
+    } catch (_) {}
+
+    const ratio = getScrubberRatio(e);
+    scrubbedTime = ratio * (showDurationTotal || 0);
+    updateScrubberVisual(ratio, scrubbedTime);
+
+    if (showDirector && (showDirector.isPlaying || showDirector.scriptConfig)) {
+      showDirector.seek(scrubbedTime);
+    }
+    
+  });
+
+  const onPointerEnd = (e) => {
+    if (!isScrubbing) return;
+    isScrubbing = false;
+    scrubberTrackWrap.classList.remove('is-dragging');
+    try {
+      if (scrubberTrackWrap.hasPointerCapture(e.pointerId)) {
+        scrubberTrackWrap.releasePointerCapture(e.pointerId);
+      }
+    } catch (_) {}
+
+    if (showDirector && (showDirector.isPlaying || showDirector.scriptConfig)) {
+      showDirector.seek(scrubbedTime);
+      if (!showDirector.isPlaying && currentActiveShowCard) {
+        showDirector.play();
+      }
+    }
+    
+  };
+
+  scrubberTrackWrap.addEventListener('pointerup', onPointerEnd);
+  scrubberTrackWrap.addEventListener('pointercancel', onPointerEnd);
 }
 
 function stopCurrentShow() {
@@ -281,10 +433,11 @@ function stopCurrentShow() {
   }
   showDurationTotal = 0;
   if (showTimeDisplay) showTimeDisplay.textContent = '00:00 / 00:00';
+  updateScrubberUI(0, 0);
   if (stageStatusText) stageStatusText.textContent = 'Bầu trời 3D sẵn sàng';
   
   fireworkSystem.autoLaunchEnabled = true;
-  clearTimeout(dockIdleTimeout);
+  
   showDock();
   if (skyHint) skyHint.style.opacity = '1';
 }
@@ -299,6 +452,7 @@ if (btnStopShow) {
 if (btnFireRandom) {
   btnFireRandom.addEventListener('click', (e) => {
     e.stopPropagation();
+    if (audioSystem) audioSystem.resumeContext();
     if (fireworkSystem && typeof fireworkSystem.launchRandom === 'function') {
       fireworkSystem.launchRandom(null, {
         ratioX: 0.15 + Math.random() * 0.7,
@@ -306,6 +460,50 @@ if (btnFireRandom) {
         ratioZ: 0.3 + Math.random() * 0.4
       });
       if (stageStatusText) stageStatusText.textContent = 'Đã phóng pháo hoa ngẫu nhiên';
+    }
+  });
+}
+
+// Sound Mute / Unmute Toggle Button
+const btnToggleSound = document.getElementById('btn-toggle-sound');
+const savedSoundMuted =
+  typeof localStorage !== 'undefined' &&
+  localStorage.getItem('fdshow_sound_muted') === 'true';
+
+if (savedSoundMuted && audioSystem) {
+  audioSystem.setMuted(true);
+}
+
+function updateSoundButtonUI() {
+  if (!btnToggleSound || !audioSystem) return;
+  const isMuted = audioSystem.muted;
+  if (isMuted) {
+    btnToggleSound.classList.add('is-muted');
+    btnToggleSound.textContent =
+      currentLang === 'en' ? 'Sound: OFF' : 'Âm thanh: Tắt';
+  } else {
+    btnToggleSound.classList.remove('is-muted');
+    btnToggleSound.textContent =
+      currentLang === 'en' ? 'Sound: ON' : 'Âm thanh: Bật';
+  }
+}
+
+if (btnToggleSound) {
+  updateSoundButtonUI();
+  btnToggleSound.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (audioSystem) {
+      audioSystem.resumeContext();
+      const isMuted = audioSystem.toggleMute();
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('fdshow_sound_muted', isMuted ? 'true' : 'false');
+      }
+      updateSoundButtonUI();
+      if (stageStatusText) {
+        stageStatusText.textContent = isMuted
+          ? (currentLang === 'en' ? 'Sound muted' : 'Đã tắt âm thanh pháo')
+          : (currentLang === 'en' ? 'Sound enabled' : 'Đã bật âm thanh pháo');
+      }
     }
   });
 }
@@ -430,11 +628,13 @@ showItems.forEach((card) => {
       // Pause ambient firework to let the orchestrated show shine
       fireworkSystem.autoLaunchEnabled = false;
 
+      updateScrubberUI(0, showDurationTotal);
+
       // Load into showDirector
       showDirector.loadScript(scriptData);
       showDirector.play();
       if (skyHint) skyHint.style.opacity = '0';
-      triggerDockWakeup();
+      
 
       card.classList.add('active-show');
       playBtn.textContent = 'Dừng';
@@ -453,10 +653,7 @@ showItems.forEach((card) => {
 // 5. Language Switcher (VI / EN)
 // ==========================================================================
 
-let currentLang =
-  (typeof localStorage !== 'undefined' &&
-    localStorage.getItem('fdshow_web_lang')) ||
-  'vi';
+// (currentLang is initialized above)
 
 function applyLanguage(lang) {
   currentLang = lang;
@@ -469,6 +666,7 @@ function applyLanguage(lang) {
     langLabel.textContent = lang.toUpperCase();
   }
   document.documentElement.lang = lang;
+  updateSoundButtonUI();
 }
 
 const langBtn = document.getElementById('lang-switch-btn');
@@ -481,79 +679,48 @@ if (langBtn) {
 
 
 // ==========================================================================
-// Auto-hide Dock during Show Playback
+// Experience Dock Manual Toggle (X Button & Sky Camera Sync)
 // ==========================================================================
 
-const experienceDock = document.querySelector('.experience-dock');
+const experienceDock = document.getElementById('experience-dock') || document.querySelector('.experience-dock');
 const btnCloseDock = document.getElementById('btn-close-dock');
 const btnDockToggle = document.getElementById('btn-dock-toggle');
 const blockExperience = document.getElementById('block-experience');
 const skyHint = document.querySelector('.experience-sky-hint');
 
-let dockIdleTimeout = null;
-let isHoveringDock = false;
-
 function showDock() {
+  isDockHidden = false;
   if (experienceDock) {
     experienceDock.classList.remove('dock-hidden');
   }
   if (btnDockToggle) {
     btnDockToggle.classList.remove('visible');
   }
+  updateExperienceCamera();
 }
 
-function hideDock(force = false) {
-  if (force || (showDirector && showDirector.isPlaying && !isHoveringDock)) {
-    if (experienceDock) {
-      experienceDock.classList.add('dock-hidden');
-    }
-    if (btnDockToggle) {
-      btnDockToggle.classList.add('visible');
-    }
+function hideDock() {
+  isDockHidden = true;
+  if (experienceDock) {
+    experienceDock.classList.add('dock-hidden');
   }
-}
-
-function triggerDockWakeup() {
-  showDock();
-  clearTimeout(dockIdleTimeout);
-
-  if (showDirector && showDirector.isPlaying && !isHoveringDock) {
-    dockIdleTimeout = setTimeout(() => {
-      hideDock();
-    }, 2800);
+  if (btnDockToggle) {
+    btnDockToggle.classList.add('visible');
   }
-}
-
-if (experienceDock) {
-  experienceDock.addEventListener('mouseenter', () => {
-    isHoveringDock = true;
-    showDock();
-    clearTimeout(dockIdleTimeout);
-  });
-
-  experienceDock.addEventListener('mouseleave', () => {
-    isHoveringDock = false;
-    triggerDockWakeup();
-  });
-}
-
-if (blockExperience) {
-  blockExperience.addEventListener('mousemove', () => {
-    triggerDockWakeup();
-  });
+  updateExperienceCamera();
 }
 
 if (btnCloseDock) {
   btnCloseDock.addEventListener('click', (e) => {
     e.stopPropagation();
-    hideDock(true); // Manually close dock immediately
+    hideDock();
   });
 }
 
 if (btnDockToggle) {
   btnDockToggle.addEventListener('click', (e) => {
     e.stopPropagation();
-    showDock(); // Reopen dock
+    showDock();
   });
 }
 
@@ -599,9 +766,12 @@ function animate() {
   if (showDirector && typeof showDirector.update === 'function') {
     showDirector.update(deltaTime);
 
-    // Update timer display
-    if (showDirector.isPlaying && showTimeDisplay) {
-      showTimeDisplay.textContent = `${formatTime(showDirector.elapsedTime)} / ${formatTime(showDurationTotal)}`;
+    // Update timer display and timeline scrubber
+    if (showDirector.isPlaying) {
+      if (showTimeDisplay) {
+        showTimeDisplay.textContent = `${formatTime(showDirector.elapsedTime)} / ${formatTime(showDurationTotal)}`;
+      }
+      updateScrubberUI(showDirector.elapsedTime, showDurationTotal);
 
       if (showDurationTotal > 0 && showDirector.elapsedTime >= showDurationTotal + 2) {
         stopCurrentShow();
@@ -620,13 +790,3 @@ function animate() {
 
 // Start animation loop
 animate();
-
-// Write files to targetDir
-fs.writeFileSync(path.join(targetDir, 'index.html'), indexHtml, 'utf8');
-console.log('Successfully wrote index.html');
-
-fs.writeFileSync(path.join(targetDir, 'src', 'style.css'), styleCss, 'utf8');
-console.log('Successfully wrote src/style.css');
-
-fs.writeFileSync(path.join(targetDir, 'src', 'main.js'), mainJs, 'utf8');
-console.log('Successfully wrote src/main.js');

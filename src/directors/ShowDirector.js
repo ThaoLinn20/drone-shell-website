@@ -48,27 +48,36 @@ export class ShowDirector {
   }
 
   seek(time) {
-    this.elapsedTime = time;
+    this.elapsedTime = Math.max(0, time);
     if (this.scriptConfig) {
-      this.events = this.scriptConfig.filter(evt => evt.time >= time);
+      this.events = this.scriptConfig.filter(evt => evt.time >= this.elapsedTime);
     }
     this.sequencer.clear();
-    if (this.fireworkSystem && this.fireworkSystem.clear) {
+    if (this.fireworkSystem && typeof this.fireworkSystem.clear === 'function') {
       this.fireworkSystem.clear();
     }
-    if (this.sequencer.cometSystem && this.sequencer.cometSystem.clear) {
+    if (this.sequencer && this.sequencer.cometSystem && typeof this.sequencer.cometSystem.clear === 'function') {
       this.sequencer.cometSystem.clear();
     }
     
-    if (this.droneSequencer) {
-       this.droneSequencer.seek(time);
+    if (this.droneSequencer && typeof this.droneSequencer.seek === 'function') {
+      this.droneSequencer.seek(this.elapsedTime);
     }
     
     // Sync audio times
     this.audioPlayers.forEach((audio, seq) => {
-      const isTime = this.elapsedTime >= seq.time && this.elapsedTime < seq.time + (seq.duration || 0);
+      const seqDur = seq.duration || (audio.duration && isFinite(audio.duration) ? audio.duration : 999999);
+      const isTime = this.elapsedTime >= seq.time && this.elapsedTime < seq.time + seqDur;
       if (isTime) {
-        audio.currentTime = this.elapsedTime - seq.time;
+        const targetAudioTime = Math.max(0, this.elapsedTime - seq.time);
+        try {
+          audio.currentTime = targetAudioTime;
+          if (this.isPlaying && audio.paused) {
+            audio.play().catch(e => console.warn('Audio play blocked on seek:', e));
+          }
+        } catch (e) {
+          console.warn('Audio seek error:', e);
+        }
       } else {
         audio.pause();
         audio.currentTime = 0;
