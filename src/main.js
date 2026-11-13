@@ -13,6 +13,7 @@ import { FireworkSequencer } from './directors/FireworkSequencer.js';
 import { ShowDirector } from './directors/ShowDirector.js';
 import { AudioSystem } from './systems/AudioSystem.js';
 import { renderingConfig } from './config/rendering.js';
+import { translations, t, getAudioModalDesc } from './config/i18n.js';
 import './style.css';
 
 // ==========================================================================
@@ -275,6 +276,14 @@ const dockShowsView = document.getElementById('dock-shows-view');
 const dockShellsView = document.getElementById('dock-shells-view');
 
 const stageStatusText = document.getElementById('stage-status-text');
+if (stageStatusText) {
+  const syncStatusTitle = () => {
+    stageStatusText.title = stageStatusText.textContent || '';
+  };
+  const statusObserver = new MutationObserver(syncStatusTitle);
+  statusObserver.observe(stageStatusText, { childList: true, characterData: true, subtree: true });
+  syncStatusTitle();
+}
 const showTimeDisplay = document.getElementById('show-time-display');
 const btnStopShow = document.getElementById('btn-stop-show');
 const btnFireRandom = document.getElementById('btn-fire-random');
@@ -429,13 +438,13 @@ function stopCurrentShow() {
   if (currentActiveShowCard) {
     currentActiveShowCard.classList.remove('active-show');
     const btn = currentActiveShowCard.querySelector('.btn-dock-play');
-    if (btn) btn.textContent = 'Phát show';
+    if (btn) btn.textContent = t('btn_play_show', currentLang);
     currentActiveShowCard = null;
   }
   showDurationTotal = 0;
   if (showTimeDisplay) showTimeDisplay.textContent = '00:00 / 00:00';
   updateScrubberUI(0, 0);
-  if (stageStatusText) stageStatusText.textContent = 'Bầu trời 3D sẵn sàng';
+  if (stageStatusText) stageStatusText.textContent = t('status_ready', currentLang);
   
   fireworkSystem.autoLaunchEnabled = true;
   
@@ -461,7 +470,7 @@ if (btnFireRandom) {
         ratioZ: 0.3 + Math.random() * 0.4,
         sectorId: 'center'
       });
-      if (stageStatusText) stageStatusText.textContent = 'Đã phóng pháo hoa ngẫu nhiên';
+      if (stageStatusText) stageStatusText.textContent = t('status_fire_random', currentLang);
     }
   });
 }
@@ -486,26 +495,20 @@ function updateSoundButtonUI() {
   if (btnNavSound) {
     if (isMuted) {
       btnNavSound.classList.add('is-muted');
-      btnNavSound.title = currentLang === 'en'
-        ? 'Turn sound ON (currently OFF)'
-        : 'Bật âm thanh pháo hoa (hiện đang tắt)';
+      btnNavSound.title = t('nav_sound_on', currentLang);
     } else {
       btnNavSound.classList.remove('is-muted');
-      btnNavSound.title = currentLang === 'en'
-        ? 'Turn sound OFF (currently ON)'
-        : 'Tắt âm thanh pháo hoa (hiện đang bật)';
+      btnNavSound.title = t('nav_sound_off', currentLang);
     }
   }
 
   if (btnToggleSound) {
     if (isMuted) {
       btnToggleSound.classList.add('is-muted');
-      btnToggleSound.textContent =
-        currentLang === 'en' ? 'Sound: OFF' : 'Âm thanh: Tắt';
+      btnToggleSound.textContent = t('btn_sound_off', currentLang);
     } else {
       btnToggleSound.classList.remove('is-muted');
-      btnToggleSound.textContent =
-        currentLang === 'en' ? 'Sound: ON' : 'Âm thanh: Bật';
+      btnToggleSound.textContent = t('btn_sound_on', currentLang);
     }
   }
 }
@@ -521,8 +524,8 @@ function handleToggleSound(e) {
     updateSoundButtonUI();
     if (stageStatusText) {
       stageStatusText.textContent = isMuted
-        ? (currentLang === 'en' ? 'Sound muted' : 'Đã tắt âm thanh pháo')
-        : (currentLang === 'en' ? 'Sound enabled' : 'Đã bật âm thanh pháo');
+        ? t('status_sound_muted', currentLang)
+        : t('status_sound_enabled', currentLang);
     }
   }
 }
@@ -537,9 +540,12 @@ if (btnToggleSound) {
 
 updateSoundButtonUI();
 
+let currentShellCategory = null;
+
 // Render Shell Chips for Big/Small shell modes
 function renderShellChips(category) {
   if (!dockShellsView) return;
+  currentShellCategory = category;
   dockShellsView.innerHTML = '';
 
   const count = category === 'big' ? 8 : 26;
@@ -548,8 +554,8 @@ function renderShellChips(category) {
   for (let i = 1; i <= count; i++) {
     const chip = document.createElement('div');
     chip.className = 'shell-chip';
-    chip.textContent = category === 'big' ? `Pháo ${i}` : `S-${i}`;
-    chip.title = `Kích nổ ${folder}/shell${i}.json`;
+    chip.textContent = category === 'big' ? `${t('shell_big_label', currentLang)} ${i}` : `S-${i}`;
+    chip.title = `${t('shell_chip_title', currentLang)} ${folder}/shell${i}.json`;
     chip.dataset.path = `/scripts/fireworks/${folder}/shell${i}.json`;
 
     chip.addEventListener('click', async (e) => {
@@ -559,7 +565,8 @@ function renderShellChips(category) {
 
       const filePath = chip.dataset.path;
       if (stageStatusText) {
-        stageStatusText.textContent = `Đang bắn: ${category === 'big' ? 'Big Shell' : 'Small Shell'} ${i}`;
+        const typeLabel = category === 'big' ? t('tab_big_shell', currentLang) : t('tab_small_shell', currentLang);
+        stageStatusText.textContent = t('status_firing', currentLang, { type: typeLabel, index: i });
       }
 
       try {
@@ -626,14 +633,14 @@ const loadedAudioMap = new Map(); // folder -> { blobUrl, fileName }
 
 function openAudioModal(card) {
   pendingShowCard = card;
-  const showName = card.querySelector('.item-title')?.textContent || 'Kịch bản show';
+  const showName = card.querySelector('.item-title')?.textContent || 'Show';
   const audioFile = card.dataset.audio || '';
 
   if (audioModalTitle) {
     audioModalTitle.textContent = showName;
   }
   if (audioModalDesc) {
-    audioModalDesc.innerHTML = `Kịch bản này được dàn dựng đồng bộ với bài hát <strong>${showName}</strong> (${audioFile}). Nhằm tôn trọng và tuân thủ bản quyền âm nhạc quốc tế, trang web không lưu trữ tệp MP3 này trên máy chủ.`;
+    audioModalDesc.innerHTML = getAudioModalDesc(showName, audioFile, currentLang);
   }
   if (audioModalBackdrop) {
     audioModalBackdrop.classList.add('is-open');
@@ -713,7 +720,7 @@ async function startShow(card, useBlobUrl = null, isSilent = false) {
   const showName = card.querySelector('.item-title')?.textContent || folder;
   const scriptUrl = `/scripts/shows/${folder}/${scriptFile}`;
 
-  if (stageStatusText) stageStatusText.textContent = `Đang nạp: ${showName}...`;
+  if (stageStatusText) stageStatusText.textContent = t('status_loading', currentLang, { name: showName });
 
   try {
     let res = await fetch(scriptUrl);
@@ -748,17 +755,17 @@ async function startShow(card, useBlobUrl = null, isSilent = false) {
 
     card.classList.add('active-show');
     const playBtn = card.querySelector('.btn-dock-play');
-    if (playBtn) playBtn.textContent = 'Dừng';
+    if (playBtn) playBtn.textContent = t('btn_playing_show', currentLang);
     currentActiveShowCard = card;
 
     if (stageStatusText) {
       stageStatusText.textContent = effectiveBlob
-        ? `Đang biểu diễn: ${showName} (Đã nạp nhạc)`
-        : `Đang biểu diễn: ${showName} (Âm thanh pháo 3D)`;
+        ? t('status_playing_music', currentLang, { name: showName })
+        : t('status_playing_3d', currentLang, { name: showName });
     }
   } catch (err) {
     console.error('Error starting show:', err);
-    if (stageStatusText) stageStatusText.textContent = 'Lỗi nạp show: ' + err.message;
+    if (stageStatusText) stageStatusText.textContent = t('status_error', currentLang, { msg: err.message });
     fireworkSystem.autoLaunchEnabled = true;
   }
 }
@@ -794,37 +801,80 @@ showItems.forEach((card) => {
 // (currentLang is initialized above)
 
 function applyLanguage(lang) {
-  currentLang = lang;
+  currentLang = translations[lang] ? lang : 'vi';
   if (typeof localStorage !== 'undefined') {
-    localStorage.setItem('fdshow_web_lang', lang);
+    localStorage.setItem('fdshow_web_lang', currentLang);
   }
 
   const langLabel = document.getElementById('lang-label');
   if (langLabel) {
-    langLabel.textContent = lang.toUpperCase();
+    langLabel.textContent = currentLang.toUpperCase();
   }
   const langBadge = document.getElementById('lang-mini-badge');
   if (langBadge) {
-    langBadge.textContent = lang.toUpperCase();
-  }
-  const downloadBtn = document.getElementById('btn-nav-download');
-  if (downloadBtn) {
-    downloadBtn.title = lang === 'en'
-      ? 'Download FDShowStudio (GitHub Releases)'
-      : 'Tải FDShowStudio (GitHub Releases)';
+    langBadge.textContent = currentLang.toUpperCase();
   }
 
   document.querySelectorAll('.lang-option-btn').forEach((btn) => {
-    if (btn.dataset.lang === lang) {
+    if (btn.dataset.lang === currentLang) {
       btn.classList.add('active');
     } else {
       btn.classList.remove('active');
     }
   });
 
-  document.documentElement.lang = lang;
+  // 1. Update textContent for elements with data-i18n
+  document.querySelectorAll('[data-i18n]').forEach((el) => {
+    const key = el.dataset.i18n;
+    const translated = t(key, currentLang);
+    if (translated && translated !== key) {
+      el.textContent = translated;
+    }
+  });
+
+  // 2. Update title for elements with data-i18n-title
+  document.querySelectorAll('[data-i18n-title]').forEach((el) => {
+    const key = el.dataset.i18nTitle;
+    const translated = t(key, currentLang);
+    if (translated && translated !== key) {
+      el.title = translated;
+    }
+  });
+
+  // 3. Update play buttons on show items
+  document.querySelectorAll('.dock-show-item').forEach((item) => {
+    const playBtn = item.querySelector('.btn-dock-play');
+    if (playBtn) {
+      const isCurrentActive = item.classList.contains('active-show');
+      playBtn.textContent = isCurrentActive ? t('btn_playing_show', currentLang) : t('btn_play_show', currentLang);
+    }
+  });
+
+  // 4. Update status text if it is in default ready state
+  if (stageStatusText && (!showDirector || !showDirector.isPlaying)) {
+    stageStatusText.textContent = t('status_ready', currentLang);
+  }
+
+  // 5. Update audio modal if open
+  if (pendingShowCard) {
+    const showName = pendingShowCard.querySelector('.item-title')?.textContent || 'Show';
+    const audioFile = pendingShowCard.dataset.audio || '';
+    if (audioModalDesc) {
+      audioModalDesc.innerHTML = getAudioModalDesc(showName, audioFile, currentLang);
+    }
+  }
+
+  // 6. Re-render shell chips if shell view is currently open
+  if (currentShellCategory && dockShellsView && dockShellsView.classList.contains('active')) {
+    renderShellChips(currentShellCategory);
+  }
+
+  document.documentElement.lang = currentLang;
   updateSoundButtonUI();
 }
+
+// Apply active language on page load
+applyLanguage(currentLang);
 
 // Language Option Click Handler
 document.querySelectorAll('.lang-option-btn').forEach((btn) => {
@@ -965,7 +1015,7 @@ function animate() {
 
       if (showDurationTotal > 0 && showDirector.elapsedTime >= showDurationTotal + 2) {
         stopCurrentShow();
-        if (stageStatusText) stageStatusText.textContent = 'Show hoàn thành!';
+        if (stageStatusText) stageStatusText.textContent = t('status_completed', currentLang);
       }
     }
   }

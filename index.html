@@ -5,7 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FDShowStudio - Thiết kế & Trình diễn Pháo hoa, Drone 3D</title>
   <meta name="description" content="FDShowStudio là phần mềm thiết kế và biên tập kịch bản pháo hoa, drone ánh sáng 3D chân thực cùng cộng đồng FWA Community." />
-  <link rel="icon" type="image/svg+xml" href="/assets/vite.svg" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -223,7 +226,7 @@
       <div class="nav-actions">
         <!-- Button 1: Community Dropdown Wrapper -->
         <div class="nav-dropdown-wrap" id="wrap-nav-community">
-          <button class="btn-nav-circle" id="btn-nav-community" title="Cộng đồng & Mạng xã hội">
+          <button class="btn-nav-circle" id="btn-nav-community" data-i18n-title="nav_community_title" title="Cộng đồng & Mạng xã hội">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
               <circle cx="18" cy="5" r="3"></circle>
               <circle cx="6" cy="12" r="3"></circle>
@@ -270,7 +273,7 @@
 
         <!-- Button 3: Language Globe Dropdown Wrapper -->
         <div class="nav-dropdown-wrap" id="wrap-nav-lang">
-          <button id="lang-switch-btn" class="btn-nav-circle btn-lang-globe" title="Chuyển ngôn ngữ / Switch Language">
+          <button id="lang-switch-btn" class="btn-nav-circle btn-lang-globe" data-i18n-title="nav_lang_title" title="Chuyển ngôn ngữ / Switch Language">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="10"></circle>
               <line x1="2" y1="12" x2="22" y2="12"></line>
@@ -289,7 +292,7 @@
         </div>
 
         <!-- Button 4: Download Icon Button -->
-        <a href="https://github.com/ThAolInh20/Shell-Drone_3d/releases" target="_blank" rel="noopener noreferrer" class="btn-nav-circle btn-nav-download" id="btn-nav-download" title="Tải FDShowStudio (GitHub Releases)">
+        <a href="https://github.com/ThAolInh20/Shell-Drone_3d/releases" target="_blank" rel="noopener noreferrer" class="btn-nav-circle btn-nav-download" id="btn-nav-download" data-i18n-title="nav_download_title" title="Tải FDShowStudio (GitHub Releases)">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
             <polyline points="7 10 12 15 17 10"></polyline>
@@ -302,17 +305,17 @@
 
   <!-- Right Floating Side Navigation Dots Indicator -->
   <div class="side-nav" id="side-nav">
-    <button class="side-dot active" data-scroll-to="0" title="Khối 1: FDShowStudio">
+    <button class="side-dot active" data-scroll-to="0" data-i18n-title="side_home_title" title="Khối 1: FDShowStudio">
       <span class="dot-circle"></span>
-      <span class="dot-label">01 Home</span>
+      <span class="dot-label" data-i18n="side_home">01 Home</span>
     </button>
-    <button class="side-dot" data-scroll-to="1" title="Khối 2: Khu trải nghiệm">
+    <button class="side-dot" data-scroll-to="1" data-i18n-title="side_exp_title" title="Khối 2: Khu trải nghiệm">
       <span class="dot-circle"></span>
-      <span class="dot-label">02 Trải nghiệm</span>
+      <span class="dot-label" data-i18n="side_exp">02 Trải nghiệm</span>
     </button>
-    <button class="side-dot" data-scroll-to="2" title="Khối 3: Tham gia & Cộng đồng">
+    <button class="side-dot" data-scroll-to="2" data-i18n-title="side_community_title" title="Khối 3: Tham gia & Cộng đồng">
       <span class="dot-circle"></span>
-      <span class="dot-label">03 Tham gia</span>
+      <span class="dot-label" data-i18n="side_community">03 Tham gia</span>
     </button>
   </div>
 
@@ -326,26 +329,26 @@
       <div class="block-inner-split">
         <!-- Left Box: Description & Info -->
         <div class="intro-left-card glass-panel">
-          <div class="card-badge">Phần mềm thiết kế 3D</div>
+          <div class="card-badge" data-i18n="intro_badge">Phần mềm thiết kế 3D</div>
           <h1 class="intro-title">FDShowStudio</h1>
           <ul class="intro-bullets">
             <li>
               <span class="bullet-dash">-</span>
-              <span class="bullet-text">Trình thiết kế, biên tập kịch bản pháo hoa</span>
+              <span class="bullet-text" data-i18n="intro_bullet_1">Trình thiết kế, biên tập kịch bản pháo hoa</span>
             </li>
             <li>
               <span class="bullet-dash">-</span>
-              <span class="bullet-text">Thiết kế hình dáng chuyển động cho đội hình drone</span>
+              <span class="bullet-text" data-i18n="intro_bullet_2">Thiết kế hình dáng chuyển động cho đội hình drone</span>
             </li>
           </ul>
-          <p class="intro-desc">
+          <p class="intro-desc" data-i18n="intro_desc">
             Mô phỏng 3D thời gian thực với vật lý pyrotechnic chuẩn xác, bắt beat nhạc tự động và tạo chuyển động quỹ đạo ánh sáng cho hàng ngàn drone biểu diễn.
           </p>
           <div class="intro-actions">
-            <a href="https://github.com/ThAolInh20/Shell-Drone_3d/releases" target="_blank" rel="noopener noreferrer" class="btn-primary">
+            <a href="https://github.com/ThAolInh20/Shell-Drone_3d/releases" target="_blank" rel="noopener noreferrer" class="btn-primary" data-i18n="btn_download_new">
               Tải phiên bản mới
             </a>
-            <button class="btn-secondary" data-scroll-to="1">
+            <button class="btn-secondary" data-scroll-to="1" data-i18n="btn_experience_now">
               Trải nghiệm ngay
             </button>
           </div>
@@ -353,20 +356,21 @@
 
         <!-- Right Box: Video Intro -->
         <div class="intro-right-card glass-panel">
-          <div class="video-header">
-            <span class="video-label">Video intro</span>
-            <span class="video-tag">1080p 60fps</span>
-          </div>
           <div class="video-container">
-            <video id="intro-video" src="/videos/intro.mp4" controls autoplay muted loop playsinline preload="metadata">
-              Trình duyệt không hỗ trợ phát video.
-            </video>
+            <iframe
+              id="intro-video"
+              src="https://www.youtube-nocookie.com/embed/t0zFY5-_GKA?autoplay=1&mute=1&loop=1&playlist=t0zFY5-_GKA&playsinline=1&controls=1&rel=0&modestbranding=1"
+              title="FDShowStudio Intro Video"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+              loading="lazy">
+            </iframe>
           </div>
         </div>
       </div>
 
       <div class="scroll-down-prompt" data-scroll-to="1">
-        <span class="prompt-text">Cuộn chuột để trải nghiệm</span>
+        <span class="prompt-text" data-i18n="scroll_prompt">Cuộn chuột để trải nghiệm</span>
         <span class="prompt-arrow">v</span>
       </div>
     </section>
@@ -377,17 +381,17 @@
     <section id="block-experience" class="page-block block-experience" data-block-index="1">
       <!-- Top Open Sky Hint (No dark box, fully transparent 3D stage) -->
       <div class="experience-sky-hint">
-        <span class="sky-hint-pill">Nhấp chuột bất kỳ lên bầu trời để bắn pháo hoa</span>
+        <span class="sky-hint-pill" data-i18n="sky_hint">Nhấp chuột bất kỳ lên bầu trời để bắn pháo hoa</span>
       </div>
 
       <!-- Bottom Dock: Cac vung chon kich ban nam gon o duoi man hinh -->
       <div class="experience-dock glass-panel" id="experience-dock">
         <!-- Close Button: Prominent Standalone Corner Button -->
-        <button id="btn-close-dock" class="dock-btn-close" title="Ẩn bảng chọn (Thu gọn)">&times;</button>
+        <button id="btn-close-dock" class="dock-btn-close" data-i18n-title="btn_close_dock_title" title="Ẩn bảng chọn (Thu gọn)">&times;</button>
         <!-- Dock Timeline Scrubber Bar (Kéo để tua kịch bản show) -->
         <div class="dock-scrubber-bar" id="dock-scrubber-bar">
           <span class="scrubber-time-label" id="scrubber-time-current">00:00</span>
-          <div class="scrubber-track-wrap" id="scrubber-track-wrap" title="Nhấp hoặc kéo để tua thời gian show">
+          <div class="scrubber-track-wrap" id="scrubber-track-wrap" data-i18n-title="scrubber_title" title="Nhấp hoặc kéo để tua thời gian show">
             <div class="scrubber-track" id="scrubber-track">
               <div class="scrubber-progress" id="scrubber-progress"></div>
               <div class="scrubber-thumb" id="scrubber-thumb"></div>
@@ -400,28 +404,28 @@
         <!-- Dock Header: Tabs & Status Controls -->
         <div class="dock-header">
           <div class="dock-tabs">
-            <button class="dock-tab active" id="tab-shows" data-mode="shows">
+            <button class="dock-tab active" id="tab-shows" data-mode="shows" data-i18n="tab_shows">
               Kịch bản show (5)
             </button>
-            <button class="dock-tab" id="tab-big-shell" data-mode="big">
+            <button class="dock-tab" id="tab-big-shell" data-mode="big" data-i18n="tab_big_shell">
               Big Shell (8)
             </button>
-            <button class="dock-tab" id="tab-small-shell" data-mode="small">
+            <button class="dock-tab" id="tab-small-shell" data-mode="small" data-i18n="tab_small_shell">
               Small Shell (26)
             </button>
           </div>
 
           <div class="dock-status">
             <span class="status-pulse-dot"></span>
-            <span id="stage-status-text" class="status-text">Bầu trời 3D sẵn sàng</span>
+            <span id="stage-status-text" class="status-text" data-i18n="status_ready">Bầu trời 3D sẵn sàng</span>
             <span id="show-time-display" class="status-timer">00:00 / 00:00</span>
           </div>
 
           <div class="dock-actions">
-            <button id="btn-import-audio" class="dock-btn" title="Nạp tệp âm thanh MP3 từ thiết bị của bạn">Nạp MP3 từ máy</button>
-            <button id="btn-toggle-sound" class="dock-btn dock-btn-sound is-muted" title="Bật hoặc tắt âm thanh pháo hoa">Âm thanh: Tắt</button>
-            <button id="btn-fire-random" class="dock-btn" title="Bắn ngẫu nhiên pháo hoa">Bắn ngẫu nhiên</button>
-            <button id="btn-stop-show" class="dock-btn dock-btn-danger" title="Dừng kịch bản hoặc show">Dừng kịch bản</button>
+            <button id="btn-import-audio" class="dock-btn" data-i18n="btn_import_audio" data-i18n-title="btn_import_audio_title" title="Nạp tệp âm thanh MP3 từ thiết bị của bạn">Nạp MP3 từ máy</button>
+            <button id="btn-toggle-sound" class="dock-btn dock-btn-sound is-muted" data-i18n-title="btn_toggle_sound_title" title="Bật hoặc tắt âm thanh pháo hoa">Âm thanh: Tắt</button>
+            <button id="btn-fire-random" class="dock-btn" data-i18n="btn_fire_random" data-i18n-title="btn_fire_random_title" title="Bắn ngẫu nhiên pháo hoa">Bắn ngẫu nhiên</button>
+            <button id="btn-stop-show" class="dock-btn dock-btn-danger" data-i18n="btn_stop_show" data-i18n-title="btn_stop_show_title" title="Dừng kịch bản hoặc show">Dừng kịch bản</button>
           </div>
         </div>
 
@@ -432,41 +436,41 @@
             <div class="dock-show-item" data-show-key="secret-base" data-folder="secret-base" data-script="secret-base-trial-v7.json" data-audio="secret-base.mp3">
               <div class="item-text">
                 <span class="item-title">Secret Base (Trial V7)</span>
-                <span class="item-sub">Ballad cảm xúc • 5m49s</span>
+                <span class="item-sub" data-i18n="secret_base_sub">Ballad cảm xúc • 5m49s</span>
               </div>
-              <button class="btn-dock-play">Phát show</button>
+              <button class="btn-dock-play" data-i18n="btn_play_show">Phát show</button>
             </div>
 
             <div class="dock-show-item" data-show-key="blood-tear" data-folder="blood-tear-full" data-script="blood_tear_v2.json" data-audio="blood_tear_full.mp3">
               <div class="item-text">
                 <span class="item-title">Blood Tear Full</span>
-                <span class="item-sub">Kịch tính dồn dập • 4m05s</span>
+                <span class="item-sub" data-i18n="blood_tear_sub">Kịch tính dồn dập • 4m05s</span>
               </div>
-              <button class="btn-dock-play">Phát show</button>
+              <button class="btn-dock-play" data-i18n="btn_play_show">Phát show</button>
             </div>
 
             <div class="dock-show-item" data-show-key="hanabi" data-folder="hanabi" data-script="hanabi.json" data-audio="hanabi.mp3">
               <div class="item-text">
                 <span class="item-title">Hanabi Festival</span>
-                <span class="item-sub">Lễ hội rực rỡ sắc màu</span>
+                <span class="item-sub" data-i18n="hanabi_sub">Lễ hội rực rỡ sắc màu</span>
               </div>
-              <button class="btn-dock-play">Phát show</button>
+              <button class="btn-dock-play" data-i18n="btn_play_show">Phát show</button>
             </div>
 
             <div class="dock-show-item" data-show-key="lose-control" data-folder="lose-controll" data-script="lose-control-v2.json" data-audio="lose-control-v2.mp3">
               <div class="item-text">
                 <span class="item-title">Lose Control V2</span>
-                <span class="item-sub">Năng lượng điện tử bùng nổ</span>
+                <span class="item-sub" data-i18n="lose_control_sub">Năng lượng điện tử bùng nổ</span>
               </div>
-              <button class="btn-dock-play">Phát show</button>
+              <button class="btn-dock-play" data-i18n="btn_play_show">Phát show</button>
             </div>
 
             <div class="dock-show-item" data-show-key="monody" data-folder="monody" data-script="monody-Orchestra.json" data-audio="monody-Orchestra.mp3">
               <div class="item-text">
                 <span class="item-title">Monody Orchestra</span>
-                <span class="item-sub">Giao hưởng pháo hoa hoành tráng</span>
+                <span class="item-sub" data-i18n="monody_sub">Giao hưởng pháo hoa hoành tráng</span>
               </div>
-              <button class="btn-dock-play">Phát show</button>
+              <button class="btn-dock-play" data-i18n="btn_play_show">Phát show</button>
             </div>
           </div>
 
@@ -476,8 +480,8 @@
           </div>
         </div>
       </div>
-      <button id="btn-dock-toggle" class="btn-dock-toggle" title="Mở lại bảng chọn kịch bản">
-        Kịch bản &and;
+      <button id="btn-dock-toggle" class="btn-dock-toggle" data-i18n-title="btn_dock_toggle_title" title="Mở lại bảng chọn kịch bản">
+        <span data-i18n="btn_dock_toggle">Kịch bản &and;</span>
       </button>
     </section>
 
@@ -487,23 +491,23 @@
     <section id="block-community" class="page-block block-community" data-block-index="2">
       <div class="block-inner-community">
         <div class="community-header">
-          <div class="community-tag">Cộng đồng & Tham gia</div>
-          <h2 class="community-title">Tham gia cùng FDShowStudio</h2>
+          <div class="community-tag" data-i18n="comm_tag">Cộng đồng & Tham gia</div>
+          <h2 class="community-title" data-i18n="comm_title">Tham gia cùng FDShowStudio</h2>
         </div>
 
         <!-- 3 Sequential Step Cards with Connecting Arrows -->
         <div class="flow-steps-wrapper">
           <!-- Step Card 1: Download -->
           <div class="flow-card glass-panel">
-            <div class="card-step-badge">BƯỚC 1</div>
-            <h3 class="card-heading">Download</h3>
+            <div class="card-step-badge" data-i18n="step_1_badge">BƯỚC 1</div>
+            <h3 class="card-heading" data-i18n="step_1_heading">Download</h3>
             <ul class="card-bullets">
-              <li>Tải phiên bản mới tại trang phát hành chính thức</li>
-              <li>Khởi chạy ứng dụng trực tiếp trên máy tính</li>
-              <li>Trải nghiệm cơ bản các công cụ tạo kịch bản 3D</li>
+              <li data-i18n="step_1_bullet_1">Tải phiên bản mới tại trang phát hành chính thức</li>
+              <li data-i18n="step_1_bullet_2">Khởi chạy ứng dụng trực tiếp trên máy tính</li>
+              <li data-i18n="step_1_bullet_3">Trải nghiệm cơ bản các công cụ tạo kịch bản 3D</li>
             </ul>
             <div class="card-footer-action">
-              <a href="https://github.com/ThAolInh20/Shell-Drone_3d/releases" target="_blank" rel="noopener noreferrer" class="btn-card-action">
+              <a href="https://github.com/ThAolInh20/Shell-Drone_3d/releases" target="_blank" rel="noopener noreferrer" class="btn-card-action" data-i18n="step_1_action">
                 Tải cho Windows
               </a>
             </div>
@@ -511,21 +515,21 @@
 
           <!-- Flow Bridge Arrow 1 -> 2 -->
           <div class="flow-bridge">
-            <span class="bridge-label">Để học cách sử dụng</span>
+            <span class="bridge-label" data-i18n="bridge_1">Để học cách sử dụng</span>
             <span class="bridge-arrow">&rarr;</span>
           </div>
 
           <!-- Step Card 2: Hoc cach su dung -->
           <div class="flow-card glass-panel">
-            <div class="card-step-badge">BƯỚC 2</div>
-            <h3 class="card-heading">Học cách sử dụng</h3>
+            <div class="card-step-badge" data-i18n="step_2_badge">BƯỚC 2</div>
+            <h3 class="card-heading" data-i18n="step_2_heading">Học cách sử dụng</h3>
             <ul class="card-bullets">
-              <li>Xem kênh youtube chính thức của FDShowStudio</li>
-              <li>Nắm vững thao tác biên tập timeline và bắt beat nhạc</li>
-              <li>Học mẹo tối ưu hóa hình dáng đội hình drone 3D</li>
+              <li data-i18n="step_2_bullet_1">Xem kênh youtube chính thức của FDShowStudio</li>
+              <li data-i18n="step_2_bullet_2">Nắm vững thao tác biên tập timeline và bắt beat nhạc</li>
+              <li data-i18n="step_2_bullet_3">Học mẹo tối ưu hóa hình dáng đội hình drone 3D</li>
             </ul>
             <div class="card-footer-action">
-              <a href="https://www.youtube.com/@FDShowStudio" target="_blank" rel="noopener noreferrer" class="btn-card-action btn-secondary-action">
+              <a href="https://www.youtube.com/@FDShowStudio" target="_blank" rel="noopener noreferrer" class="btn-card-action btn-secondary-action" data-i18n="step_2_action">
                 Kênh YouTube
               </a>
             </div>
@@ -533,21 +537,21 @@
 
           <!-- Flow Bridge Arrow 2 -> 3 -->
           <div class="flow-bridge">
-            <span class="bridge-label">Tham gia cộng đồng</span>
+            <span class="bridge-label" data-i18n="bridge_2">Tham gia cộng đồng</span>
             <span class="bridge-arrow">&rarr;</span>
           </div>
 
           <!-- Step Card 3: Tham gia cong dong -->
           <div class="flow-card glass-panel">
-            <div class="card-step-badge">BƯỚC 3</div>
-            <h3 class="card-heading">Tham gia cộng đồng</h3>
+            <div class="card-step-badge" data-i18n="step_3_badge">BƯỚC 3</div>
+            <h3 class="card-heading" data-i18n="step_3_heading">Tham gia cộng đồng</h3>
             <ul class="card-bullets">
-              <li>Tải kịch bản miễn phí từ thư viện thành viên</li>
-              <li>Tự thiết kế những màn trình diễn pháo hoa độc đáo</li>
-              <li>Chia sẻ kịch bản và nhận phản hồi cùng cộng đồng</li>
+              <li data-i18n="step_3_bullet_1">Tải kịch bản miễn phí từ thư viện thành viên</li>
+              <li data-i18n="step_3_bullet_2">Tự thiết kế những màn trình diễn pháo hoa độc đáo</li>
+              <li data-i18n="step_3_bullet_3">Chia sẻ kịch bản và nhận phản hồi cùng cộng đồng</li>
             </ul>
             <div class="card-footer-action">
-              <a href="https://www.facebook.com/groups/fwacommunityvn" target="_blank" rel="noopener noreferrer" class="btn-card-action btn-accent-action">
+              <a href="https://www.facebook.com/groups/fwacommunityvn" target="_blank" rel="noopener noreferrer" class="btn-card-action btn-accent-action" data-i18n="step_3_action">
                 Tham gia Facebook Group
               </a>
             </div>
@@ -582,7 +586,7 @@
   <div class="audio-modal-backdrop" id="audio-modal-backdrop">
     <div class="audio-modal-card glass-panel" id="audio-modal-card">
       <div class="audio-modal-header">
-        <span class="audio-modal-badge" id="modal-badge-label">Bản quyền âm nhạc</span>
+        <span class="audio-modal-badge" id="modal-badge-label" data-i18n="modal_badge">Bản quyền âm nhạc</span>
         <button class="audio-modal-close" id="btn-audio-modal-close" title="Đóng">&times;</button>
       </div>
       <div class="audio-modal-body">
@@ -590,15 +594,15 @@
         <p class="audio-modal-desc" id="audio-modal-desc">
           Kịch bản này được dàn dựng đồng bộ với bài hát thương mại. Nhằm tôn trọng và tuân thủ bản quyền âm nhạc quốc tế, trang web không lưu trữ tệp MP3 này trên máy chủ.
         </p>
-        <div class="audio-modal-notice" id="audio-modal-notice">
+        <div class="audio-modal-notice" id="audio-modal-notice" data-i18n="modal_notice">
           Bạn có thể chọn tệp âm thanh có sẵn từ thiết bị của mình để phát đồng bộ, hoặc xem kịch bản pháo hoa trực tiếp kèm hiệu ứng âm thanh nổ 3D sống động.
         </div>
       </div>
       <div class="audio-modal-actions">
-        <button class="modal-btn modal-btn-primary" id="btn-modal-choose-file">
+        <button class="modal-btn modal-btn-primary" id="btn-modal-choose-file" data-i18n="modal_btn_choose">
           Chọn tệp MP3 từ máy của bạn
         </button>
-        <button class="modal-btn modal-btn-ghost" id="btn-modal-play-silent">
+        <button class="modal-btn modal-btn-ghost" id="btn-modal-play-silent" data-i18n="modal_btn_silent">
           Xem pháo hoa (không nhạc nền)
         </button>
       </div>
