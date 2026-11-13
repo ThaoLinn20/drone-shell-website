@@ -329,17 +329,12 @@ function renderShellChips(category) {
         const data = await res.json();
 
         if (Array.isArray(data)) {
-          data.forEach((evt) => {
-            if (evt.type === 'sequence') {
-              fireworkSequencer.playPattern(evt.pattern || 'sweep', evt);
-            } else if (evt.type === 'single') {
-              fireworkSystem.launchRandom(evt.preset, evt);
-            } else if (evt.preset) {
-              fireworkSystem.launchRandom(evt.preset, evt);
-            }
-          });
-        } else if (data && data.preset) {
-          fireworkSystem.launchRandom(data.preset, data);
+          const success = showDirector.previewEvents(data);
+          if (!success) {
+            data.forEach((evt) => showDirector.executeEvent(evt));
+          }
+        } else if (data && typeof data === 'object') {
+          showDirector.executeEvent(data);
         } else {
           fireworkSystem.launchRandom(null, {});
         }
