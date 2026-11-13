@@ -9,33 +9,292 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Premium Page Preloader Styling -->
+  <style>
+    #app-loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #030712;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      overflow: hidden;
+    }
+
+    #app-loader.fade-out {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .loader-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    .loader-logo-container {
+      position: relative;
+      width: 110px;
+      height: 110px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+
+    .loader-logo {
+      color: #00e5ff;
+      filter: drop-shadow(0 0 16px rgba(0, 229, 255, 0.7));
+      animation: loaderSpin 3s linear infinite, loaderPulse 2s ease-in-out infinite alternate;
+    }
+
+    .loader-glow {
+      position: absolute;
+      width: 140px;
+      height: 140px;
+      background: radial-gradient(circle, rgba(0, 229, 255, 0.2) 0%, rgba(2, 132, 199, 0.08) 50%, transparent 70%);
+      border-radius: 50%;
+      filter: blur(12px);
+      animation: glowPulse 2s ease-in-out infinite alternate;
+    }
+
+    .loader-title {
+      font-weight: 900;
+      font-size: 30px;
+      letter-spacing: 0.22em;
+      color: #ffffff;
+      margin: 0 0 8px 0;
+      text-indent: 0.22em;
+      background: linear-gradient(135deg, #ffffff 40%, #00e5ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 12px rgba(0, 229, 255, 0.3));
+    }
+
+    .loader-subtitle {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.35em;
+      color: rgba(255, 255, 255, 0.45);
+      margin: 0 0 32px 0;
+      text-indent: 0.35em;
+      text-transform: uppercase;
+    }
+
+    .loader-progress-bar {
+      width: 260px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 16px;
+    }
+
+    .loader-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #00e5ff, #0284c7);
+      border-radius: 10px;
+      box-shadow: 0 0 10px #00e5ff;
+      animation: progressFill 2.5s cubic-bezier(0.1, 0.8, 0.1, 1) forwards;
+    }
+
+    .loader-status {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.55);
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      min-height: 18px;
+      animation: statusBreathe 1.5s ease-in-out infinite;
+    }
+
+    .loader-bg-orb {
+      position: absolute;
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      filter: blur(120px);
+      z-index: 1;
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
+    .loader-orb-1 {
+      top: -120px;
+      left: -120px;
+      background: rgba(0, 229, 255, 0.25);
+      animation: orbFloat1 12s ease-in-out infinite alternate;
+    }
+
+    .loader-orb-2 {
+      bottom: -150px;
+      right: -150px;
+      background: rgba(2, 132, 199, 0.2);
+      animation: orbFloat2 15s ease-in-out infinite alternate;
+    }
+
+    @keyframes loaderSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes loaderPulse {
+      0% { transform: scale(0.95); opacity: 0.85; }
+      100% { transform: scale(1.05); opacity: 1; }
+    }
+
+    @keyframes glowPulse {
+      0% { transform: scale(0.85); opacity: 0.4; }
+      100% { transform: scale(1.15); opacity: 0.85; }
+    }
+
+    @keyframes progressFill {
+      0% { width: 0%; }
+      20% { width: 28%; }
+      45% { width: 45%; }
+      70% { width: 75%; }
+      90% { width: 92%; }
+      100% { width: 100%; }
+    }
+
+    @keyframes statusBreathe {
+      0%, 100% { opacity: 0.55; }
+      50% { opacity: 1; }
+    }
+
+    @keyframes orbFloat1 {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(60px, 40px) scale(1.1); }
+    }
+
+    @keyframes orbFloat2 {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(-50px, -60px) scale(1.2); }
+    }
+  </style>
 </head>
 <body>
+  <!-- Preloader Screen (Màn hình chờ 3D) -->
+  <div id="app-loader">
+    <div class="loader-bg-orb loader-orb-1"></div>
+    <div class="loader-bg-orb loader-orb-2"></div>
+    <div class="loader-content">
+      <div class="loader-logo-container">
+        <svg class="loader-logo" viewBox="0 0 24 24" width="72" height="72" fill="none" stroke="#00e5ff" stroke-width="1.8">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+        </svg>
+        <div class="loader-glow"></div>
+      </div>
+      <h1 class="loader-title">FDSHOW STUDIO</h1>
+      <p class="loader-subtitle">3D SIMULATION INITIALIZING</p>
+      <div class="loader-progress-bar">
+        <div class="loader-progress-fill"></div>
+      </div>
+      <div class="loader-status">Loading 3D Engine & Assets...</div>
+    </div>
+  </div>
+
   <!-- 3D WebGL Background Canvas -->
   <canvas id="bg-canvas"></canvas>
 
-  <!-- Sticky Fixed Navigation Bar -->
+  <!-- Fixed Cinematic Navigation Bar (Wuthering Waves style) -->
   <header class="navbar-fixed">
     <div class="nav-container">
       <a href="#block-intro" class="nav-brand" data-scroll-to="0">
-        <span class="brand-tag">3D</span>
-        <span class="brand-title">FDShow<span class="accent-text">Studio</span></span>
+        <span class="brand-title">FDSHOW<span class="accent-text">STUDIO</span></span>
       </a>
 
-      <nav class="nav-menu">
-        <button class="nav-item active" data-scroll-to="0">Home</button>
-        <span class="nav-divider">|</span>
-        <button class="nav-item" data-scroll-to="1">Trải nghiệm</button>
-        <span class="nav-divider">|</span>
-        <button class="nav-item" data-scroll-to="2">Tham Gia</button>
-      </nav>
-
+      <!-- Right Action Cluster: 4 Circle Buttons with Wuthering Waves Popups -->
       <div class="nav-actions">
-        <button id="lang-switch-btn" class="btn-lang" title="Chuyển ngôn ngữ">
-          <span id="lang-label">VI</span>
+        <!-- Button 1: Community Dropdown Wrapper -->
+        <div class="nav-dropdown-wrap" id="wrap-nav-community">
+          <button class="btn-nav-circle" id="btn-nav-community" title="Cộng đồng & Mạng xã hội">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+              <circle cx="18" cy="5" r="3"></circle>
+              <circle cx="6" cy="12" r="3"></circle>
+              <circle cx="18" cy="19" r="3"></circle>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" stroke="currentColor" stroke-width="2.2"></line>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" stroke="currentColor" stroke-width="2.2"></line>
+            </svg>
+          </button>
+          <!-- Horizontal Capsule Social Bar -->
+          <div class="nav-popup-social" id="popup-nav-social">
+            <div class="popup-arrow-top"></div>
+            <a href="https://www.tiktok.com/@thaolinn20" target="_blank" rel="noopener noreferrer" class="social-icon-btn" title="TikTok @thaolinn20">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
+                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.29 0 .58.04.86.12V9.32a6.34 6.34 0 0 0-.86-.06 6.34 6.34 0 1 0 6.34 6.34V8.42a8.28 8.28 0 0 0 4.77 1.52V6.69z"/>
+              </svg>
+            </a>
+            <a href="https://www.youtube.com/@FDShowStudio" target="_blank" rel="noopener noreferrer" class="social-icon-btn" title="YouTube FDShowStudio">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
+                <path d="M23.5 6.19a3 3 0 0 0-2.12-2.13C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.38.56A3 3 0 0 0 .5 6.19 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.81 3 3 0 0 0 2.12 2.13c1.88.56 9.38.56 9.38.56s7.5 0 9.38-.56a3 3 0 0 0 2.12-2.13c.33-1.89.5-3.84.5-5.81s-.17-3.92-.5-5.81zM9.54 15.57V8.43L15.82 12l-6.28 3.57z"/>
+              </svg>
+            </a>
+            <a href="https://www.facebook.com/groups/fwacommunityvn" target="_blank" rel="noopener noreferrer" class="social-icon-btn" title="Facebook FWA Community">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+            </a>
+            <a href="https://github.com/ThAolInh20/Shell-Drone_3d" target="_blank" rel="noopener noreferrer" class="social-icon-btn" title="GitHub Repository">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Button 2: Sound Equalizer Toggle -->
+        <button id="btn-nav-sound" class="btn-nav-circle btn-nav-sound is-muted" title="Bật âm thanh pháo hoa (hiện đang tắt)">
+          <svg class="icon-sound-equalizer" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+            <rect class="eq-bar eq-bar-1" x="4" y="8" width="3" height="12" rx="1.5"></rect>
+            <rect class="eq-bar eq-bar-2" x="10.5" y="3" width="3" height="17" rx="1.5"></rect>
+            <rect class="eq-bar eq-bar-3" x="17" y="6" width="3" height="14" rx="1.5"></rect>
+            <line class="eq-mute-line" x1="3" y1="21" x2="21" y2="3" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></line>
+          </svg>
         </button>
-        <a href="https://github.com/ThAolInh20/Shell-Drone_3d/releases" target="_blank" rel="noopener noreferrer" class="btn-nav-download">
-          Download
+
+        <!-- Button 3: Language Globe Dropdown Wrapper -->
+        <div class="nav-dropdown-wrap" id="wrap-nav-lang">
+          <button id="lang-switch-btn" class="btn-nav-circle btn-lang-globe" title="Chuyển ngôn ngữ / Switch Language">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+            <span id="lang-mini-badge" class="lang-mini-badge">VI</span>
+          </button>
+          <!-- Vertical Language Menu (Wuthering Waves style) -->
+          <div class="nav-popup-lang" id="popup-nav-lang">
+            <div class="popup-arrow-top"></div>
+            <button class="lang-option-btn active" data-lang="vi">Tiếng Việt</button>
+            <button class="lang-option-btn" data-lang="en">English</button>
+            <button class="lang-option-btn" data-lang="ja">日本語</button>
+            <button class="lang-option-btn" data-lang="zh">繁體中文</button>
+          </div>
+        </div>
+
+        <!-- Button 4: Download Icon Button -->
+        <a href="https://github.com/ThAolInh20/Shell-Drone_3d/releases" target="_blank" rel="noopener noreferrer" class="btn-nav-circle btn-nav-download" id="btn-nav-download" title="Tải FDShowStudio (GitHub Releases)">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
         </a>
       </div>
     </div>
@@ -123,6 +382,8 @@
 
       <!-- Bottom Dock: Cac vung chon kich ban nam gon o duoi man hinh -->
       <div class="experience-dock glass-panel" id="experience-dock">
+        <!-- Close Button: Prominent Standalone Corner Button -->
+        <button id="btn-close-dock" class="dock-btn-close" title="Ẩn bảng chọn (Thu gọn)">&times;</button>
         <!-- Dock Timeline Scrubber Bar (Kéo để tua kịch bản show) -->
         <div class="dock-scrubber-bar" id="dock-scrubber-bar">
           <span class="scrubber-time-label" id="scrubber-time-current">00:00</span>
@@ -157,10 +418,10 @@
           </div>
 
           <div class="dock-actions">
-            <button id="btn-toggle-sound" class="dock-btn dock-btn-sound" title="Bật hoặc tắt âm thanh pháo hoa">Âm thanh: Bật</button>
+            <button id="btn-import-audio" class="dock-btn" title="Nạp tệp âm thanh MP3 từ thiết bị của bạn">Nạp MP3 từ máy</button>
+            <button id="btn-toggle-sound" class="dock-btn dock-btn-sound is-muted" title="Bật hoặc tắt âm thanh pháo hoa">Âm thanh: Tắt</button>
             <button id="btn-fire-random" class="dock-btn" title="Bắn ngẫu nhiên pháo hoa">Bắn ngẫu nhiên</button>
             <button id="btn-stop-show" class="dock-btn dock-btn-danger" title="Dừng kịch bản hoặc show">Dừng kịch bản</button>
-            <button id="btn-close-dock" class="dock-btn-close" title="Ẩn bảng chọn">&times;</button>
           </div>
         </div>
 
@@ -313,6 +574,36 @@
     </section>
 
   </main>
+
+  <!-- Hidden Local Audio Input -->
+  <input type="file" id="local-audio-input" accept="audio/mp3,audio/wav,audio/ogg,audio/m4a,audio/*" style="display: none;">
+
+  <!-- Local Audio Copyright Notice Modal -->
+  <div class="audio-modal-backdrop" id="audio-modal-backdrop">
+    <div class="audio-modal-card glass-panel" id="audio-modal-card">
+      <div class="audio-modal-header">
+        <span class="audio-modal-badge" id="modal-badge-label">Bản quyền âm nhạc</span>
+        <button class="audio-modal-close" id="btn-audio-modal-close" title="Đóng">&times;</button>
+      </div>
+      <div class="audio-modal-body">
+        <h3 class="audio-modal-title" id="audio-modal-title">Kịch bản pháo hoa</h3>
+        <p class="audio-modal-desc" id="audio-modal-desc">
+          Kịch bản này được dàn dựng đồng bộ với bài hát thương mại. Nhằm tôn trọng và tuân thủ bản quyền âm nhạc quốc tế, trang web không lưu trữ tệp MP3 này trên máy chủ.
+        </p>
+        <div class="audio-modal-notice" id="audio-modal-notice">
+          Bạn có thể chọn tệp âm thanh có sẵn từ thiết bị của mình để phát đồng bộ, hoặc xem kịch bản pháo hoa trực tiếp kèm hiệu ứng âm thanh nổ 3D sống động.
+        </div>
+      </div>
+      <div class="audio-modal-actions">
+        <button class="modal-btn modal-btn-primary" id="btn-modal-choose-file">
+          Chọn tệp MP3 từ máy của bạn
+        </button>
+        <button class="modal-btn modal-btn-ghost" id="btn-modal-play-silent">
+          Xem pháo hoa (không nhạc nền)
+        </button>
+      </div>
+    </div>
+  </div>
 
   <script type="module" src="/src/main.js"></script>
 </body>

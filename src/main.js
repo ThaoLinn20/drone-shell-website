@@ -257,7 +257,8 @@ window.addEventListener('click', (event) => {
     fireworkSystem.launchRandom(null, {
       ratioX: xRatio,
       ratioY: yRatio,
-      ratioZ: zRatio
+      ratioZ: zRatio,
+      sectorId: 'center'
     });
   }
 });
@@ -340,9 +341,9 @@ async function ensureShowLoadedForScrubbing() {
   if (showDurationTotal > 0 && showDirector.scriptConfig && showDirector.scriptConfig.length > 0) {
     return true;
   }
-  const firstPlayBtn = document.querySelector('.dock-show-item .btn-dock-play');
-  if (firstPlayBtn) {
-    firstPlayBtn.click();
+  const firstCard = document.querySelector('.dock-show-item');
+  if (firstCard && typeof startShow === 'function') {
+    startShow(firstCard, null, true);
     await new Promise((r) => setTimeout(r, 180));
     return true;
   }
@@ -457,56 +458,84 @@ if (btnFireRandom) {
       fireworkSystem.launchRandom(null, {
         ratioX: 0.15 + Math.random() * 0.7,
         ratioY: 0.45 + Math.random() * 0.45,
-        ratioZ: 0.3 + Math.random() * 0.4
+        ratioZ: 0.3 + Math.random() * 0.4,
+        sectorId: 'center'
       });
       if (stageStatusText) stageStatusText.textContent = 'Đã phóng pháo hoa ngẫu nhiên';
     }
   });
 }
 
-// Sound Mute / Unmute Toggle Button
+// Sound Mute / Unmute Toggle Button (Top Navbar & Experience Dock)
+const btnNavSound = document.getElementById('btn-nav-sound');
 const btnToggleSound = document.getElementById('btn-toggle-sound');
-const savedSoundMuted =
-  typeof localStorage !== 'undefined' &&
-  localStorage.getItem('fdshow_sound_muted') === 'true';
+const savedSoundPref =
+  typeof localStorage !== 'undefined'
+    ? localStorage.getItem('fdshow_sound_muted')
+    : null;
+const isDefaultMuted = savedSoundPref !== null ? savedSoundPref === 'true' : true;
 
-if (savedSoundMuted && audioSystem) {
-  audioSystem.setMuted(true);
+if (audioSystem) {
+  audioSystem.setMuted(isDefaultMuted);
 }
 
 function updateSoundButtonUI() {
-  if (!btnToggleSound || !audioSystem) return;
+  if (!audioSystem) return;
   const isMuted = audioSystem.muted;
-  if (isMuted) {
-    btnToggleSound.classList.add('is-muted');
-    btnToggleSound.textContent =
-      currentLang === 'en' ? 'Sound: OFF' : 'Âm thanh: Tắt';
-  } else {
-    btnToggleSound.classList.remove('is-muted');
-    btnToggleSound.textContent =
-      currentLang === 'en' ? 'Sound: ON' : 'Âm thanh: Bật';
+
+  if (btnNavSound) {
+    if (isMuted) {
+      btnNavSound.classList.add('is-muted');
+      btnNavSound.title = currentLang === 'en'
+        ? 'Turn sound ON (currently OFF)'
+        : 'Bật âm thanh pháo hoa (hiện đang tắt)';
+    } else {
+      btnNavSound.classList.remove('is-muted');
+      btnNavSound.title = currentLang === 'en'
+        ? 'Turn sound OFF (currently ON)'
+        : 'Tắt âm thanh pháo hoa (hiện đang bật)';
+    }
+  }
+
+  if (btnToggleSound) {
+    if (isMuted) {
+      btnToggleSound.classList.add('is-muted');
+      btnToggleSound.textContent =
+        currentLang === 'en' ? 'Sound: OFF' : 'Âm thanh: Tắt';
+    } else {
+      btnToggleSound.classList.remove('is-muted');
+      btnToggleSound.textContent =
+        currentLang === 'en' ? 'Sound: ON' : 'Âm thanh: Bật';
+    }
   }
 }
 
-if (btnToggleSound) {
-  updateSoundButtonUI();
-  btnToggleSound.addEventListener('click', (e) => {
-    e.stopPropagation();
-    if (audioSystem) {
-      audioSystem.resumeContext();
-      const isMuted = audioSystem.toggleMute();
-      if (typeof localStorage !== 'undefined') {
-        localStorage.setItem('fdshow_sound_muted', isMuted ? 'true' : 'false');
-      }
-      updateSoundButtonUI();
-      if (stageStatusText) {
-        stageStatusText.textContent = isMuted
-          ? (currentLang === 'en' ? 'Sound muted' : 'Đã tắt âm thanh pháo')
-          : (currentLang === 'en' ? 'Sound enabled' : 'Đã bật âm thanh pháo');
-      }
+function handleToggleSound(e) {
+  if (e) e.stopPropagation();
+  if (audioSystem) {
+    audioSystem.resumeContext();
+    const isMuted = audioSystem.toggleMute();
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('fdshow_sound_muted', isMuted ? 'true' : 'false');
     }
-  });
+    updateSoundButtonUI();
+    if (stageStatusText) {
+      stageStatusText.textContent = isMuted
+        ? (currentLang === 'en' ? 'Sound muted' : 'Đã tắt âm thanh pháo')
+        : (currentLang === 'en' ? 'Sound enabled' : 'Đã bật âm thanh pháo');
+    }
+  }
 }
+
+if (btnNavSound) {
+  btnNavSound.addEventListener('click', handleToggleSound);
+}
+
+if (btnToggleSound) {
+  btnToggleSound.addEventListener('click', handleToggleSound);
+}
+
+updateSoundButtonUI();
 
 // Render Shell Chips for Big/Small shell modes
 function renderShellChips(category) {
@@ -546,11 +575,11 @@ function renderShellChips(category) {
         } else if (data && typeof data === 'object') {
           showDirector.executeEvent(data);
         } else {
-          fireworkSystem.launchRandom(null, {});
+          fireworkSystem.launchRandom(null, { sectorId: 'center' });
         }
       } catch (err) {
         console.warn('Could not launch shell script:', err);
-        fireworkSystem.launchRandom(null, {});
+        fireworkSystem.launchRandom(null, { sectorId: 'center' });
       }
     });
 
@@ -579,6 +608,161 @@ if (tabShows) tabShows.addEventListener('click', () => switchDockView('shows'));
 if (tabBigShell) tabBigShell.addEventListener('click', () => switchDockView('big'));
 if (tabSmallShell) tabSmallShell.addEventListener('click', () => switchDockView('small'));
 
+// ==========================================================================
+// Local Audio Binding and Copyright-Compliant Show Director
+// ==========================================================================
+
+const audioModalBackdrop = document.getElementById('audio-modal-backdrop');
+const btnAudioModalClose = document.getElementById('btn-audio-modal-close');
+const btnModalChooseFile = document.getElementById('btn-modal-choose-file');
+const btnModalPlaySilent = document.getElementById('btn-modal-play-silent');
+const localAudioInput = document.getElementById('local-audio-input');
+const btnImportAudio = document.getElementById('btn-import-audio');
+const audioModalTitle = document.getElementById('audio-modal-title');
+const audioModalDesc = document.getElementById('audio-modal-desc');
+
+let pendingShowCard = null;
+const loadedAudioMap = new Map(); // folder -> { blobUrl, fileName }
+
+function openAudioModal(card) {
+  pendingShowCard = card;
+  const showName = card.querySelector('.item-title')?.textContent || 'Kịch bản show';
+  const audioFile = card.dataset.audio || '';
+
+  if (audioModalTitle) {
+    audioModalTitle.textContent = showName;
+  }
+  if (audioModalDesc) {
+    audioModalDesc.innerHTML = `Kịch bản này được dàn dựng đồng bộ với bài hát <strong>${showName}</strong> (${audioFile}). Nhằm tôn trọng và tuân thủ bản quyền âm nhạc quốc tế, trang web không lưu trữ tệp MP3 này trên máy chủ.`;
+  }
+  if (audioModalBackdrop) {
+    audioModalBackdrop.classList.add('is-open');
+  }
+}
+
+function closeAudioModal() {
+  if (audioModalBackdrop) {
+    audioModalBackdrop.classList.remove('is-open');
+  }
+}
+
+if (btnAudioModalClose) {
+  btnAudioModalClose.addEventListener('click', () => {
+    closeAudioModal();
+    pendingShowCard = null;
+  });
+}
+
+if (audioModalBackdrop) {
+  audioModalBackdrop.addEventListener('click', (e) => {
+    if (e.target === audioModalBackdrop) {
+      closeAudioModal();
+      pendingShowCard = null;
+    }
+  });
+}
+
+if (btnModalPlaySilent) {
+  btnModalPlaySilent.addEventListener('click', () => {
+    closeAudioModal();
+    if (pendingShowCard) {
+      startShow(pendingShowCard, null, true);
+    }
+  });
+}
+
+if (btnModalChooseFile) {
+  btnModalChooseFile.addEventListener('click', () => {
+    if (localAudioInput) {
+      localAudioInput.click();
+    }
+  });
+}
+
+if (btnImportAudio) {
+  btnImportAudio.addEventListener('click', (e) => {
+    e.stopPropagation();
+    pendingShowCard = currentActiveShowCard || showItems[0];
+    if (localAudioInput) {
+      localAudioInput.click();
+    }
+  });
+}
+
+if (localAudioInput) {
+  localAudioInput.addEventListener('change', (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (file) {
+      const blobUrl = URL.createObjectURL(file);
+      const card = pendingShowCard || currentActiveShowCard || showItems[0];
+      const folder = card ? card.dataset.folder : 'secret-base';
+      loadedAudioMap.set(folder, { blobUrl, fileName: file.name });
+      closeAudioModal();
+      if (card) {
+        startShow(card, blobUrl, false);
+      }
+    }
+  });
+}
+
+async function startShow(card, useBlobUrl = null, isSilent = false) {
+  stopCurrentShow();
+
+  const folder = card.dataset.folder;
+  const scriptFile = card.dataset.script;
+  const showName = card.querySelector('.item-title')?.textContent || folder;
+  const scriptUrl = `/scripts/shows/${folder}/${scriptFile}`;
+
+  if (stageStatusText) stageStatusText.textContent = `Đang nạp: ${showName}...`;
+
+  try {
+    let res = await fetch(scriptUrl);
+    if (!res.ok && scriptFile === 'secret-base-trial-v7.json') {
+      res = await fetch(`/scripts/shows/${folder}/secret-base.json`);
+    }
+    if (!res.ok) throw new Error(`Failed to fetch show script: ${scriptUrl}`);
+    const scriptData = await res.json();
+
+    const effectiveBlob = useBlobUrl || (loadedAudioMap.has(folder) ? loadedAudioMap.get(folder).blobUrl : null);
+
+    showDurationTotal = 0;
+    scriptData.forEach((evt) => {
+      if (evt.type === 'audio') {
+        if (effectiveBlob) {
+          evt._blobUrl = effectiveBlob;
+        } else {
+          evt._blobUrl = null;
+          evt.url = null;
+        }
+      }
+      const end = (evt.time || 0) + (evt.duration || 0);
+      if (end > showDurationTotal) showDurationTotal = end;
+    });
+
+    fireworkSystem.autoLaunchEnabled = false;
+    updateScrubberUI(0, showDurationTotal);
+
+    showDirector.loadScript(scriptData);
+    showDirector.play();
+    if (skyHint) skyHint.style.opacity = '0';
+
+    card.classList.add('active-show');
+    const playBtn = card.querySelector('.btn-dock-play');
+    if (playBtn) playBtn.textContent = 'Dừng';
+    currentActiveShowCard = card;
+
+    if (stageStatusText) {
+      stageStatusText.textContent = effectiveBlob
+        ? `Đang biểu diễn: ${showName} (Đã nạp nhạc)`
+        : `Đang biểu diễn: ${showName} (Âm thanh pháo 3D)`;
+    }
+  } catch (err) {
+    console.error('Error starting show:', err);
+    if (stageStatusText) stageStatusText.textContent = 'Lỗi nạp show: ' + err.message;
+    fireworkSystem.autoLaunchEnabled = true;
+  }
+}
+
 // Wire up Shows play buttons
 const showItems = Array.from(document.querySelectorAll('.dock-show-item'));
 showItems.forEach((card) => {
@@ -588,64 +772,18 @@ showItems.forEach((card) => {
   playBtn.addEventListener('click', async (e) => {
     e.stopPropagation();
 
-    // If currently playing this show, clicking stops it
     if (card === currentActiveShowCard && showDirector.isPlaying) {
       stopCurrentShow();
       return;
     }
 
-    // Stop previously playing show
-    stopCurrentShow();
-
     const folder = card.dataset.folder;
-    const scriptFile = card.dataset.script;
-    const audioFile = card.dataset.audio;
-    const showName = card.querySelector('.item-title')?.textContent || folder;
-
-    const scriptUrl = `/scripts/shows/${folder}/${scriptFile}`;
-    const audioUrl = `/scripts/shows/${folder}/${audioFile}`;
-
-    if (stageStatusText) stageStatusText.textContent = `Đang nạp: ${showName}...`;
-
-    try {
-      let res = await fetch(scriptUrl);
-      if (!res.ok && scriptFile === 'secret-base-trial-v7.json') {
-        res = await fetch(`/scripts/shows/${folder}/secret-base.json`);
-      }
-      if (!res.ok) throw new Error(`Failed to fetch show script: ${scriptUrl}`);
-      const scriptData = await res.json();
-
-      // Normalize script and resolve audio path
-      showDurationTotal = 0;
-      scriptData.forEach((evt) => {
-        if (evt.type === 'audio') {
-          evt.url = audioUrl.replace(/^\//, '');
-        }
-        const end = (evt.time || 0) + (evt.duration || 0);
-        if (end > showDurationTotal) showDurationTotal = end;
-      });
-
-      // Pause ambient firework to let the orchestrated show shine
-      fireworkSystem.autoLaunchEnabled = false;
-
-      updateScrubberUI(0, showDurationTotal);
-
-      // Load into showDirector
-      showDirector.loadScript(scriptData);
-      showDirector.play();
-      if (skyHint) skyHint.style.opacity = '0';
-      
-
-      card.classList.add('active-show');
-      playBtn.textContent = 'Dừng';
-      currentActiveShowCard = card;
-
-      if (stageStatusText) stageStatusText.textContent = `Đang biểu diễn: ${showName}`;
-    } catch (err) {
-      console.error('Error starting show:', err);
-      if (stageStatusText) stageStatusText.textContent = 'Lỗi nạp show: ' + err.message;
-      fireworkSystem.autoLaunchEnabled = true;
+    if (loadedAudioMap.has(folder)) {
+      startShow(card, loadedAudioMap.get(folder).blobUrl, false);
+      return;
     }
+
+    openAudioModal(card);
   });
 });
 
@@ -665,17 +803,69 @@ function applyLanguage(lang) {
   if (langLabel) {
     langLabel.textContent = lang.toUpperCase();
   }
+  const langBadge = document.getElementById('lang-mini-badge');
+  if (langBadge) {
+    langBadge.textContent = lang.toUpperCase();
+  }
+  const downloadBtn = document.getElementById('btn-nav-download');
+  if (downloadBtn) {
+    downloadBtn.title = lang === 'en'
+      ? 'Download FDShowStudio (GitHub Releases)'
+      : 'Tải FDShowStudio (GitHub Releases)';
+  }
+
+  document.querySelectorAll('.lang-option-btn').forEach((btn) => {
+    if (btn.dataset.lang === lang) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+
   document.documentElement.lang = lang;
   updateSoundButtonUI();
 }
 
-const langBtn = document.getElementById('lang-switch-btn');
-if (langBtn) {
-  langBtn.addEventListener('click', () => {
-    const nextLang = currentLang === 'vi' ? 'en' : 'vi';
-    applyLanguage(nextLang);
+// Language Option Click Handler
+document.querySelectorAll('.lang-option-btn').forEach((btn) => {
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const lang = btn.dataset.lang;
+    applyLanguage(lang);
+    document.querySelectorAll('.nav-dropdown-wrap').forEach((wrap) => {
+      wrap.classList.remove('is-open');
+    });
+  });
+});
+
+// Click toggling for mobile / touch devices
+const wrapNavCommunity = document.getElementById('wrap-nav-community');
+const btnNavCommunity = document.getElementById('btn-nav-community');
+if (btnNavCommunity && wrapNavCommunity) {
+  btnNavCommunity.addEventListener('click', (e) => {
+    e.stopPropagation();
+    wrapNavCommunity.classList.toggle('is-open');
+    const wrapLang = document.getElementById('wrap-nav-lang');
+    if (wrapLang) wrapLang.classList.remove('is-open');
   });
 }
+
+const wrapNavLang = document.getElementById('wrap-nav-lang');
+const langBtn = document.getElementById('lang-switch-btn');
+if (langBtn && wrapNavLang) {
+  langBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    wrapNavLang.classList.toggle('is-open');
+    if (wrapNavCommunity) wrapNavCommunity.classList.remove('is-open');
+  });
+}
+
+// Close all popups when clicking outside
+window.addEventListener('click', () => {
+  document.querySelectorAll('.nav-dropdown-wrap').forEach((wrap) => {
+    wrap.classList.remove('is-open');
+  });
+});
 
 
 // ==========================================================================
@@ -790,3 +980,38 @@ function animate() {
 
 // Start animation loop
 animate();
+
+// Smoothly Dismiss Page Preloader Screen
+function hidePreloader() {
+  const loader = document.getElementById('app-loader');
+  if (loader) {
+    const progressFill = loader.querySelector('.loader-progress-fill');
+    if (progressFill) {
+      progressFill.style.animation = 'none';
+      progressFill.style.width = '100%';
+    }
+
+    const statusText = loader.querySelector('.loader-status');
+    if (statusText) {
+      statusText.textContent = 'Systems Ready!';
+      statusText.style.color = '#00e5ff';
+      statusText.style.textShadow = '0 0 10px rgba(0, 229, 255, 0.6)';
+    }
+
+    setTimeout(() => {
+      loader.classList.add('fade-out');
+      setTimeout(() => {
+        if (loader && loader.parentNode) {
+          loader.remove();
+        }
+      }, 650);
+    }, 400);
+  }
+}
+
+if (document.readyState === 'complete') {
+  hidePreloader();
+} else {
+  window.addEventListener('load', hidePreloader);
+  setTimeout(hidePreloader, 3500);
+}

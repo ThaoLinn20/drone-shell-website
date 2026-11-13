@@ -8,7 +8,7 @@ export class AudioSystem {
     this.cameraManager = cameraManager;
     this.baseURL = AUDIO_CONFIG.baseURL;
     this.eventBus = eventBus || globalEventBus;
-    this.muted = false;
+    this.muted = true;
 
     if (audioContext) {
       this.ctx = audioContext;
