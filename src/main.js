@@ -73,7 +73,7 @@ if (postProcessing) {
 // Camera targets per section (wide panoramic view for experience block)
 const camTargets = {
   0: { pos: new THREE.Vector3(0, 22, 340), look: new THREE.Vector3(0, 95, 0) },  // Intro block
-  1: { pos: new THREE.Vector3(0, 38, 410), look: new THREE.Vector3(0, 115, 0) }, // Experience block: nicely balanced closer view
+  1: { pos: new THREE.Vector3(0, 30, 300), look: new THREE.Vector3(0, 105, 0) }, // Experience block: z=300 view
   2: { pos: new THREE.Vector3(0, 28, 360), look: new THREE.Vector3(0, 105, 0) }  // Community block
 };
 
