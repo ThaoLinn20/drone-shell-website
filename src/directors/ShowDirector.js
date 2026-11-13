@@ -31,7 +31,8 @@ export class ShowDirector {
     // Init new audio elements and Drone Show
     this.scriptConfig.forEach(seq => {
       if (seq.type === 'audio') {
-        const url = seq._blobUrl || `/${seq.url}`;
+        const url = seq._blobUrl || (seq.url ? (seq.url.startsWith("/") ? seq.url : `/${seq.url}`) : null);
+        if (!url) return;
         try {
             const audio = new Audio(url);
             audio.volume = seq.volume !== undefined ? seq.volume : 1.0;
