@@ -1,0 +1,28 @@
+[
+  {
+    "time": 21.8,
+    "type": "sequence",
+    "pattern": "sweep-left",
+    "count": 1,
+    "duration": 0.1,
+    "preset": "weepingWillowCometsV3",
+    "sectorId": "center",
+    "shapeType": "willow-up",
+    "dynamicsType": "falling-comets-glitter",
+    "pistil": false,
+    "instantBurst": true,
+    "effects": [
+      "glitter-strobe",
+      "flow",
+      "no-trail"
+    ],
+    "cometTrail": "normal",
+    "uiDuration": 1.1,
+    "x1": 1,
+    "ratioY": 0.5,
+    "useAngle": true,
+    "angle": 0,
+    "flow": true,
+    "no-trail": true
+  }
+]

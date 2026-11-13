@@ -1,0 +1,54 @@
+[
+  {
+    "time": 57.6,
+    "type": "sequence",
+    "pattern": "random",
+    "count": 2,
+    "duration": 0.1,
+    "preset": "crysanthemum",
+    "sectorId": "center",
+    "shapeType": "sphere",
+    "dynamicsType": "crysanthemum-trail",
+    "pistil": false,
+    "instantBurst": false,
+    "effects": [
+      {
+        "id": "no-trail_fre3n",
+        "type": "no-trail",
+        "startRatio": 0,
+        "endRatio": 1,
+        "start": 0,
+        "end": 1.8
+      },
+      {
+        "id": "strobe_sp2ec",
+        "type": "strobe",
+        "startRatio": 0,
+        "endRatio": 1,
+        "start": 0,
+        "end": 1.8
+      },
+      {
+        "id": "breathing-pulse_1793640007673_v43bz",
+        "type": "breathing-pulse",
+        "startRatio": 0.1,
+        "endRatio": 0.5,
+        "start": 0.18,
+        "end": 0.9
+      },
+      "burst-smoke"
+    ],
+    "cometTrail": "none",
+    "uiDuration": 0.6,
+    "starLifeMultiplier": 0.8,
+    "particleCountMultiplier": 0.5,
+    "shellSize": 1.1,
+    "x1": 0.3,
+    "x2": 0.7,
+    "y1": 0.3,
+    "y2": 0.4,
+    "color": "gold",
+    "burstSmoke": true,
+    "burst-smoke": true
+  }
+]

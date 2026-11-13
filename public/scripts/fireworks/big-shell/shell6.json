@@ -1,0 +1,86 @@
+[
+  {
+    "time": 0,
+    "type": "sequence",
+    "pattern": "sweep-custom-curve",
+    "count": 3,
+    "duration": 0.1,
+    "preset": "multi_nested",
+    "sectorId": "center",
+    "shapeType": "sphere",
+    "dynamicsType": "standard",
+    "instantBurst": false,
+    "effects": [],
+    "cometTrail": "thin",
+    "uiDuration": 2.8,
+    "multiNested": true,
+    "pistil": false,
+    "stages": [
+      {
+        "shapeType": "ring",
+        "dynamicsType": "crysanthemum-spiral-v2",
+        "color": "#007aff",
+        "delay": 0,
+        "scale": 1.45,
+        "effects": [
+          "no-trail"
+        ]
+      },
+      {
+        "shapeType": "ring",
+        "dynamicsType": "crysanthemum-spiral-v2",
+        "color": "#00e5ff",
+        "delay": 0,
+        "scale": 1.45,
+        "effects": [
+          "no-trail"
+        ]
+      },
+      {
+        "shapeType": "sphere",
+        "dynamicsType": "sparkle-trail",
+        "color": "#66bdc7",
+        "delay": 0,
+        "scale": 0.65,
+        "effects": [
+          "flow",
+          "strobe",
+          "erratic-dart"
+        ]
+      }
+    ],
+    "starLifeMultiplier": 2.3,
+    "shellSize": 1.4,
+    "nestingMode": "concentric",
+    "color": "white",
+    "wavePoints": [
+      {
+        "x": 0,
+        "y": 0.874,
+        "angle": -0.119
+      },
+      {
+        "x": 0.241,
+        "y": 0.94,
+        "angle": 0.034
+      },
+      {
+        "x": 0.507,
+        "y": 1,
+        "angle": 0
+      },
+      {
+        "x": 0.761,
+        "y": 0.963,
+        "angle": 0.127
+      },
+      {
+        "x": 1,
+        "y": 0.94,
+        "angle": 0.118
+      }
+    ],
+    "x1": 0.4,
+    "x2": 0.6
+  }
+]

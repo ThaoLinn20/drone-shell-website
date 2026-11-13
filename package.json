@@ -12,6 +12,7 @@
     "vite": "^8.0.4"
   },
   "dependencies": {
+    "@shell-drone/firework-engine": "git+https://github.com/ThaoLinn20/firework-engine.git",
     "three": "^0.183.2"
   }
 }

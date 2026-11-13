@@ -1,0 +1,93 @@
+[
+  {
+    "time": 0,
+    "type": "sequence",
+    "pattern": "sweep-custom-curve",
+    "count": 3,
+    "duration": 0.1,
+    "preset": "multi_nested",
+    "sectorId": "center",
+    "shapeType": "sphere",
+    "dynamicsType": "standard",
+    "pistil": false,
+    "instantBurst": false,
+    "effects": [],
+    "cometTrail": "normal",
+    "uiDuration": 1.2,
+    "wavePoints": [
+      {
+        "x": 0,
+        "y": 0.858,
+        "angle": -0.019
+      },
+      {
+        "x": 0.277,
+        "y": 0.839,
+        "angle": 0.16
+      },
+      {
+        "x": 0.491,
+        "y": 0.923,
+        "angle": 0.035
+      },
+      {
+        "x": 0.746,
+        "y": 0.92,
+        "angle": 0
+      },
+      {
+        "x": 1,
+        "y": 0.917,
+        "angle": -0.101
+      }
+    ],
+    "x2": 0.66,
+    "shellSize": 1.4,
+    "starLifeMultiplier": 1.6,
+    "multiNested": true,
+    "stages": [
+      {
+        "shapeType": "sphere",
+        "dynamicsType": "crysanthemum-trail",
+        "color": "#ffd700",
+        "delay": 0,
+        "scale": 0.2,
+        "effects": []
+      },
+      {
+        "shapeType": "sphere",
+        "dynamicsType": "snow",
+        "color": "#00e5ff",
+        "delay": 0,
+        "scale": 1,
+        "effects": [
+          "strobe"
+        ]
+      },
+      {
+        "shapeType": "sphere",
+        "dynamicsType": "standard",
+        "color": "#007aff",
+        "delay": 0,
+        "scale": 1.2,
+        "effects": []
+      },
+      {
+        "shapeType": "sphere_rings",
+        "dynamicsType": "double-helix",
+        "color": "#af52de",
+        "delay": 0,
+        "scale": 1.5,
+        "effects": [
+          "crossette",
+          "strobe"
+        ]
+      }
+    ],
+    "nestingMode": "concentric",
+    "_selectedTemplateKey": "chrysanthemumSimultaneous",
+    "x1": 0.35,
+    "particleCountMultiplier": 0.75,
+    "color": "gold"
+  }
+]

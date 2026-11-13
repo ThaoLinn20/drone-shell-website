@@ -1,0 +1,85 @@
+[
+  {
+    "time": 0,
+    "type": "sequence",
+    "pattern": "fan",
+    "count": 3,
+    "duration": 0.1,
+    "preset": "multi_nested",
+    "sectorId": "center",
+    "shapeType": "sphere",
+    "dynamicsType": "standard",
+    "instantBurst": false,
+    "effects": [],
+    "cometTrail": "detached",
+    "multiNested": true,
+    "pistil": false,
+    "stages": [
+      {
+        "shapeType": "sphere",
+        "dynamicsType": "crossette",
+        "color": "#ffd700",
+        "delay": 0.25,
+        "scale": 1.1,
+        "effects": [
+          "crossette"
+        ]
+      },
+      {
+        "shapeType": "sphere",
+        "dynamicsType": "willow",
+        "color": "#ffffff",
+        "delay": 0,
+        "scale": 0.9,
+        "effects": [
+          "glitter-strobe"
+        ]
+      },
+      {
+        "shapeType": "sphere",
+        "dynamicsType": "ghost-kamuro",
+        "color": "#f7e688",
+        "delay": 0.35,
+        "scale": 1,
+        "effects": [
+          "ghost-flare"
+        ]
+      }
+    ],
+    "wavePoints": [
+      {
+        "x": 0,
+        "y": 0.583,
+        "angle": 0.28
+      },
+      {
+        "x": 0.225,
+        "y": 0.723,
+        "angle": -0.186
+      },
+      {
+        "x": 0.5,
+        "y": 0.88,
+        "angle": 0
+      },
+      {
+        "x": 0.75,
+        "y": 0.661,
+        "angle": 0.134
+      },
+      {
+        "x": 1,
+        "y": 0.517,
+        "angle": -0.054
+      }
+    ],
+    "uiDuration": 2.7,
+    "nestingMode": "concentric",
+    "_selectedTemplateKey": "classic",
+    "color": "white",
+    "x1": 0.5,
+    "x2": 0.5,
+    "y1": 0.8,
+    "y2": 0.9
+  }
+]

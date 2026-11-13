@@ -28,3 +28,6 @@ _bmad
 .github
 .agents
 public/image/
+
+# Ignore copyrighted audio in show packages
+public/scripts/shows/**/*.mp3

@@ -1,0 +1,71 @@
+[
+  {
+    "time": 0,
+    "type": "sequence",
+    "pattern": "sweep-custom-curve",
+    "count": 3,
+    "duration": 0.1,
+    "preset": "multi_nested",
+    "sectorId": "center",
+    "shapeType": "sphere",
+    "dynamicsType": "standard",
+    "instantBurst": false,
+    "effects": [],
+    "cometTrail": "detached",
+    "multiNested": true,
+    "pistil": false,
+    "stages": [
+      {
+        "shapeType": "sphere_rings",
+        "dynamicsType": "crysanthemum-trail",
+        "color": "#ff3333",
+        "delay": 0,
+        "scale": 1.4,
+        "effects": [
+          "strobe",
+          "no-trail"
+        ]
+      },
+      {
+        "shapeType": "sphere_rings",
+        "dynamicsType": "snow",
+        "color": "#ffd700",
+        "delay": 0,
+        "scale": 0.7,
+        "effects": []
+      }
+    ],
+    "wavePoints": [
+      {
+        "x": 0,
+        "y": 0.835,
+        "angle": -0.23
+      },
+      {
+        "x": 0.257,
+        "y": 0.811,
+        "angle": -0.045
+      },
+      {
+        "x": 0.5,
+        "y": 0.88,
+        "angle": 0
+      },
+      {
+        "x": 0.734,
+        "y": 0.863,
+        "angle": 0.13
+      },
+      {
+        "x": 1,
+        "y": 0.929,
+        "angle": 0.172
+      }
+    ],
+    "uiDuration": 2,
+    "nestingMode": "concentric",
+    "x1": 0.3,
+    "x2": 0.7,
+    "color": "white"
+  }
+]
