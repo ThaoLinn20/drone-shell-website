@@ -1,0 +1,22 @@
+[
+  {
+    "time": 19,
+    "type": "sequence",
+    "pattern": "sweep-left",
+    "count": 1,
+    "duration": 0.1,
+    "preset": "splitFlash",
+    "sectorId": "center",
+    "shapeType": "split-flash",
+    "dynamicsType": "standard",
+    "pistil": false,
+    "instantBurst": true,
+    "effects": [],
+    "cometTrail": "normal",
+    "uiDuration": 1.1,
+    "ratioY": 0.7,
+    "useAngle": true,
+    "angle": 0,
+    "x1": 1
+  }
+]

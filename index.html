@@ -1,450 +1,305 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Drone Shell Editor - Hệ Thống Biên Tập & Mô Phỏng Trình Diễn Drone, Pháo Hoa 3D</title>
-  <meta name="description"
-    content="Trải nghiệm hệ thống biên tập dòng thời gian chuyên nghiệp dành cho doanh nghiệp để mô phỏng drone show 3D và trình diễn pháo hoa nghệ thuật đồng bộ âm nhạc." />
-  <link rel="icon" type="image/x-icon" href="/icon2.ico" />
-
-  <!-- Google Fonts Integration -->
+  <title>FDShowStudio - Thiết kế & Trình diễn Pháo hoa, Drone 3D</title>
+  <meta name="description" content="FDShowStudio là phần mềm thiết kế và biên tập kịch bản pháo hoa, drone ánh sáng 3D chân thực cùng cộng đồng FWA Community." />
+  <link rel="icon" type="image/svg+xml" href="/assets/vite.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;800&display=swap"
-    rel="stylesheet">
-
-  <!-- Premium Page Preloader Styling -->
-  <style>
-    /* Premium Loading Screen Styling */
-    #app-loader {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: #060913;
-      z-index: 99999;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.6s cubic-bezier(0.25, 1, 0.5, 1);
-      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-      overflow: hidden;
-    }
-
-    #app-loader.fade-out {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
-
-    .loader-content {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      position: relative;
-      z-index: 10;
-    }
-
-    .loader-logo-container {
-      position: relative;
-      width: 120px;
-      height: 120px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 24px;
-    }
-
-    .loader-logo {
-      color: #00f5ff;
-      filter: drop-shadow(0 0 15px rgba(0, 245, 255, 0.6));
-      animation: loaderSpin 3s linear infinite, loaderPulse 2s ease-in-out infinite alternate;
-    }
-
-    .loader-glow {
-      position: absolute;
-      width: 140px;
-      height: 140px;
-      background: radial-gradient(circle, rgba(0, 245, 255, 0.15) 0%, rgba(188, 0, 221, 0.05) 50%, transparent 70%);
-      border-radius: 50%;
-      filter: blur(10px);
-      animation: glowPulse 2s ease-in-out infinite alternate;
-    }
-
-    .loader-title {
-      font-family: 'Outfit', sans-serif;
-      font-weight: 900;
-      font-size: 32px;
-      letter-spacing: 0.25em;
-      color: #ffffff;
-      margin: 0 0 8px 0;
-      text-indent: 0.25em;
-      background: linear-gradient(135deg, #ffffff 30%, #00f5ff 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 0 10px rgba(0, 245, 255, 0.2));
-    }
-
-    .loader-subtitle {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.35em;
-      color: rgba(255, 255, 255, 0.4);
-      margin: 0 0 32px 0;
-      text-indent: 0.35em;
-      text-transform: uppercase;
-    }
-
-    .loader-progress-bar {
-      width: 260px;
-      height: 4px;
-      background: rgba(255, 255, 255, 0.06);
-      border-radius: 10px;
-      overflow: hidden;
-      position: relative;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      margin-bottom: 16px;
-    }
-
-    .loader-progress-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #00f5ff, #bc00dd);
-      border-radius: 10px;
-      box-shadow: 0 0 8px #00f5ff;
-      animation: progressFill 3.5s cubic-bezier(0.1, 0.8, 0.1, 1) forwards;
-    }
-
-    .loader-status {
-      font-size: 12px;
-      color: rgba(255, 255, 255, 0.5);
-      font-weight: 500;
-      letter-spacing: 0.05em;
-      min-height: 18px;
-      animation: statusBreathe 1.5s ease-in-out infinite;
-    }
-
-    .loader-bg-orb {
-      position: absolute;
-      width: 400px;
-      height: 400px;
-      border-radius: 50%;
-      filter: blur(120px);
-      z-index: 1;
-      opacity: 0.4;
-    }
-
-    .loader-orb-1 {
-      top: -100px;
-      left: -100px;
-      background: rgba(0, 245, 255, 0.2);
-      animation: orbFloat1 12s ease-in-out infinite alternate;
-    }
-
-    .loader-orb-2 {
-      bottom: -150px;
-      right: -150px;
-      background: rgba(188, 0, 221, 0.15);
-      animation: orbFloat2 15s ease-in-out infinite alternate;
-    }
-
-    @keyframes loaderSpin {
-      0% {
-        transform: rotate(0deg);
-      }
-
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-
-    @keyframes loaderPulse {
-      0% {
-        transform: scale(0.95);
-        opacity: 0.8;
-      }
-
-      100% {
-        transform: scale(1.05);
-        opacity: 1;
-      }
-    }
-
-    @keyframes glowPulse {
-      0% {
-        transform: scale(0.85);
-        opacity: 0.4;
-      }
-
-      100% {
-        transform: scale(1.15);
-        opacity: 0.8;
-      }
-    }
-
-    @keyframes progressFill {
-      0% {
-        width: 0%;
-      }
-
-      15% {
-        width: 25%;
-      }
-
-      30% {
-        width: 35%;
-      }
-
-      55% {
-        width: 60%;
-      }
-
-      75% {
-        width: 85%;
-      }
-
-      100% {
-        width: 100%;
-      }
-    }
-
-    @keyframes statusBreathe {
-
-      0%,
-      100% {
-        opacity: 0.6;
-      }
-
-      50% {
-        opacity: 1;
-      }
-    }
-
-    @keyframes orbFloat1 {
-      0% {
-        transform: translate(0, 0) scale(1);
-      }
-
-      100% {
-        transform: translate(60px, 40px) scale(1.1);
-      }
-    }
-
-    @keyframes orbFloat2 {
-      0% {
-        transform: translate(0, 0) scale(1);
-      }
-
-      100% {
-        transform: translate(-50px, -60px) scale(1.2);
-      }
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-
 <body>
-  <!-- Premium preloader screen visible before CSS and scripts load -->
-  <div id="app-loader">
-    <div class="loader-bg-orb loader-orb-1"></div>
-    <div class="loader-bg-orb loader-orb-2"></div>
-    <div class="loader-content">
-      <div class="loader-logo-container">
-        <svg class="loader-logo" viewBox="0 0 24 24" width="80" height="80" fill="none" stroke="#00f5ff"
-          stroke-width="1.5">
-          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-        </svg>
-        <div class="loader-glow"></div>
-      </div>
-      <h1 class="loader-title">DRONE SHELL</h1>
-      <p class="loader-subtitle">SYSTEM INITIALIZING</p>
-      <div class="loader-progress-bar">
-        <div class="loader-progress-fill"></div>
-      </div>
-      <div class="loader-status">Loading 3D Engine & Assets...</div>
-    </div>
-  </div>
+  <!-- 3D WebGL Background Canvas -->
+  <canvas id="bg-canvas"></canvas>
 
-  <!-- Enterprise Glassmorphic UI Overlay -->
-  <div id="enterprise-ui">
-    <!-- Header / Navigation -->
-    <header class="navbar glass-panel animate-fade-in">
-      <div class="logo">
-        <svg class="logo-icon" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor"
-          stroke-width="2">
-          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-        </svg>
-        <span class="logo-text">
-          <a href="#features">DRONE SHELL</a>
-        </span>
-        <span class="badge">STUDIO EDITOR</span>
-      </div>
-      <nav class="nav-links">
-        <a href="#features">Tính năng chính</a>
-        <a href="#docs" id="nav-docs">Tài liệu</a>
+  <!-- Sticky Fixed Navigation Bar -->
+  <header class="navbar-fixed">
+    <div class="nav-container">
+      <a href="#block-intro" class="nav-brand" data-scroll-to="0">
+        <span class="brand-tag">3D</span>
+        <span class="brand-title">FDShow<span class="accent-text">Studio</span></span>
+      </a>
+
+      <nav class="nav-menu">
+        <button class="nav-item active" data-scroll-to="0">Home</button>
+        <span class="nav-divider">|</span>
+        <button class="nav-item" data-scroll-to="1">Trải nghiệm</button>
+        <span class="nav-divider">|</span>
+        <button class="nav-item" data-scroll-to="2">Tham Gia</button>
       </nav>
-      <a class="btn btn-consulting" id="btn-consulting" href="https://github.com/ThAolInh20/Shell-Drone-Editor/releases"
-        target="_blank">Download</a>
-    </header>
 
-    <!-- Main Layout -->
-    <main class="main-content">
-      <!-- Hero Section -->
-      <section class="hero animate-fade-in-up">
-        <h1 class="hero-title">Kiến Tạo Kịch Bản<br><span class="text-gradient">Trình Diễn Ánh Sáng 3D</span></h1>
-        <p class="hero-desc">
-          Giải pháp chuyên nghiệp giúp doanh nghiệp thiết kế, biên tập dòng thời gian và mô phỏng thực tế ảo các
-          chương trình biểu diễn ánh sáng drone show kết hợp nghệ thuật pháo hoa đồng bộ âm nhạc.
-        </p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" id="btn-primary-cta"
-            href="https://github.com/ThAolInh20/Shell-Drone-Editor/releases" target="_blank">Download</a>
-          <button class="btn btn-secondary" id="btn-zen-mode">Show</button>
-        </div>
-      </section>
-
-      <!-- Drone Shell Editor Features Grid Section -->
-      <section id="features" class="products-section animate-fade-in-up">
-        <h2 class="section-title">Giải Pháp Biên Tập Vượt Trội</h2>
-        <div class="products-grid">
-
-          <!-- Timeline Editor Card -->
-          <div class="product-card glass-panel">
-            <div class="card-icon">
-              <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10" />
-                <polyline points="12 6 12 12 16 14" />
-              </svg>
-            </div>
-            <h3 class="product-name">Bộ biên kịch kịch bản Pháo hoa và Drone</h3>
-            <p class="product-desc">Bộ công cụ thông minh với giao diện thân thiện, đầy đủ các thông số giúp biên kịch
-              viên có thể
-              tạo ra các kịch bản pháo hoa và drone.
-            </p>
-            <a href="#docs" class="card-link">Tìm hiểu về Timeline editor &rarr;</a>
-          </div>
-
-          <!-- 3D Simulation Card -->
-          <div class="product-card glass-panel">
-            <div class="card-icon">
-              <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
-                <path
-                  d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-                <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
-                <line x1="12" y1="22.08" x2="12" y2="12" />
-              </svg>
-            </div>
-            <h3 class="product-name">Bộ thiết kế đội hình drone và animation</h3>
-            <p class="product-desc">Dựng hình ảnh 2D, 3D ngay trên giao diện chỉnh sửa. Tích hợp các mô hình tạo hình
-              thông minh.
-              Chỉnh sửa đội hình ngay trên giao diện render 3D thực tế và tích hợp animation sẵn có của hệ thống</p>
-            <a href="#" class="card-link" id="btn-zen-mode-card">Mô phỏng Drone &rarr;</a>
-          </div>
-
-          <!-- Fireworks Customizer Card -->
-          <div class="product-card glass-panel">
-            <div class="card-icon">
-              <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
-                <polygon
-                  points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-              </svg>
-            </div>
-            <h3 class="product-name">Dễ dàng chuyển đổi, chia sẻ công việc</h3>
-            <p class="product-desc"> Các dữ liệu được xuất ra Json đảm bảo nhẹ nhàng dễ dàng chia sẻ,
-              chỉ cần import là có thể chạy được ngay
-            <div class=""></div>
-            </p>
-            <a href="#" class="card-link">Tài nguyên &rarr;</a>
-          </div>
-
-        </div>
-      </section>
-    </main>
-
-    <!-- Dynamic Documentation Section -->
-    <div id="docs-container" style="display: none;">
-      <aside class="docs-sidebar glass-panel">
-        <div class="docs-sidebar-header">
-          <h3>Tài liệu hướng dẫn</h3>
-        </div>
-        <div class="docs-search-box">
-          <svg class="search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
-            stroke-width="2">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-          <input type="text" id="docs-search-input" placeholder="Tìm kiếm (nhấn Enter)..." autocomplete="off" />
-          <button id="docs-search-clear" style="display: none;">✕</button>
-        </div>
-        <nav class="docs-sidebar-nav" id="docs-sidebar-nav">
-          <!-- Populated dynamically -->
-        </nav>
-      </aside>
-      <article class="docs-viewer glass-panel">
-        <header class="docs-viewer-header">
-          <h2 id="doc-title-display">Tải tài liệu...</h2>
-          <button class="btn btn-consulting btn-docs-close" id="btn-docs-close">✕</button>
-        </header>
-        <div class="docs-body" id="docs-body">
-          <!-- Populated dynamically -->
-        </div>
-        <footer class="docs-pagination">
-          <button class="btn btn-secondary" id="btn-doc-prev">&larr;</button>
-          <span id="doc-progress-text">0 / 0</span>
-          <button class="btn btn-secondary" id="btn-doc-next">&rarr;</button>
-        </footer>
-      </article>
-      <aside class="docs-toc glass-panel" id="docs-toc">
-        <div class="docs-toc-header">
-          <h3>Mục lục</h3>
-        </div>
-        <nav class="docs-toc-nav" id="docs-toc-nav">
-          <!-- Populated dynamically -->
-        </nav>
-      </aside>
-    </div>
-
-    <!-- Footer -->
-    <footer class="footer">
-      <div class="footer-socials">
-        <a href="https://github.com/ThAolInh20/Shell-Drone-Editor" target="_blank" aria-label="GitHub" class="social-link">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
-          </svg>
-        </a>
-        <a href="https://youtube.com" target="_blank" aria-label="YouTube" class="social-link">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 11.54a29 29 0 0 0 .46 5.12 2.78 2.78 0 0 0 1.95 1.96C5.12 19 12 19 12 19s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 11.54a29 29 0 0 0-.46-5.12z"></path>
-            <polygon points="9.75 15.02 15.5 11.54 9.75 8.06 9.75 15.02"></polygon>
-          </svg>
-        </a>
-        <a href="https://facebook.com" target="_blank" aria-label="Facebook" class="social-link">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-          </svg>
-        </a>
-        <a href="https://tiktok.com" target="_blank" aria-label="TikTok" class="social-link">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path>
-          </svg>
+      <div class="nav-actions">
+        <button id="lang-switch-btn" class="btn-lang" title="Chuyển ngôn ngữ">
+          <span id="lang-label">VI</span>
+        </button>
+        <a href="https://github.com/ThAolInh20/Shell-Drone_3d/releases" target="_blank" rel="noopener noreferrer" class="btn-nav-download">
+          Download
         </a>
       </div>
-      <p>&copy; 2026 Drone Shell Editor. Bản quyền phần mềm thiết kế bởi ThaoLinn20.</p>
-    </footer>
+    </div>
+  </header>
+
+  <!-- Right Floating Side Navigation Dots Indicator -->
+  <div class="side-nav" id="side-nav">
+    <button class="side-dot active" data-scroll-to="0" title="Khối 1: FDShowStudio">
+      <span class="dot-circle"></span>
+      <span class="dot-label">01 Home</span>
+    </button>
+    <button class="side-dot" data-scroll-to="1" title="Khối 2: Khu trải nghiệm">
+      <span class="dot-circle"></span>
+      <span class="dot-label">02 Trải nghiệm</span>
+    </button>
+    <button class="side-dot" data-scroll-to="2" title="Khối 3: Tham gia & Cộng đồng">
+      <span class="dot-circle"></span>
+      <span class="dot-label">03 Tham gia</span>
+    </button>
   </div>
 
-  <!-- Zen Mode Floating Close Button -->
-  <button id="btn-zen-close" class="btn-zen-close" style="display: none;">
-    ✕ Quay lại Studio Editor
-  </button>
+  <!-- Fullscreen Scroll Snap Viewport Container -->
+  <main id="snap-container" class="snap-container">
+
+    <!-- ==================================================================== -->
+    <!-- KHOI 1: FDShowStudio Intro & Video                                    -->
+    <!-- ==================================================================== -->
+    <section id="block-intro" class="page-block block-intro" data-block-index="0">
+      <div class="block-inner-split">
+        <!-- Left Box: Description & Info -->
+        <div class="intro-left-card glass-panel">
+          <div class="card-badge">Phần mềm thiết kế 3D</div>
+          <h1 class="intro-title">FDShowStudio</h1>
+          <ul class="intro-bullets">
+            <li>
+              <span class="bullet-dash">-</span>
+              <span class="bullet-text">Trình thiết kế, biên tập kịch bản pháo hoa</span>
+            </li>
+            <li>
+              <span class="bullet-dash">-</span>
+              <span class="bullet-text">Thiết kế hình dáng chuyển động cho đội hình drone</span>
+            </li>
+          </ul>
+          <p class="intro-desc">
+            Mô phỏng 3D thời gian thực với vật lý pyrotechnic chuẩn xác, bắt beat nhạc tự động và tạo chuyển động quỹ đạo ánh sáng cho hàng ngàn drone biểu diễn.
+          </p>
+          <div class="intro-actions">
+            <a href="https://github.com/ThAolInh20/Shell-Drone_3d/releases" target="_blank" rel="noopener noreferrer" class="btn-primary">
+              Tải phiên bản mới
+            </a>
+            <button class="btn-secondary" data-scroll-to="1">
+              Trải nghiệm ngay
+            </button>
+          </div>
+        </div>
+
+        <!-- Right Box: Video Intro -->
+        <div class="intro-right-card glass-panel">
+          <div class="video-header">
+            <span class="video-label">Video intro</span>
+            <span class="video-tag">1080p 60fps</span>
+          </div>
+          <div class="video-container">
+            <video id="intro-video" src="/videos/intro.mp4" controls autoplay muted loop playsinline preload="metadata">
+              Trình duyệt không hỗ trợ phát video.
+            </video>
+          </div>
+        </div>
+      </div>
+
+      <div class="scroll-down-prompt" data-scroll-to="1">
+        <span class="prompt-text">Cuộn chuột để trải nghiệm</span>
+        <span class="prompt-arrow">v</span>
+      </div>
+    </section>
+
+    <!-- ==================================================================== -->
+    <!-- KHOI 2: Khu trai nghiem (Open Sky + Bottom Compact Control Dock)      -->
+    <!-- ==================================================================== -->
+    <section id="block-experience" class="page-block block-experience" data-block-index="1">
+      <!-- Top Open Sky Hint (No dark box, fully transparent 3D stage) -->
+      <div class="experience-sky-hint">
+        <span class="sky-hint-pill">Nhấp chuột bất kỳ lên bầu trời để bắn pháo hoa</span>
+      </div>
+
+      <!-- Bottom Dock: Cac vung chon kich ban nam gon o duoi man hinh -->
+      <div class="experience-dock glass-panel">
+        <!-- Dock Header: Tabs & Status Controls -->
+        <div class="dock-header">
+          <div class="dock-tabs">
+            <button class="dock-tab active" id="tab-shows" data-mode="shows">
+              Kịch bản show (5)
+            </button>
+            <button class="dock-tab" id="tab-big-shell" data-mode="big">
+              Big Shell (8)
+            </button>
+            <button class="dock-tab" id="tab-small-shell" data-mode="small">
+              Small Shell (26)
+            </button>
+          </div>
+
+          <div class="dock-status">
+            <span class="status-pulse-dot"></span>
+            <span id="stage-status-text" class="status-text">Bầu trời 3D sẵn sàng</span>
+            <span id="show-time-display" class="status-timer">00:00 / 00:00</span>
+          </div>
+
+          <div class="dock-actions">
+            <button id="btn-fire-random" class="dock-btn" title="Bắn ngẫu nhiên pháo hoa">Bắn ngẫu nhiên</button>
+            <button id="btn-stop-show" class="dock-btn dock-btn-danger" title="Dừng kịch bản hoặc show">Dừng kịch bản</button>
+            <button id="btn-close-dock" class="dock-btn-close" title="Ẩn bảng chọn">&times;</button>
+          </div>
+        </div>
+
+        <!-- Dock Content: Items Container (Horizontal sleek scroll) -->
+        <div class="dock-content">
+          <!-- Mode 1: Shows List -->
+          <div class="dock-shows-list active" id="dock-shows-view">
+            <div class="dock-show-item" data-show-key="secret-base" data-folder="secret-base" data-script="secret-base-trial-v7.json" data-audio="secret-base.mp3">
+              <div class="item-text">
+                <span class="item-title">Secret Base (Trial V7)</span>
+                <span class="item-sub">Ballad cảm xúc • 5m49s</span>
+              </div>
+              <button class="btn-dock-play">Phát show</button>
+            </div>
+
+            <div class="dock-show-item" data-show-key="blood-tear" data-folder="blood-tear-full" data-script="blood_tear_v2.json" data-audio="blood_tear_full.mp3">
+              <div class="item-text">
+                <span class="item-title">Blood Tear Full</span>
+                <span class="item-sub">Kịch tính dồn dập • 4m05s</span>
+              </div>
+              <button class="btn-dock-play">Phát show</button>
+            </div>
+
+            <div class="dock-show-item" data-show-key="hanabi" data-folder="hanabi" data-script="hanabi.json" data-audio="hanabi.mp3">
+              <div class="item-text">
+                <span class="item-title">Hanabi Festival</span>
+                <span class="item-sub">Lễ hội rực rỡ sắc màu</span>
+              </div>
+              <button class="btn-dock-play">Phát show</button>
+            </div>
+
+            <div class="dock-show-item" data-show-key="lose-control" data-folder="lose-controll" data-script="lose-control-v2.json" data-audio="lose-control-v2.mp3">
+              <div class="item-text">
+                <span class="item-title">Lose Control V2</span>
+                <span class="item-sub">Năng lượng điện tử bùng nổ</span>
+              </div>
+              <button class="btn-dock-play">Phát show</button>
+            </div>
+
+            <div class="dock-show-item" data-show-key="monody" data-folder="monody" data-script="monody-Orchestra.json" data-audio="monody-Orchestra.mp3">
+              <div class="item-text">
+                <span class="item-title">Monody Orchestra</span>
+                <span class="item-sub">Giao hưởng pháo hoa hoành tráng</span>
+              </div>
+              <button class="btn-dock-play">Phát show</button>
+            </div>
+          </div>
+
+          <!-- Mode 2 & 3: Shell Chips (Big Shell or Small Shell) -->
+          <div class="dock-shells-list" id="dock-shells-view">
+            <!-- Dynamically populated chips -->
+          </div>
+        </div>
+      </div>
+      <button id="btn-dock-toggle" class="btn-dock-toggle" title="Mở lại bảng chọn kịch bản">
+        Kịch bản &and;
+      </button>
+    </section>
+
+    <!-- ==================================================================== -->
+    <!-- KHOI 3: Tham gia & Footer                                             -->
+    <!-- ==================================================================== -->
+    <section id="block-community" class="page-block block-community" data-block-index="2">
+      <div class="block-inner-community">
+        <div class="community-header">
+          <div class="community-tag">Cộng đồng & Tham gia</div>
+          <h2 class="community-title">Tham gia cùng FDShowStudio</h2>
+        </div>
+
+        <!-- 3 Sequential Step Cards with Connecting Arrows -->
+        <div class="flow-steps-wrapper">
+          <!-- Step Card 1: Download -->
+          <div class="flow-card glass-panel">
+            <div class="card-step-badge">BƯỚC 1</div>
+            <h3 class="card-heading">Download</h3>
+            <ul class="card-bullets">
+              <li>Tải phiên bản mới tại trang phát hành chính thức</li>
+              <li>Khởi chạy ứng dụng trực tiếp trên máy tính</li>
+              <li>Trải nghiệm cơ bản các công cụ tạo kịch bản 3D</li>
+            </ul>
+            <div class="card-footer-action">
+              <a href="https://github.com/ThAolInh20/Shell-Drone_3d/releases" target="_blank" rel="noopener noreferrer" class="btn-card-action">
+                Tải cho Windows
+              </a>
+            </div>
+          </div>
+
+          <!-- Flow Bridge Arrow 1 -> 2 -->
+          <div class="flow-bridge">
+            <span class="bridge-label">Để học cách sử dụng</span>
+            <span class="bridge-arrow">&rarr;</span>
+          </div>
+
+          <!-- Step Card 2: Hoc cach su dung -->
+          <div class="flow-card glass-panel">
+            <div class="card-step-badge">BƯỚC 2</div>
+            <h3 class="card-heading">Học cách sử dụng</h3>
+            <ul class="card-bullets">
+              <li>Xem kênh youtube chính thức của FDShowStudio</li>
+              <li>Nắm vững thao tác biên tập timeline và bắt beat nhạc</li>
+              <li>Học mẹo tối ưu hóa hình dáng đội hình drone 3D</li>
+            </ul>
+            <div class="card-footer-action">
+              <a href="https://www.youtube.com/@FDShowStudio" target="_blank" rel="noopener noreferrer" class="btn-card-action btn-secondary-action">
+                Kênh YouTube
+              </a>
+            </div>
+          </div>
+
+          <!-- Flow Bridge Arrow 2 -> 3 -->
+          <div class="flow-bridge">
+            <span class="bridge-label">Tham gia cộng đồng</span>
+            <span class="bridge-arrow">&rarr;</span>
+          </div>
+
+          <!-- Step Card 3: Tham gia cong dong -->
+          <div class="flow-card glass-panel">
+            <div class="card-step-badge">BƯỚC 3</div>
+            <h3 class="card-heading">Tham gia cộng đồng</h3>
+            <ul class="card-bullets">
+              <li>Tải kịch bản miễn phí từ thư viện thành viên</li>
+              <li>Tự thiết kế những màn trình diễn pháo hoa độc đáo</li>
+              <li>Chia sẻ kịch bản và nhận phản hồi cùng cộng đồng</li>
+            </ul>
+            <div class="card-footer-action">
+              <a href="https://www.facebook.com/groups/fwacommunityvn" target="_blank" rel="noopener noreferrer" class="btn-card-action btn-accent-action">
+                Tham gia Facebook Group
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Integrated Footer inside Block 3 bottom -->
+        <footer class="bottom-footer glass-panel">
+          <div class="footer-left">
+            <span class="footer-author">Thaolinn20</span>
+            <span class="footer-sub">FDShowStudio &amp; FWA Community 2026</span>
+          </div>
+          <div class="footer-social-links">
+            <a href="https://www.tiktok.com/@thaolinn20" target="_blank" rel="noopener noreferrer" class="footer-link">TikTok</a>
+            <span class="footer-separator">•</span>
+            <a href="https://www.youtube.com/@FDShowStudio" target="_blank" rel="noopener noreferrer" class="footer-link">YouTube</a>
+            <span class="footer-separator">•</span>
+            <a href="https://github.com/ThAolInh20/Shell-Drone_3d" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
+            <span class="footer-separator">•</span>
+            <a href="https://www.facebook.com/groups/fwacommunityvn" target="_blank" rel="noopener noreferrer" class="footer-link">Facebook</a>
+          </div>
+        </footer>
+      </div>
+    </section>
+
+  </main>
 
   <script type="module" src="/src/main.js"></script>
 </body>
-
 </html>

@@ -1,0 +1,116 @@
+[
+  {
+    "time": 0,
+    "type": "sequence",
+    "pattern": "sweep",
+    "count": 5,
+    "duration": 0.1,
+    "preset": "multi_nested",
+    "sectorId": "center",
+    "shapeType": "sphere",
+    "dynamicsType": "standard",
+    "instantBurst": false,
+    "effects": [
+      {
+        "id": "crackle_d0g6x",
+        "type": "crackle",
+        "startRatio": 0.46,
+        "endRatio": 0.86,
+        "start": 1.06,
+        "end": 1.98
+      },
+      {
+        "id": "glitter-strobe_oorkq",
+        "type": "glitter-strobe",
+        "startRatio": 0,
+        "endRatio": 0.4,
+        "start": 0,
+        "end": 0.92
+      },
+      "burst-smoke",
+      "apex-hang"
+    ],
+    "cometTrail": "detached",
+    "wavePoints": [
+      {
+        "x": 0,
+        "y": 0.793,
+        "angle": -0.295
+      },
+      {
+        "x": 0.253,
+        "y": 0.61,
+        "angle": -0.389
+      },
+      {
+        "x": 0.499,
+        "y": 0.882,
+        "angle": 0
+      },
+      {
+        "x": 0.73,
+        "y": 0.558,
+        "angle": 0.083
+      },
+      {
+        "x": 1,
+        "y": 0.9,
+        "angle": 0.212
+      }
+    ],
+    "uiDuration": 1.8,
+    "multiNested": true,
+    "pistil": false,
+    "stages": [
+      {
+        "shapeType": "sphere",
+        "dynamicsType": "standard",
+        "color": "#ff4400",
+        "delay": 0.05,
+        "scale": 1,
+        "effects": [
+          "strobe"
+        ]
+      },
+      {
+        "shapeType": "ring",
+        "dynamicsType": "flow",
+        "color": "#00e5ff",
+        "delay": 0.45,
+        "scale": 0.82,
+        "effects": []
+      },
+      {
+        "shapeType": "sphere",
+        "dynamicsType": "crossette",
+        "color": "#ffd700",
+        "delay": 0.9,
+        "scale": 0.65,
+        "effects": [
+          "crossette"
+        ]
+      },
+      {
+        "shapeType": "sphere",
+        "dynamicsType": "willow",
+        "color": "#ffffff",
+        "delay": 1.35,
+        "scale": 0.5,
+        "effects": [
+          "glitter-strobe"
+        ]
+      }
+    ],
+    "burstSmoke": true,
+    "burst-smoke": true,
+    "apexHang": true,
+    "apex-hang": true,
+    "nestingMode": "concentric",
+    "_selectedTemplateKey": "classic",
+    "color": "green",
+    "y1": 0.8,
+    "y2": 0.9,
+    "x1": 0.4,
+    "x2": 0.6
+  }
+]

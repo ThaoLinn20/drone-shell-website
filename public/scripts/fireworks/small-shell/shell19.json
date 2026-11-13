@@ -1,0 +1,48 @@
+[
+  {
+    "time": 8.1,
+    "type": "sequence",
+    "pattern": "sweep",
+    "duration": 0.1,
+    "preset": "crysanthemum",
+    "sectorId": "center",
+    "shapeType": "sphere",
+    "dynamicsType": "crysanthemum-spiral-v2",
+    "pistil": false,
+    "instantBurst": false,
+    "effects": [],
+    "cometTrail": "normal",
+    "uiDuration": 0.6,
+    "wavePoints": [
+      {
+        "x": 0,
+        "y": 0.395,
+        "angle": -0.48
+      },
+      {
+        "x": 0.252,
+        "y": 0.352,
+        "angle": -0.318
+      },
+      {
+        "x": 0.503,
+        "y": 0.329,
+        "angle": 0.312
+      },
+      {
+        "x": 0.752,
+        "y": 0.366,
+        "angle": 0.48
+      },
+      {
+        "x": 1,
+        "y": 0.417,
+        "angle": -0.28
+      }
+    ],
+    "count": 1,
+    "x1": 0.5,
+    "x2": 0.5,
+    "ratioY": 0.3
+  }
+]

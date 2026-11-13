@@ -1,31 +1,67 @@
+import * as THREE from 'three';
 import { Clock } from './core/Clock.js';
 import { CameraManager } from './core/CameraManager.js';
 import { SceneManager } from './core/SceneManager.js';
 import { Renderer } from './core/Renderer.js';
 import { PostProcessingPipeline } from './core/PostProcessingPipeline.js';
-import { InputSystem } from './controllers/InputSystem.js';
 import { FireworkSystem } from './systems/FireworkSystem.js';
 import { TrailSystem } from './systems/TrailSystem.js';
 import { CometSystem } from './systems/CometSystem.js';
-import { SkyLightReactionSystem } from './systems/SkyLightReactionSystem.js';
 import { SmokeSystem } from './systems/SmokeSystem.js';
+import { SkyLightReactionSystem } from './systems/SkyLightReactionSystem.js';
 import { FireworkSequencer } from './directors/FireworkSequencer.js';
 import { ShowDirector } from './directors/ShowDirector.js';
 import { renderingConfig } from './config/rendering.js';
 import './style.css';
 
-// Initialize Core ECS Boilerplate
+// ==========================================================================
+// 1. Core WebGL ECS Setup & 3D Stage Background
+// ==========================================================================
+
 const clock = new Clock();
 const renderer = new Renderer();
 const cameraManager = new CameraManager();
 const sceneManager = new SceneManager();
+
+// Mount Renderer canvas to background canvas if exists, otherwise append
+const existingCanvas = document.getElementById('bg-canvas');
+if (existingCanvas && existingCanvas.parentNode) {
+  existingCanvas.replaceWith(renderer.instance.domElement);
+  renderer.instance.domElement.id = 'bg-canvas';
+} else {
+  renderer.instance.domElement.id = 'bg-canvas';
+  document.body.prepend(renderer.instance.domElement);
+}
+
+// Particle & Physics Systems
 const trailSystem = new TrailSystem(sceneManager.instance);
-const fireworkSystem = new FireworkSystem(sceneManager.instance, trailSystem);
 const smokeSystem = new SmokeSystem(sceneManager);
+const fireworkSystem = new FireworkSystem(
+  sceneManager.instance,
+  trailSystem,
+  smokeSystem
+);
+fireworkSystem.autoLaunchEnabled = true;
+fireworkSystem.autoLaunchInterval = 1.6;
+
 const skyLightReactionSystem = new SkyLightReactionSystem(sceneManager);
-const cometSystem = new CometSystem(sceneManager.instance, trailSystem, smokeSystem);
-const postProcessing = renderingConfig.post.enabled
-  ? new PostProcessingPipeline(renderer.instance, sceneManager.instance, cameraManager.instance, renderingConfig)
+const cometSystem = new CometSystem(
+  sceneManager.instance,
+  trailSystem,
+  smokeSystem
+);
+
+// Sequencer & Show Director for live choreography
+const fireworkSequencer = new FireworkSequencer(fireworkSystem, cometSystem);
+const showDirector = new ShowDirector(fireworkSequencer, fireworkSystem);
+
+const postProcessing = renderingConfig?.post?.enabled
+  ? new PostProcessingPipeline(
+      renderer.instance,
+      sceneManager.instance,
+      cameraManager.instance,
+      renderingConfig
+    )
   : null;
 
 if (postProcessing) {
@@ -34,935 +70,549 @@ if (postProcessing) {
   });
 }
 
+// Fixed camera angle looking up into the night sky stage
+if (cameraManager.instance) {
+  cameraManager.instance.position.set(0, 15, 140);
+  cameraManager.instance.lookAt(0, 90, 0);
+}
 
-// Initialize Systems
-const inputSystem = new InputSystem(cameraManager.instance, renderer.instance.domElement, fireworkSystem);
+// ==========================================================================
+// 2. Full-Page Scroll Snap Controller (Wuthering Waves style)
+// ==========================================================================
 
-// Note: We no longer auto-play demo sequence because ShowDirector manages it
+const snapContainer = document.getElementById('snap-container');
+const pageBlocks = Array.from(document.querySelectorAll('.page-block'));
+const navItems = Array.from(document.querySelectorAll('.nav-menu .nav-item'));
+const sideDots = Array.from(document.querySelectorAll('.side-nav .side-dot'));
 
+let currentBlockIndex = 0;
+let isScrollLocked = false;
+let scrollLockTimeout = null;
 
-const fireworkSequencer = new FireworkSequencer(fireworkSystem, cometSystem);
-const showDirector = new ShowDirector(fireworkSequencer, fireworkSystem);
+function setActiveIndicator(index) {
+  currentBlockIndex = index;
 
-// The show script loading is now handled in InputSystem
+  navItems.forEach((btn, i) => {
+    if (i === index) btn.classList.add('active');
+    else btn.classList.remove('active');
+  });
 
-// Expose to input system or global for triggering
-inputSystem.showDirector = showDirector;
+  sideDots.forEach((dot, i) => {
+    if (i === index) dot.classList.add('active');
+    else dot.classList.remove('active');
+  });
+}
 
-let isInDocsView = false;
-let docRenderFramesRemaining = 0;
+function scrollToBlock(index) {
+  if (index < 0 || index >= pageBlocks.length) return;
+  
+  isScrollLocked = true;
+  clearTimeout(scrollLockTimeout);
+  
+  currentBlockIndex = index;
+  setActiveIndicator(index);
+  
+  pageBlocks[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-// Canvas click triggers fireworks (bubbles up from pointer-events: none empty spaces on overlay)
-renderer.instance.domElement.addEventListener('click', () => {
-  if (isInDocsView) return; // Prevent firework firing during docs reading
-  if (audioSystem) audioSystem.resume();
-  if (!inputSystem.isPaused()) {
-    const preset = inputSystem.getSelectedPreset();
-    if (preset && preset.type === 'comet_cluster') {
-      cometSystem.launchRandom(preset, { effectOverrides: { instantBurst: false } });
-    } else {
-      fireworkSystem.launchRandom(preset, { effectOverrides: { instantBurst: false } });
+  scrollLockTimeout = setTimeout(() => {
+    isScrollLocked = false;
+  }, 750);
+}
+
+// Bind all data-scroll-to triggers
+document.querySelectorAll('[data-scroll-to]').forEach((el) => {
+  el.addEventListener('click', (e) => {
+    e.preventDefault();
+    const targetIdx = parseInt(el.getAttribute('data-scroll-to'), 10);
+    scrollToBlock(targetIdx);
+  });
+});
+
+// Wheel Snap Event Listener with inner-scroll delegation
+window.addEventListener('wheel', (e) => {
+  // Check if target is inside an internally scrollable container
+  const scrollableParent = e.target.closest('.dock-content, .dock-shells-list, .dock-shows-list, .card-bullets');
+  if (scrollableParent) {
+    const isAtLeft = scrollableParent.scrollLeft === 0;
+    const isAtRight = Math.ceil(scrollableParent.scrollLeft + scrollableParent.clientWidth) >= scrollableParent.scrollWidth;
+    
+    // If user is scrolling horizontally inside dock, don't hijack vertical snap
+    if (e.deltaX !== 0 && ((e.deltaX < 0 && !isAtLeft) || (e.deltaX > 0 && !isAtRight))) {
+      return;
+    }
+  }
+
+  // Prevent default page scroll
+  e.preventDefault();
+
+  if (isScrollLocked) return;
+
+  const threshold = 18;
+  if (e.deltaY > threshold) {
+    if (currentBlockIndex < pageBlocks.length - 1) {
+      scrollToBlock(currentBlockIndex + 1);
+    }
+  } else if (e.deltaY < -threshold) {
+    if (currentBlockIndex > 0) {
+      scrollToBlock(currentBlockIndex - 1);
+    }
+  }
+}, { passive: false });
+
+// Keyboard navigation
+window.addEventListener('keydown', (e) => {
+  if (isScrollLocked) return;
+  if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+    e.preventDefault();
+    if (currentBlockIndex < pageBlocks.length - 1) {
+      scrollToBlock(currentBlockIndex + 1);
+    }
+  } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+    e.preventDefault();
+    if (currentBlockIndex > 0) {
+      scrollToBlock(currentBlockIndex - 1);
     }
   }
 });
 
-// --- Enterprise UI & Zen Mode Interactive Controllers ---
-const enterpriseUI = document.getElementById('enterprise-ui');
-const btnZenMode = document.getElementById('btn-zen-mode');
-const btnZenModeCard = document.getElementById('btn-zen-mode-card');
-const btnZenClose = document.getElementById('btn-zen-close');
-
-const activateZenMode = (e) => {
-  e.preventDefault();
-  e.stopPropagation(); // Prevent launching a firework on the click point
-  enterpriseUI.classList.add('zen-active');
-  btnZenClose.style.display = 'block';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-};
-
-if (btnZenClose && enterpriseUI) {
-  if (btnZenMode) {
-    btnZenMode.addEventListener('click', activateZenMode);
+// IntersectionObserver to sync indicators during smooth scrolling
+const blockObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+        const idx = parseInt(entry.target.getAttribute('data-block-index'), 10);
+        if (!isNaN(idx) && !isScrollLocked) {
+          setActiveIndicator(idx);
+        }
+      }
+    });
+  },
+  {
+    root: snapContainer,
+    threshold: [0.5]
   }
-  if (btnZenModeCard) {
-    btnZenModeCard.addEventListener('click', activateZenMode);
+);
+
+pageBlocks.forEach((block) => blockObserver.observe(block));
+
+// ==========================================================================
+// 3. Interactive Stage Click Trigger (Fire phao khi click vao bau troi)
+// ==========================================================================
+
+window.addEventListener('click', (event) => {
+  const target = event.target;
+  if (
+    target &&
+    (target.tagName === 'A' ||
+      target.tagName === 'BUTTON' ||
+      target.tagName === 'VIDEO' ||
+      target.closest('a') ||
+      target.closest('button') ||
+      target.closest('video') ||
+      target.closest('.experience-dock') ||
+      target.closest('.intro-left-card') ||
+      target.closest('.flow-card') ||
+      target.closest('.navbar-fixed'))
+  ) {
+    return;
   }
 
-  // Deactivate Zen Mode (Restore corporate landing page overlay)
-  btnZenClose.addEventListener('click', (e) => {
-    e.stopPropagation(); // Prevent launching a firework
-    enterpriseUI.classList.remove('zen-active');
-    btnZenClose.style.display = 'none';
+  // Calculate normalized coordinate from click position
+  const xRatio = event.clientX / window.innerWidth;
+  const yRatio = 0.45 + Math.random() * 0.45;
+  const zRatio = 0.3 + Math.random() * 0.4;
+
+  if (fireworkSystem && typeof fireworkSystem.launchRandom === 'function') {
+    fireworkSystem.launchRandom(null, {
+      ratioX: xRatio,
+      ratioY: yRatio,
+      ratioZ: zRatio
+    });
+  }
+});
+
+// ==========================================================================
+// 4. Experience Dock Controllers (Tabs & Shell/Show Selectors)
+// ==========================================================================
+
+const tabShows = document.getElementById('tab-shows');
+const tabBigShell = document.getElementById('tab-big-shell');
+const tabSmallShell = document.getElementById('tab-small-shell');
+
+const dockShowsView = document.getElementById('dock-shows-view');
+const dockShellsView = document.getElementById('dock-shells-view');
+
+const stageStatusText = document.getElementById('stage-status-text');
+const showTimeDisplay = document.getElementById('show-time-display');
+const btnStopShow = document.getElementById('btn-stop-show');
+const btnFireRandom = document.getElementById('btn-fire-random');
+
+let currentActiveShowCard = null;
+let showDurationTotal = 0;
+
+function formatTime(seconds) {
+  const s = Math.max(0, Math.floor(seconds || 0));
+  const m = Math.floor(s / 60);
+  const remS = s % 60;
+  return `${m < 10 ? '0' : ''}${m}:${remS < 10 ? '0' : ''}${remS}`;
+}
+
+function stopCurrentShow() {
+  if (showDirector) {
+    showDirector.stop();
+  }
+  if (currentActiveShowCard) {
+    currentActiveShowCard.classList.remove('active-show');
+    const btn = currentActiveShowCard.querySelector('.btn-dock-play');
+    if (btn) btn.textContent = 'Phát show';
+    currentActiveShowCard = null;
+  }
+  showDurationTotal = 0;
+  if (showTimeDisplay) showTimeDisplay.textContent = '00:00 / 00:00';
+  if (stageStatusText) stageStatusText.textContent = 'Bầu trời 3D sẵn sàng';
+  
+  fireworkSystem.autoLaunchEnabled = true;
+  clearTimeout(dockIdleTimeout);
+  showDock();
+  if (skyHint) skyHint.style.opacity = '1';
+}
+
+if (btnStopShow) {
+  btnStopShow.addEventListener('click', (e) => {
+    e.stopPropagation();
+    stopCurrentShow();
   });
 }
 
-// Card hover glowing light coordinates tracker (for subtle premium UX)
-const cards = document.querySelectorAll('.product-card');
-cards.forEach(card => {
-  card.addEventListener('mousemove', (e) => {
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    card.style.setProperty('--mouse-x', `${x}px`);
-    card.style.setProperty('--mouse-y', `${y}px`);
+if (btnFireRandom) {
+  btnFireRandom.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (fireworkSystem && typeof fireworkSystem.launchRandom === 'function') {
+      fireworkSystem.launchRandom(null, {
+        ratioX: 0.15 + Math.random() * 0.7,
+        ratioY: 0.45 + Math.random() * 0.45,
+        ratioZ: 0.3 + Math.random() * 0.4
+      });
+      if (stageStatusText) stageStatusText.textContent = 'Đã phóng pháo hoa ngẫu nhiên';
+    }
+  });
+}
+
+// Render Shell Chips for Big/Small shell modes
+function renderShellChips(category) {
+  if (!dockShellsView) return;
+  dockShellsView.innerHTML = '';
+
+  const count = category === 'big' ? 8 : 26;
+  const folder = category === 'big' ? 'big-shell' : 'small-shell';
+
+  for (let i = 1; i <= count; i++) {
+    const chip = document.createElement('div');
+    chip.className = 'shell-chip';
+    chip.textContent = category === 'big' ? `Pháo ${i}` : `S-${i}`;
+    chip.title = `Kích nổ ${folder}/shell${i}.json`;
+    chip.dataset.path = `/scripts/fireworks/${folder}/shell${i}.json`;
+
+    chip.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      chip.classList.add('firing');
+      setTimeout(() => chip.classList.remove('firing'), 500);
+
+      const filePath = chip.dataset.path;
+      if (stageStatusText) {
+        stageStatusText.textContent = `Đang bắn: ${category === 'big' ? 'Big Shell' : 'Small Shell'} ${i}`;
+      }
+
+      try {
+        const res = await fetch(filePath);
+        if (!res.ok) throw new Error(`Failed to fetch ${filePath}`);
+        const data = await res.json();
+
+        if (Array.isArray(data)) {
+          data.forEach((evt) => {
+            if (evt.type === 'sequence') {
+              fireworkSequencer.playPattern(evt.pattern || 'sweep', evt);
+            } else if (evt.type === 'single') {
+              fireworkSystem.launchRandom(evt.preset, evt);
+            } else if (evt.preset) {
+              fireworkSystem.launchRandom(evt.preset, evt);
+            }
+          });
+        } else if (data && data.preset) {
+          fireworkSystem.launchRandom(data.preset, data);
+        } else {
+          fireworkSystem.launchRandom(null, {});
+        }
+      } catch (err) {
+        console.warn('Could not launch shell script:', err);
+        fireworkSystem.launchRandom(null, {});
+      }
+    });
+
+    dockShellsView.appendChild(chip);
+  }
+}
+
+// Switch between Dock Views (Shows, Big Shell, Small Shell)
+function switchDockView(mode) {
+  [tabShows, tabBigShell, tabSmallShell].forEach((tab) => {
+    if (tab && tab.dataset.mode === mode) tab.classList.add('active');
+    else if (tab) tab.classList.remove('active');
+  });
+
+  if (mode === 'shows') {
+    dockShowsView.classList.add('active');
+    dockShellsView.classList.remove('active');
+  } else {
+    dockShowsView.classList.remove('active');
+    dockShellsView.classList.add('active');
+    renderShellChips(mode);
+  }
+}
+
+if (tabShows) tabShows.addEventListener('click', () => switchDockView('shows'));
+if (tabBigShell) tabBigShell.addEventListener('click', () => switchDockView('big'));
+if (tabSmallShell) tabSmallShell.addEventListener('click', () => switchDockView('small'));
+
+// Wire up Shows play buttons
+const showItems = Array.from(document.querySelectorAll('.dock-show-item'));
+showItems.forEach((card) => {
+  const playBtn = card.querySelector('.btn-dock-play');
+  if (!playBtn) return;
+
+  playBtn.addEventListener('click', async (e) => {
+    e.stopPropagation();
+
+    // If currently playing this show, clicking stops it
+    if (card === currentActiveShowCard && showDirector.isPlaying) {
+      stopCurrentShow();
+      return;
+    }
+
+    // Stop previously playing show
+    stopCurrentShow();
+
+    const folder = card.dataset.folder;
+    const scriptFile = card.dataset.script;
+    const audioFile = card.dataset.audio;
+    const showName = card.querySelector('.item-title')?.textContent || folder;
+
+    const scriptUrl = `/scripts/shows/${folder}/${scriptFile}`;
+    const audioUrl = `/scripts/shows/${folder}/${audioFile}`;
+
+    if (stageStatusText) stageStatusText.textContent = `Đang nạp: ${showName}...`;
+
+    try {
+      let res = await fetch(scriptUrl);
+      if (!res.ok && scriptFile === 'secret-base-trial-v7.json') {
+        res = await fetch(`/scripts/shows/${folder}/secret-base.json`);
+      }
+      if (!res.ok) throw new Error(`Failed to fetch show script: ${scriptUrl}`);
+      const scriptData = await res.json();
+
+      // Normalize script and resolve audio path
+      showDurationTotal = 0;
+      scriptData.forEach((evt) => {
+        if (evt.type === 'audio') {
+          evt.url = audioUrl.replace(/^\//, '');
+        }
+        const end = (evt.time || 0) + (evt.duration || 0);
+        if (end > showDurationTotal) showDurationTotal = end;
+      });
+
+      // Pause ambient firework to let the orchestrated show shine
+      fireworkSystem.autoLaunchEnabled = false;
+
+      // Load into showDirector
+      showDirector.loadScript(scriptData);
+      showDirector.play();
+      if (skyHint) skyHint.style.opacity = '0';
+      triggerDockWakeup();
+
+      card.classList.add('active-show');
+      playBtn.textContent = 'Dừng';
+      currentActiveShowCard = card;
+
+      if (stageStatusText) stageStatusText.textContent = `Đang biểu diễn: ${showName}`;
+    } catch (err) {
+      console.error('Error starting show:', err);
+      if (stageStatusText) stageStatusText.textContent = 'Lỗi nạp show: ' + err.message;
+      fireworkSystem.autoLaunchEnabled = true;
+    }
   });
 });
 
+// ==========================================================================
+// 5. Language Switcher (VI / EN)
+// ==========================================================================
 
+let currentLang =
+  (typeof localStorage !== 'undefined' &&
+    localStorage.getItem('fdshow_web_lang')) ||
+  'vi';
+
+function applyLanguage(lang) {
+  currentLang = lang;
+  if (typeof localStorage !== 'undefined') {
+    localStorage.setItem('fdshow_web_lang', lang);
+  }
+
+  const langLabel = document.getElementById('lang-label');
+  if (langLabel) {
+    langLabel.textContent = lang.toUpperCase();
+  }
+  document.documentElement.lang = lang;
+}
+
+const langBtn = document.getElementById('lang-switch-btn');
+if (langBtn) {
+  langBtn.addEventListener('click', () => {
+    const nextLang = currentLang === 'vi' ? 'en' : 'vi';
+    applyLanguage(nextLang);
+  });
+}
+
+
+// ==========================================================================
+// Auto-hide Dock during Show Playback
+// ==========================================================================
+
+const experienceDock = document.querySelector('.experience-dock');
+const btnCloseDock = document.getElementById('btn-close-dock');
+const btnDockToggle = document.getElementById('btn-dock-toggle');
+const blockExperience = document.getElementById('block-experience');
+const skyHint = document.querySelector('.experience-sky-hint');
+
+let dockIdleTimeout = null;
+let isHoveringDock = false;
+
+function showDock() {
+  if (experienceDock) {
+    experienceDock.classList.remove('dock-hidden');
+  }
+  if (btnDockToggle) {
+    btnDockToggle.classList.remove('visible');
+  }
+}
+
+function hideDock(force = false) {
+  if (force || (showDirector && showDirector.isPlaying && !isHoveringDock)) {
+    if (experienceDock) {
+      experienceDock.classList.add('dock-hidden');
+    }
+    if (btnDockToggle) {
+      btnDockToggle.classList.add('visible');
+    }
+  }
+}
+
+function triggerDockWakeup() {
+  showDock();
+  clearTimeout(dockIdleTimeout);
+
+  if (showDirector && showDirector.isPlaying && !isHoveringDock) {
+    dockIdleTimeout = setTimeout(() => {
+      hideDock();
+    }, 2800);
+  }
+}
+
+if (experienceDock) {
+  experienceDock.addEventListener('mouseenter', () => {
+    isHoveringDock = true;
+    showDock();
+    clearTimeout(dockIdleTimeout);
+  });
+
+  experienceDock.addEventListener('mouseleave', () => {
+    isHoveringDock = false;
+    triggerDockWakeup();
+  });
+}
+
+if (blockExperience) {
+  blockExperience.addEventListener('mousemove', () => {
+    triggerDockWakeup();
+  });
+}
+
+if (btnCloseDock) {
+  btnCloseDock.addEventListener('click', (e) => {
+    e.stopPropagation();
+    hideDock(true); // Manually close dock immediately
+  });
+}
+
+if (btnDockToggle) {
+  btnDockToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    showDock(); // Reopen dock
+  });
+}
+
+
+// ==========================================================================
+// 6. Main 60 FPS Render Loop
+// ==========================================================================
 
 function animate() {
   requestAnimationFrame(animate);
 
   clock.update();
+  const deltaTime = clock.deltaTime;
 
-  // Systems update
-  if (isInDocsView) {
-    if (docRenderFramesRemaining > 0) {
-      docRenderFramesRemaining--;
-      // Stop automated director/sequencer, but keep updating active particles
-      // so in-flight fireworks detonate and fade away cleanly.
-      fireworkSystem.update(clock.deltaTime);
-      if (cometSystem) cometSystem.update(clock.deltaTime);
-      if (trailSystem) trailSystem.update(clock.deltaTime);
-      smokeSystem.update(clock.deltaTime);
-      skyLightReactionSystem.update(clock.deltaTime);
+  // Update physics and firework particles
+  if (fireworkSystem && typeof fireworkSystem.update === 'function') {
+    fireworkSystem.update(deltaTime);
+  }
+  if (cometSystem && typeof cometSystem.update === 'function') {
+    cometSystem.update(deltaTime);
+  }
+  if (trailSystem && typeof trailSystem.update === 'function') {
+    trailSystem.update(deltaTime);
+  }
+  if (skyLightReactionSystem && typeof skyLightReactionSystem.update === 'function') {
+    skyLightReactionSystem.update(deltaTime);
+  }
+  if (smokeSystem && typeof smokeSystem.update === 'function') {
+    smokeSystem.update(deltaTime);
+  }
 
-      // Render loop
-      if (postProcessing) {
-        postProcessing.render();
-      } else {
-        renderer.render(sceneManager.instance, cameraManager.instance);
+  // Update Sequencer and Show Director
+  if (fireworkSequencer && typeof fireworkSequencer.update === 'function') {
+    fireworkSequencer.update(deltaTime);
+  }
+  if (showDirector && typeof showDirector.update === 'function') {
+    showDirector.update(deltaTime);
+
+    // Update timer display
+    if (showDirector.isPlaying && showTimeDisplay) {
+      showTimeDisplay.textContent = `${formatTime(showDirector.elapsedTime)} / ${formatTime(showDurationTotal)}`;
+
+      if (showDurationTotal > 0 && showDirector.elapsedTime >= showDurationTotal + 2) {
+        stopCurrentShow();
+        if (stageStatusText) stageStatusText.textContent = 'Show hoàn thành!';
       }
     }
-  } else {
-    if (!inputSystem.isPaused()) {
-      showDirector.update(clock.deltaTime);
-      fireworkSequencer.update(clock.deltaTime);
-      fireworkSystem.update(clock.deltaTime);
-      cometSystem.update(clock.deltaTime);
-      trailSystem.update(clock.deltaTime);
-      skyLightReactionSystem.update(clock.deltaTime);
-      smokeSystem.update(clock.deltaTime);
-    } else {
-      skyLightReactionSystem.update(clock.deltaTime);
-      smokeSystem.update(clock.deltaTime);
-    }
+  }
 
-    // Render loop
-    if (postProcessing) {
-      postProcessing.render();
-    } else {
-      renderer.render(sceneManager.instance, cameraManager.instance);
-    }
+  // Render scene
+  if (postProcessing) {
+    postProcessing.render();
+  } else if (renderer && sceneManager && cameraManager) {
+    renderer.render(sceneManager.instance, cameraManager.instance);
   }
 }
 
-// Redraw if resized during documentation view to prevent distortion
-window.addEventListener('resize', () => {
-  if (isInDocsView) {
-    docRenderFramesRemaining = 5;
-  }
-});
-
-// Start simulation
+// Start animation loop
 animate();
 
-// --- Documentation Feature (Dynamic Scan, Parser, Routing & State) ---
-
-// 1. Definition of categories for Vietnamese styling
-const CATEGORY_LABELS = {
-  'root': 'Tổng quan',
-  'show-viewer': 'Show Viewer (Ctrl + 1)',
-  'static-formation': 'Static Formation Editor (Ctrl + 3)',
-  'animated-editor': 'Animation Formation Editor (Ctrl + 2)',
-  'fireworks': 'Hệ thống Pháo hoa 3D (Fireworks)'
-};
-
-// 2. Scan markdown files dynamically at runtime (moved from Vite build-time glob import)
-
-// State variables
-let currentDocPath = '';
-let searchQuery = '';
-const parsedDocs = []; // List of all parsed docs (flat array for pagination)
-
-// Elements
-const sidebarNav = document.getElementById('docs-sidebar-nav');
-const docsContainer = document.getElementById('docs-container');
-const docTitleDisplay = document.getElementById('doc-title-display');
-const docsBody = document.getElementById('docs-body');
-const navDocsBtn = document.getElementById('nav-docs');
-const btnDocsClose = document.getElementById('btn-docs-close');
-const btnDocPrev = document.getElementById('btn-doc-prev');
-const btnDocNext = document.getElementById('btn-doc-next');
-const docProgressText = document.getElementById('doc-progress-text');
-
-// Helper to extract title from content
-function extractDocTitle(content, filename) {
-  // Try Frontmatter: "title: ... "
-  const fmMatch = content.match(/^(?:---\r?\n[\s\S]*?\btitle:\s*([^\r\n]+)[\s\S]*?---)/i);
-  if (fmMatch && fmMatch[1]) {
-    return fmMatch[1].trim();
-  }
-  // Try H1 heading: "# ... "
-  const h1Match = content.match(/^#\s+([^\r\n]+)/m);
-  if (h1Match && h1Match[1]) {
-    return h1Match[1].trim();
-  }
-  // Fallback: capitalize filename
-  const cleanName = filename.replace(/\.md$/, '').replace(/-/g, ' ');
-  return cleanName.charAt(0).toUpperCase() + cleanName.slice(1);
-}
-
-// Fetch and build internal docs database dynamically
-async function loadDocs() {
-  try {
-    const response = await fetch('/content/manifest.json');
-    if (!response.ok) {
-      throw new Error(`Failed to load manifest.json: ${response.statusText}`);
-    }
-    const paths = await response.json();
-
-    const promises = paths.map(async (path) => {
-      try {
-        const docRes = await fetch(`/content/${path}`);
-        if (!docRes.ok) {
-          throw new Error(`Failed to load ${path}: ${docRes.statusText}`);
-        }
-        const rawContent = await docRes.text();
-
-        let category = 'root';
-        if (path.includes('/')) {
-          category = path.split('/')[0];
-        }
-
-        const filename = path.substring(path.lastIndexOf('/') + 1);
-        const title = extractDocTitle(rawContent, filename);
-
-        return {
-          path,
-          category,
-          filename,
-          title,
-          content: rawContent
-        };
-      } catch (err) {
-        console.error(`Error loading document ${path}:`, err);
-        return null;
-      }
-    });
-
-    const loadedDocs = await Promise.all(promises);
-    const validDocs = loadedDocs.filter(doc => doc !== null);
-
-    parsedDocs.length = 0;
-    parsedDocs.push(...validDocs);
-
-    // Sort documents: by category order, then by exact priority in manifest.json
-    const pathIndexMap = new Map();
-    paths.forEach((p, idx) => pathIndexMap.set(p, idx));
-
-    const categoriesOrder = ['root', 'show-viewer', 'static-formation', 'animated-editor', 'fireworks'];
-    parsedDocs.sort((a, b) => {
-      if (a.category !== b.category) {
-        const catA = categoriesOrder.indexOf(a.category);
-        const catB = categoriesOrder.indexOf(b.category);
-        return (catA === -1 ? 999 : catA) - (catB === -1 ? 999 : catB);
-      }
-
-      const indexA = pathIndexMap.has(a.path) ? pathIndexMap.get(a.path) : 999;
-      const indexB = pathIndexMap.has(b.path) ? pathIndexMap.get(b.path) : 999;
-      return indexA - indexB;
-    });
-
-    // Render sidebar
-    renderSidebar();
-
-    // Trigger hash routing now that the data is loaded
-    handleHashChange();
-  } catch (error) {
-    console.error("Error loading docs manifest:", error);
-  }
-}
-
-// Render sidebar navigation HTML
-function renderSidebar() {
-  if (!sidebarNav) return;
-  sidebarNav.innerHTML = '';
-
-  // Filter docs by search query (checks both title and raw markdown content)
-  const filteredDocs = searchQuery.trim()
-    ? parsedDocs.filter(doc =>
-      doc.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      doc.content.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-    : parsedDocs;
-
-  if (filteredDocs.length === 0) {
-    const emptyMsg = document.createElement('div');
-    emptyMsg.className = 'docs-search-empty';
-    emptyMsg.textContent = 'Không tìm thấy kết quả phù hợp';
-    sidebarNav.appendChild(emptyMsg);
-    return;
-  }
-
-  // Group by category
-  const grouped = {};
-  filteredDocs.forEach(doc => {
-    if (!grouped[doc.category]) {
-      grouped[doc.category] = [];
-    }
-    grouped[doc.category].push(doc);
-  });
-
-  // Render
-  const categoriesOrder = ['root', 'show-viewer', 'static-formation', 'animated-editor', 'fireworks'];
-  categoriesOrder.forEach(cat => {
-    if (!grouped[cat]) return;
-
-    const catDiv = document.createElement('div');
-    catDiv.className = 'docs-category';
-
-    const catTitle = document.createElement('div');
-    catTitle.className = 'docs-category-title';
-    catTitle.textContent = CATEGORY_LABELS[cat] || cat;
-    catDiv.appendChild(catTitle);
-
-    const list = document.createElement('ul');
-    list.className = 'docs-category-list';
-
-    grouped[cat].forEach(doc => {
-      const li = document.createElement('li');
-      const link = document.createElement('a');
-      link.href = `#docs/${doc.path}`;
-      link.className = `docs-item-link ${currentDocPath === doc.path ? 'active' : ''}`;
-      link.dataset.path = doc.path;
-      link.innerHTML = `
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-          <polyline points="14 2 14 8 20 8" />
-        </svg>
-        <span>${doc.title}</span>
-      `;
-
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        navigateToDoc(doc.path);
-      });
-
-      li.appendChild(link);
-      list.appendChild(li);
-    });
-
-    catDiv.appendChild(list);
-    sidebarNav.appendChild(catDiv);
-  });
-}
-
-// Basic markdown to HTML converter with block-level safety
-function parseMarkdown(md) {
-  // Strip frontmatter if present
-  let cleanMd = md.replace(/^---[\s\S]*?---\r?\n/, '');
-
-  // 1. Temporarily extract code blocks to protect them from word-wrapping/paragraph tags
-  const codeBlocks = [];
-  cleanMd = cleanMd.replace(/```([\s\S]*?)```/g, (match, code) => {
-    const placeholder = `<!--__CODE_BLOCK_${codeBlocks.length}__-->`;
-
-    const lines = code.split('\n');
-    let lang = '';
-    if (lines[0] && !lines[0].includes(' ') && lines[0].length < 15) {
-      lang = lines.shift().trim();
-    }
-    const cleanCode = lines.join('\n').trim();
-
-    // Convert HTML entities inside code block
-    const safeCode = cleanCode
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
-
-    codeBlocks.push(`<pre><code class="language-${lang}">${safeCode}</code></pre>`);
-    return placeholder;
-  });
-
-  // 2. Inline formatting helper
-  function parseInlineMarkdown(text) {
-    return text
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*(.*?)\*/g, '<em>$1</em>')
-      .replace(/`([^`]+)`/g, '<code>$1</code>')
-      .replace(/\[(.*?)\]\((.*?)\)/g, (match, label, href) => {
-        const cleanHref = href.split('#')[0];
-        const hash = href.includes('#') ? '#' + href.split('#')[1] : '';
-        if (cleanHref.endsWith('.md')) {
-          let targetPath = '';
-          if (cleanHref.startsWith('./') || !cleanHref.startsWith('../')) {
-            const currentDir = currentDocPath.includes('/') ? currentDocPath.substring(0, currentDocPath.lastIndexOf('/')) : '';
-            const normalizedHref = cleanHref.replace(/^\.\//, '');
-            targetPath = currentDir ? `${currentDir}/${normalizedHref}` : normalizedHref;
-          } else if (cleanHref.startsWith('../')) {
-            targetPath = cleanHref.replace(/^\.\.\//, '');
-          }
-          return `<a href="#docs/${targetPath}${hash}" class="docs-internal-link" data-doc-path="${targetPath}">${label}</a>`;
-        }
-        return `<a href="${href}" target="_blank">${label}</a>`;
-      });
-  }
-
-  // 3. Process line by line, grouping lists, tables, callouts, and paragraphs
-  const lines = cleanMd.split(/\r?\n/);
-  const processedBlocks = [];
-
-  let inTable = false;
-  let tableHTML = '';
-  let inBlockquote = false;
-  const listStack = []; // Stack of { indent, type }
-
-  function closeBlockquote() {
-    if (inBlockquote) {
-      processedBlocks.push('</blockquote>');
-      inBlockquote = false;
-    }
-  }
-
-  function closeAllLists() {
-    closeBlockquote();
-    while (listStack.length > 0) {
-      const top = listStack.pop();
-      processedBlocks.push(top.type === 'ol' ? '</ol>' : '</ul>');
-    }
-  }
-
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    const trimmed = line.trim();
-
-    // Handle Table
-    if (trimmed.startsWith('|') && trimmed.endsWith('|')) {
-      closeAllLists();
-
-      if (!inTable) {
-        inTable = true;
-        tableHTML = '<table>';
-      }
-
-      const cells = trimmed.split('|').slice(1, -1).map(c => c.trim());
-      const isSeparator = cells.every(c => /^:?-+:?$/.test(c));
-      if (isSeparator) {
-        continue;
-      }
-
-      const isHeader = (tableHTML === '<table>');
-      tableHTML += '<tr>';
-      cells.forEach(cell => {
-        const parsedCell = parseInlineMarkdown(cell);
-        tableHTML += isHeader ? `<th>${parsedCell}</th>` : `<td>${parsedCell}</td>`;
-      });
-      tableHTML += '</tr>';
-      continue;
-    } else {
-      if (inTable) {
-        tableHTML += '</table>';
-        processedBlocks.push(tableHTML);
-        inTable = false;
-        tableHTML = '';
-      }
-    }
-
-    if (trimmed === '') {
-      closeAllLists();
-      continue;
-    }
-
-    // Handle Code Block Placeholder
-    if (trimmed.startsWith('<!--__CODE_BLOCK_') && trimmed.endsWith('__-->')) {
-      closeAllLists();
-      processedBlocks.push(trimmed);
-      continue;
-    }
-
-    // Handle Blockquote / Callouts
-    if (trimmed.startsWith('>')) {
-      while (listStack.length > 0) {
-        const top = listStack.pop();
-        processedBlocks.push(top.type === 'ol' ? '</ol>' : '</ul>');
-      }
-
-      const quoteText = trimmed.replace(/^>\s?/, '');
-      const alertMatch = quoteText.match(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]/i);
-
-      if (!inBlockquote) {
-        inBlockquote = true;
-        if (alertMatch) {
-          const type = alertMatch[1].toUpperCase();
-          let icon = 'ℹ️';
-          if (type === 'TIP') icon = '💡';
-          else if (type === 'WARNING') icon = '⚠️';
-          else if (type === 'IMPORTANT') icon = '📌';
-          else if (type === 'CAUTION') icon = '🛑';
-          const rest = quoteText.replace(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*/i, '');
-          const restParsed = rest ? `<br>${parseInlineMarkdown(rest)}` : '';
-          processedBlocks.push(`<blockquote class="callout callout-${type.toLowerCase()}"><strong>${icon} ${type}</strong>${restParsed}`);
-        } else {
-          processedBlocks.push(`<blockquote>${parseInlineMarkdown(quoteText)}`);
-        }
-      } else {
-        if (alertMatch) {
-          const type = alertMatch[1].toUpperCase();
-          processedBlocks[processedBlocks.length - 1] += `<br><strong>[${type}]</strong>`;
-        } else {
-          processedBlocks[processedBlocks.length - 1] += `<br>${parseInlineMarkdown(quoteText)}`;
-        }
-      }
-      continue;
-    } else {
-      closeBlockquote();
-    }
-
-    // Handle Headers
-    if (trimmed.startsWith('#') && (trimmed.startsWith('#### ') || trimmed.startsWith('### ') || trimmed.startsWith('## ') || trimmed.startsWith('# '))) {
-      closeAllLists();
-      if (trimmed.startsWith('#### ')) {
-        processedBlocks.push(`<h4>${parseInlineMarkdown(trimmed.substring(5))}</h4>`);
-      } else if (trimmed.startsWith('### ')) {
-        processedBlocks.push(`<h3>${parseInlineMarkdown(trimmed.substring(4))}</h3>`);
-      } else if (trimmed.startsWith('## ')) {
-        processedBlocks.push(`<h2>${parseInlineMarkdown(trimmed.substring(3))}</h2>`);
-      } else if (trimmed.startsWith('# ')) {
-        if (processedBlocks.length > 0) {
-          processedBlocks.push(`<h1>${parseInlineMarkdown(trimmed.substring(2))}</h1>`);
-        }
-      }
-      continue;
-    }
-
-    if (trimmed === '---') {
-      closeAllLists();
-      processedBlocks.push('<hr>');
-      continue;
-    }
-
-    // Calculate line indentation
-    const leadingSpaces = line.match(/^\s*/)[0].length;
-    const isBulletList = trimmed.startsWith('- ') || trimmed.startsWith('* ') || trimmed.startsWith('+ ');
-    const isOrderedList = /^\d+\.\s+/.test(trimmed);
-
-    if (isBulletList || isOrderedList) {
-      const listType = isOrderedList ? 'ol' : 'ul';
-      const itemText = isOrderedList
-        ? trimmed.replace(/^\d+\.\s+/, '')
-        : trimmed.replace(/^[-*+]\s+/, '');
-      const parsedText = parseInlineMarkdown(itemText);
-
-      if (listStack.length === 0) {
-        listStack.push({ indent: leadingSpaces, type: listType });
-        processedBlocks.push(`<${listType}>`);
-      } else {
-        let currentTop = listStack[listStack.length - 1];
-        if (leadingSpaces > currentTop.indent) {
-          listStack.push({ indent: leadingSpaces, type: listType });
-          processedBlocks.push(`<${listType}>`);
-        } else {
-          while (listStack.length > 0 && listStack[listStack.length - 1].indent > leadingSpaces) {
-            const popped = listStack.pop();
-            processedBlocks.push(popped.type === 'ol' ? '</ol>' : '</ul>');
-          }
-          if (listStack.length === 0) {
-            listStack.push({ indent: leadingSpaces, type: listType });
-            processedBlocks.push(`<${listType}>`);
-          } else if (listStack[listStack.length - 1].type !== listType) {
-            const popped = listStack.pop();
-            processedBlocks.push(popped.type === 'ol' ? '</ol>' : '</ul>');
-            listStack.push({ indent: leadingSpaces, type: listType });
-            processedBlocks.push(`<${listType}>`);
-          }
-        }
-      }
-
-      processedBlocks.push(`<li>${parsedText}</li>`);
-      continue;
-    }
-
-    // Handle text inside lists (descriptions or continuations)
-    if (listStack.length > 0 && leadingSpaces > listStack[listStack.length - 1].indent) {
-      const cleanText = trimmed.replace(/<br\/?>$/i, '').trim();
-      const parsedText = parseInlineMarkdown(cleanText);
-
-      let targetIdx = -1;
-      for (let j = processedBlocks.length - 1; j >= 0; j--) {
-        if (processedBlocks[j].includes('<li>')) {
-          targetIdx = j;
-          break;
-        }
-      }
-
-      if (targetIdx !== -1) {
-        if (processedBlocks[targetIdx].endsWith('</li>')) {
-          const inner = processedBlocks[targetIdx].slice(0, -5);
-          processedBlocks[targetIdx] = `${inner}<div class="list-item-desc">${parsedText}</div></li>`;
-        } else if (processedBlocks[targetIdx].includes('<div class="list-item-desc">')) {
-          processedBlocks[targetIdx] = processedBlocks[targetIdx].replace('</div></li>', `<br>${parsedText}</div></li>`);
-        } else {
-          processedBlocks[targetIdx] += `<div class="list-item-desc">${parsedText}</div>`;
-        }
-      } else {
-        processedBlocks.push(`<div class="list-item-desc">${parsedText}</div>`);
-      }
-    } else {
-      closeAllLists();
-
-      const cleanText = trimmed.replace(/<br\/?>$/i, '').trim();
-      const parsedText = parseInlineMarkdown(cleanText);
-
-      const lastIdx = processedBlocks.length - 1;
-      const prevLine = lines[i - 1];
-      const prevHasLineBreak = prevLine && (prevLine.endsWith('  ') || prevLine.endsWith('\\') || prevLine.toLowerCase().endsWith('<br>') || prevLine.toLowerCase().endsWith('<br/>'));
-
-      if (lastIdx >= 0 && processedBlocks[lastIdx].startsWith('<p>') && processedBlocks[lastIdx].endsWith('</p>')) {
-        const prevContent = processedBlocks[lastIdx].slice(3, -4);
-        const separator = prevHasLineBreak ? '<br>' : ' ';
-        processedBlocks[lastIdx] = `<p>${prevContent}${separator}${parsedText}</p>`;
-      } else {
-        processedBlocks.push(`<p>${parsedText}</p>`);
-      }
-    }
-  }
-
-  closeAllLists();
-
-  let finalHTML = processedBlocks.join('\n');
-
-  // 4. Restore the code blocks
-  codeBlocks.forEach((codeBlockHTML, idx) => {
-    finalHTML = finalHTML.replace(`<!--__CODE_BLOCK_${idx}__-->`, codeBlockHTML);
-  });
-
-  return finalHTML;
-}
-
-// Generate Table of Contents (TOC) dynamically
-function generateTOC() {
-  const tocNav = document.getElementById('docs-toc-nav');
-  if (!tocNav) return;
-  tocNav.innerHTML = '';
-
-  const headings = docsBody.querySelectorAll('h2, h3');
-  if (headings.length === 0) {
-    const emptyMsg = document.createElement('div');
-    emptyMsg.className = 'docs-search-empty';
-    emptyMsg.style.padding = '12px 0';
-    emptyMsg.style.textAlign = 'left';
-    emptyMsg.textContent = 'Không có mục lục';
-    tocNav.appendChild(emptyMsg);
-    return;
-  }
-
-  headings.forEach((heading, index) => {
-    // Generate safe and unique ID based on heading content
-    let id = heading.id;
-    if (!id) {
-      const cleanText = heading.textContent
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/đ/g, 'd').replace(/Đ/g, 'd')
-        .replace(/[^a-z0-9\s-]/g, '')
-        .replace(/\s+/g, '-');
-      id = `${cleanText || 'section'}-${index}`;
-      heading.id = id;
-    }
-
-    const link = document.createElement('a');
-    link.href = `#${id}`;
-    link.className = `toc-item-link ${heading.tagName.toLowerCase()}`;
-    link.textContent = heading.textContent;
-    link.dataset.targetId = id;
-
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      const element = document.getElementById(id);
-      if (element) {
-        const yOffset = -120;
-        const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-        window.scrollTo({ top: y, behavior: 'smooth' });
-
-        // Update URL hash without scroll jumping
-        const cleanHash = window.location.hash.split('#')[0] + '#' + id;
-        history.pushState(null, null, cleanHash);
-
-        // Update active class
-        document.querySelectorAll('.toc-item-link').forEach(l => l.classList.remove('active'));
-        link.classList.add('active');
-      }
-    });
-
-    tocNav.appendChild(link);
-  });
-
-  // Set initial active state
-  updateActiveTOCItem();
-}
-
-// Update active TOC item based on scroll position (ScrollSpy)
-function updateActiveTOCItem() {
-  const headings = docsBody.querySelectorAll('h2, h3');
-  const tocLinks = document.querySelectorAll('.toc-item-link');
-  if (headings.length === 0 || tocLinks.length === 0) return;
-
-  let activeId = '';
-  const scrollPosition = window.scrollY + 140;
-
-  for (let i = 0; i < headings.length; i++) {
-    const heading = headings[i];
-    const headingTop = heading.getBoundingClientRect().top + window.pageYOffset;
-    if (headingTop <= scrollPosition) {
-      activeId = heading.id;
-    } else {
-      break;
-    }
-  }
-
-  if (!activeId && headings.length > 0) {
-    activeId = headings[0].id;
-  }
-
-  tocLinks.forEach(link => {
-    if (link.dataset.targetId === activeId) {
-      link.classList.add('active');
-    } else {
-      link.classList.remove('active');
-    }
-  });
-}
-
-// Bind scroll listener for TOC ScrollSpy
-window.addEventListener('scroll', updateActiveTOCItem);
-
-// Navigate to a specific document path
-function navigateToDoc(path) {
-  const doc = parsedDocs.find(d => d.path === path);
-  if (!doc) return;
-
-  currentDocPath = path;
-  if (!window.location.hash.startsWith(`#docs/${path}`)) {
-    window.location.hash = `#docs/${path}`;
-  }
-
-  // Render content
-  docTitleDisplay.textContent = doc.title;
-  docsBody.innerHTML = parseMarkdown(doc.content);
-
-  // Generate Table of Contents
-  generateTOC();
-
-  // Highlight active item in sidebar
-  document.querySelectorAll('.docs-item-link').forEach(link => {
-    if (link.dataset.path === path) {
-      link.classList.add('active');
-    } else {
-      link.classList.remove('active');
-    }
-  });
-
-  // Bind events to new internal links in markdown content
-  docsBody.querySelectorAll('.docs-internal-link').forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      const targetPath = link.dataset.docPath;
-      navigateToDoc(targetPath);
-    });
-  });
-
-  // Scroll window to top instantly to prevent layout & rendering stutter
-  window.scrollTo(0, 0);
-
-  // Update pagination UI
-  const currentIndex = parsedDocs.findIndex(d => d.path === path);
-  docProgressText.textContent = `${currentIndex + 1} / ${parsedDocs.length}`;
-
-  // Prev button
-  if (currentIndex > 0) {
-    btnDocPrev.disabled = false;
-    btnDocPrev.style.opacity = 1;
-    btnDocPrev.onclick = () => navigateToDoc(parsedDocs[currentIndex - 1].path);
-  } else {
-    btnDocPrev.disabled = true;
-    btnDocPrev.style.opacity = 0.4;
-  }
-
-  // Next button
-  if (currentIndex < parsedDocs.length - 1) {
-    btnDocNext.disabled = false;
-    btnDocNext.style.opacity = 1;
-    btnDocNext.onclick = () => navigateToDoc(parsedDocs[currentIndex + 1].path);
-  } else {
-    btnDocNext.disabled = true;
-    btnDocNext.style.opacity = 0.4;
-  }
-}
-
-// Toggle Docs view
-function setDocsViewActive(active) {
-  isInDocsView = active;
-  const enterpriseUI = document.getElementById('enterprise-ui');
-  const docsContainer = document.getElementById('docs-container');
-
-  if (active) {
-    // Render for 45 frames (~750ms) to allow burst animations to settle down and fade out
-    docRenderFramesRemaining = 45;
-
-    if (fireworkSystem) {
-      // Turn off autolaunch in docs view
-      fireworkSystem.autoLaunchEnabled = false;
-
-      // Force detonate all currently flying fireworks instantly when entering docs view
-      if (typeof fireworkSystem.burstAll === 'function') {
-        fireworkSystem.burstAll();
-      }
-    }
-    if (enterpriseUI) enterpriseUI.classList.add('docs-active');
-    if (docsContainer) docsContainer.style.display = 'grid';
-    // Select first doc if none selected
-    if (!currentDocPath && parsedDocs.length > 0) {
-      currentDocPath = parsedDocs[0].path;
-    }
-    navigateToDoc(currentDocPath);
-    renderSidebar();
-  } else {
-    // Main page always has autolaunch enabled
-    if (fireworkSystem) {
-      fireworkSystem.autoLaunchEnabled = true;
-    }
-    if (enterpriseUI) enterpriseUI.classList.remove('docs-active');
-    if (docsContainer) docsContainer.style.display = 'none';
-    window.location.hash = '';
-  }
-}
-
-// Nav clicks
-if (navDocsBtn) {
-  navDocsBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    setDocsViewActive(true);
-  });
-}
-
-if (btnDocsClose) {
-  btnDocsClose.addEventListener('click', (e) => {
-    e.preventDefault();
-    setDocsViewActive(false);
-  });
-}
-
-// Search functionality event binding
-const searchInput = document.getElementById('docs-search-input');
-const searchClearBtn = document.getElementById('docs-search-clear');
-
-function performSearch() {
-  if (!searchInput) return;
-  searchQuery = searchInput.value;
-
-  if (searchClearBtn) {
-    searchClearBtn.style.display = searchQuery ? 'block' : 'none';
-  }
-
-  renderSidebar();
-}
-
-if (searchInput) {
-  // Trigger search on keyboard Enter
-  searchInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      performSearch();
-    }
-  });
-
-  // Restore list instantly if input is cleared out (Ctrl+A -> Backspace, etc.)
-  searchInput.addEventListener('input', () => {
-    if (searchInput.value === '') {
-      performSearch();
-    }
-  });
-}
-
-if (searchClearBtn && searchInput) {
-  searchClearBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    searchInput.value = '';
-    performSearch();
-    searchInput.focus();
-  });
-}
-
-// Check initial hash on load
-function handleHashChange() {
-  const hash = window.location.hash;
-  if (hash.startsWith('#docs/')) {
-    const fullPath = hash.replace('#docs/', '');
-    const parts = fullPath.split('#');
-    const path = parts[0];
-    const headingId = parts[1] || '';
-
-    setDocsViewActive(true);
-    navigateToDoc(path);
-
-    if (headingId) {
-      setTimeout(() => {
-        const element = document.getElementById(headingId);
-        if (element) {
-          const yOffset = -120;
-          const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-          window.scrollTo({ top: y, behavior: 'smooth' });
-        }
-      }, 150); // Small delay to let rendering complete
-    }
-  } else if (hash === '#docs') {
-    setDocsViewActive(true);
-  } else {
-    if (isInDocsView) {
-      setDocsViewActive(false);
-    }
-  }
-}
-
-window.addEventListener('hashchange', handleHashChange);
-// Run on load
-loadDocs();
-
-// --- Smoothly Dismiss Premium Page Preloader ---
-function hidePreloader() {
-  const loader = document.getElementById('app-loader');
-  if (loader) {
-    const progressFill = loader.querySelector('.loader-progress-fill');
-    if (progressFill) {
-      // Instantly top off progress bar to indicate completed status
-      progressFill.style.animation = 'none';
-      progressFill.style.width = '100%';
-    }
-
-    const statusText = loader.querySelector('.loader-status');
-    if (statusText) {
-      statusText.textContent = 'Systems Online!';
-      statusText.style.color = '#00f5ff';
-      statusText.style.textShadow = '0 0 8px rgba(0, 245, 255, 0.5)';
-    }
-
-    // Trigger fading transitions
-    setTimeout(() => {
-      loader.classList.add('fade-out');
-
-      // Cleanup DOM node to release memory after fade transition completes
-      setTimeout(() => {
-        loader.remove();
-      }, 600);
-    }, 450);
-  }
-}
-
-// Wait for full load to avoid premature dismissal of loading screen
-if (document.readyState === 'complete') {
-  hidePreloader();
-} else {
-  window.addEventListener('load', hidePreloader);
-}
+// Write files to targetDir
+fs.writeFileSync(path.join(targetDir, 'index.html'), indexHtml, 'utf8');
+console.log('Successfully wrote index.html');
+
+fs.writeFileSync(path.join(targetDir, 'src', 'style.css'), styleCss, 'utf8');
+console.log('Successfully wrote src/style.css');
+
+fs.writeFileSync(path.join(targetDir, 'src', 'main.js'), mainJs, 'utf8');
+console.log('Successfully wrote src/main.js');

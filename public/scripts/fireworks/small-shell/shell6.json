@@ -1,0 +1,42 @@
+[
+  {
+    "time": 19.2,
+    "type": "sequence",
+    "pattern": "random",
+    "count": 2,
+    "duration": 0.1,
+    "preset": "crysanthemum",
+    "sectorId": "center",
+    "shapeType": "sphere",
+    "dynamicsType": "crysanthemum-trail",
+    "pistil": false,
+    "instantBurst": false,
+    "effects": [
+      {
+        "id": "no-trail_bhnyv",
+        "type": "no-trail",
+        "startRatio": 0.52,
+        "endRatio": 1,
+        "start": 1.2,
+        "end": 2.3
+      },
+      {
+        "id": "strobe_u1tf5",
+        "type": "strobe",
+        "startRatio": 0,
+        "endRatio": 1,
+        "start": 0,
+        "end": 2.3
+      },
+      "burst-smoke"
+    ],
+    "cometTrail": "normal",
+    "uiDuration": 1.4,
+    "x1": 0.5,
+    "x2": 0.5,
+    "y1": 0.3,
+    "y2": 0.5,
+    "burstSmoke": true,
+    "burst-smoke": true
+  }
+]

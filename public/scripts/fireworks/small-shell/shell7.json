@@ -1,0 +1,42 @@
+[
+  {
+    "time": 21.4,
+    "type": "sequence",
+    "pattern": "random",
+    "count": 2,
+    "duration": 0.1,
+    "preset": "crysanthemum",
+    "sectorId": "center",
+    "shapeType": "sphere",
+    "dynamicsType": "crysanthemum-trail",
+    "pistil": false,
+    "instantBurst": false,
+    "effects": [
+      {
+        "id": "ghost_kuuzw",
+        "type": "ghost",
+        "startRatio": 0.1,
+        "endRatio": 0.5,
+        "start": 0.23,
+        "end": 1.15
+      },
+      {
+        "id": "erratic-dart_fui46",
+        "type": "erratic-dart",
+        "startRatio": 0.6,
+        "endRatio": 1,
+        "start": 1.38,
+        "end": 2.3
+      },
+      "burst-smoke"
+    ],
+    "cometTrail": "normal",
+    "uiDuration": 1.4,
+    "x1": 0.5,
+    "x2": 0.5,
+    "y1": 0.3,
+    "y2": 0.5,
+    "burstSmoke": true,
+    "burst-smoke": true
+  }
+]

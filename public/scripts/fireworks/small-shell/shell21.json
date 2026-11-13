@@ -1,0 +1,66 @@
+[
+  {
+    "time": 49.3,
+    "type": "sequence",
+    "pattern": "sweep-custom-curve",
+    "duration": 0.1,
+    "preset": "crysanthemum",
+    "sectorId": "center",
+    "shapeType": "sphere",
+    "dynamicsType": "crysanthemum-spiral-v2",
+    "pistil": false,
+    "instantBurst": false,
+    "effects": [
+      {
+        "type": "tadpole-flurry",
+        "startRatio": 0.45,
+        "endRatio": 0.85,
+        "start": 1.98,
+        "end": 3.74
+      },
+      {
+        "type": "no-trail",
+        "startRatio": 0,
+        "endRatio": 0.4,
+        "start": 0,
+        "end": 1.76
+      }
+    ],
+    "cometTrail": "normal",
+    "uiDuration": 1.2,
+    "wavePoints": [
+      {
+        "x": 0,
+        "y": 0.571,
+        "angle": -0.359
+      },
+      {
+        "x": 0.217,
+        "y": 0.255,
+        "angle": 0.198
+      },
+      {
+        "x": 0.479,
+        "y": 0.652,
+        "angle": 0
+      },
+      {
+        "x": 0.738,
+        "y": 0.557,
+        "angle": 0.214
+      },
+      {
+        "x": 1,
+        "y": 0.439,
+        "angle": 0.418
+      }
+    ],
+    "x1": 0.27,
+    "x2": 0.72,
+    "shellSize": 1.5,
+    "starLifeMultiplier": 1.9,
+    "tadpole-flurry": true,
+    "no-trail": true,
+    "count": 5
+  }
+]

@@ -1,0 +1,24 @@
+[
+  {
+    "time": 7.1,
+    "type": "sequence",
+    "pattern": "sweep-left",
+    "count": 1,
+    "duration": 0.1,
+    "preset": "fishV2",
+    "sectorId": "center",
+    "shapeType": "sphere",
+    "dynamicsType": "standard",
+    "pistil": false,
+    "instantBurst": false,
+    "effects": [
+      "flow"
+    ],
+    "cometTrail": "normal",
+    "uiDuration": 1.1,
+    "x1": 1,
+    "ratioY": 0.5,
+    "useAngle": true,
+    "angle": 0
+  }
+]
