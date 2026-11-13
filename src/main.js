@@ -70,10 +70,19 @@ if (postProcessing) {
   });
 }
 
-// Fixed camera angle looking up into the night sky stage
+// Camera targets per section (wide panoramic view for experience block)
+const camTargets = {
+  0: { pos: new THREE.Vector3(0, 25, 420), look: new THREE.Vector3(0, 100, 0) }, // Intro block
+  1: { pos: new THREE.Vector3(0, 55, 580), look: new THREE.Vector3(0, 135, 0) }, // Experience block: wide panorama far from launch zone
+  2: { pos: new THREE.Vector3(0, 35, 460), look: new THREE.Vector3(0, 110, 0) }  // Community block
+};
+
+let currentCamTarget = camTargets[0];
+let currentLookTarget = camTargets[0].look.clone();
+
 if (cameraManager.instance) {
-  cameraManager.instance.position.set(0, 15, 140);
-  cameraManager.instance.lookAt(0, 90, 0);
+  cameraManager.instance.position.copy(camTargets[0].pos);
+  cameraManager.instance.lookAt(camTargets[0].look);
 }
 
 // ==========================================================================
@@ -91,6 +100,9 @@ let scrollLockTimeout = null;
 
 function setActiveIndicator(index) {
   currentBlockIndex = index;
+  if (camTargets[index]) {
+    currentCamTarget = camTargets[index];
+  }
 
   navItems.forEach((btn, i) => {
     if (i === index) btn.classList.add('active');
@@ -555,6 +567,13 @@ function animate() {
 
   clock.update();
   const deltaTime = clock.deltaTime;
+
+  // Smooth camera transition to target view
+  if (cameraManager && cameraManager.instance && currentCamTarget) {
+    cameraManager.instance.position.lerp(currentCamTarget.pos, 0.04);
+    currentLookTarget.lerp(currentCamTarget.look, 0.04);
+    cameraManager.instance.lookAt(currentLookTarget);
+  }
 
   // Update physics and firework particles
   if (fireworkSystem && typeof fireworkSystem.update === 'function') {
