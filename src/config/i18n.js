@@ -28,7 +28,7 @@ export const translations = {
     intro_badge: 'Phần mềm thiết kế 3D',
     intro_bullet_1: 'Trình thiết kế, biên tập kịch bản pháo hoa',
     intro_bullet_2: 'Thiết kế hình dáng chuyển động cho đội hình drone',
-    intro_desc: 'Mô phỏng 3D thời gian thực với vật lý pyrotechnic chuẩn xác, bắt beat nhạc tự động và tạo chuyển động quỹ đạo ánh sáng cho hàng ngàn drone biểu diễn.',
+    intro_desc: 'Mô phỏng 3D chân thực vật lý với pyrotechnic chuẩn xác, Bộ công cụ biên kịch thân thiện, hệ thống thiết kế pháo hoa và drone đa dạng không giới hạn loại mẫu.',
     btn_download_new: 'Tải phiên bản mới',
     btn_experience_now: 'Trải nghiệm ngay',
     video_label: 'Video intro',
@@ -62,6 +62,7 @@ export const translations = {
     hanabi_sub: 'Lễ hội rực rỡ sắc màu',
     lose_control_sub: 'Năng lượng điện tử bùng nổ',
     monody_sub: 'Giao hưởng pháo hoa hoành tráng',
+    tinh_hoa_sub: 'Lá cờ và cây tre Việt Nam',
 
     // Shell Chips
     shell_big_label: 'Pháo',
@@ -129,7 +130,7 @@ export const translations = {
     intro_badge: '3D Design Suite',
     intro_bullet_1: 'Firework choreography & timeline editor',
     intro_bullet_2: 'Dynamic 3D formation design for light drone swarms',
-    intro_desc: 'Real-time 3D simulation with accurate pyrotechnic physics, automatic audio beat detection, and light trajectory orchestration for thousands of drones.',
+    intro_desc: 'Realistic 3D physical simulation with accurate pyrotechnics, user-friendly scripting toolset, and versatile fireworks and drone design system with unlimited templates.',
     btn_download_new: 'Download Latest Release',
     btn_experience_now: 'Experience Live',
     video_label: 'Intro Video',
@@ -163,6 +164,7 @@ export const translations = {
     hanabi_sub: 'Vibrant Festival of Colors',
     lose_control_sub: 'Explosive Electronic Energy',
     monody_sub: 'Grand Fireworks Symphony',
+    tinh_hoa_sub: 'Vietnamese Flag & Bamboo',
 
     // Shell Chips
     shell_big_label: 'Shell',
@@ -230,7 +232,7 @@ export const translations = {
     intro_badge: '3Dデザインソフトウェア',
     intro_bullet_1: '花火ショーの設計・タイムライン編集ソフト',
     intro_bullet_2: 'ドローンライトショー編隊のモーション形状設計',
-    intro_desc: '正確な火薬物理シミュレーション、自動音楽ビート検出、数千機のドローンの軌道アニメーションを備えたリアルタイム3Dシミュレーション。',
+    intro_desc: '正確な火薬物理シミュレーションによるリアルな3D物理表現、使いやすい脚本作成ツールセット、制限のない多様な花火とドローンのデザインシステム。',
     btn_download_new: '最新版をダウンロード',
     btn_experience_now: '今すぐ体験する',
     video_label: '紹介動画',
@@ -264,6 +266,7 @@ export const translations = {
     hanabi_sub: '色鮮やかなフェスティバル',
     lose_control_sub: '爆発的なエレクトロニックエネルギー',
     monody_sub: '壮大な花火シンフォニー',
+    tinh_hoa_sub: 'ベトナム国旗と竹',
 
     // Shell Chips
     shell_big_label: '花火',
@@ -331,7 +334,7 @@ export const translations = {
     intro_badge: '3D 設計軟體',
     intro_bullet_1: '煙花表演設計與時間軸編輯器',
     intro_bullet_2: '無人機燈光秀編隊動態造型設計',
-    intro_desc: '即時 3D 模擬，具備精準的煙火物理學、自動音樂節奏抓取，以及為數千架無人機編排的燈光軌跡動畫。',
+    intro_desc: '具備精準煙火物理學的逼真 3D 物理模擬、親切易用的劇本編排工具組，以及無限制範本的多元煙花與無人機設計系統。',
     btn_download_new: '下載最新版本',
     btn_experience_now: '立即體驗',
     video_label: '介紹影片',
@@ -365,6 +368,7 @@ export const translations = {
     hanabi_sub: '絢麗多彩的節慶盛會',
     lose_control_sub: '爆發性電子能量',
     monody_sub: '壯麗的煙花交響樂',
+    tinh_hoa_sub: '越南國旗與竹子',
 
     // Shell Chips
     shell_big_label: '煙花',

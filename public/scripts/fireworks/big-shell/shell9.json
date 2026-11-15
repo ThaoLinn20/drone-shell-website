@@ -1,0 +1,36 @@
+[
+  {
+    "time": 216.5,
+    "type": "sequence",
+    "pattern": "sweep",
+    "count": 3,
+    "duration": 0.1,
+    "preset": "crysanthemum_spiral_v2",
+    "sectorId": "center",
+    "shapeType": "sphere_rings",
+    "dynamicsType": "crysanthemum-spiral",
+    "instantBurst": false,
+    "effects": [
+      "cascade-wave",
+      "terminal-flare"
+    ],
+    "cometTrail": "normal",
+    "uiDuration": 2.8,
+    "x1": 0.2,
+    "x2": 0.2,
+    "y1": 0.6,
+    "y2": 0.7,
+    "pistil": false,
+    "cascadeWave": true,
+    "cascade-wave": true,
+    "cascadeDuration": 1.85,
+    "cascadeMode": "counter-clockwise",
+    "terminalFlare": true,
+    "terminal-flare": true,
+    "terminalFlareTriggerRatio": 0.73,
+    "color": "gold",
+    "ringCount": 10,
+    "terminalFlareIntensity": 1.7,
+    "terminalFlareSizeMultiplier": 1.2
+  }
+]

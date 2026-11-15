@@ -342,7 +342,7 @@
             </li>
           </ul>
           <p class="intro-desc" data-i18n="intro_desc">
-            Mô phỏng 3D thời gian thực với vật lý pyrotechnic chuẩn xác, bắt beat nhạc tự động và tạo chuyển động quỹ đạo ánh sáng cho hàng ngàn drone biểu diễn.
+            Mô phỏng 3D chân thực vật lý với pyrotechnic chuẩn xác, Bộ công cụ biên kịch thân thiện, hệ thống thiết kế pháo hoa và drone đa dạng không giới hạn loại mẫu.
           </p>
           <div class="intro-actions">
             <a href="https://github.com/ThAolInh20/Shell-Drone_3d/releases" target="_blank" rel="noopener noreferrer" class="btn-primary" data-i18n="btn_download_new">
@@ -433,10 +433,10 @@
         <div class="dock-content">
           <!-- Mode 1: Shows List -->
           <div class="dock-shows-list active" id="dock-shows-view">
-            <div class="dock-show-item" data-show-key="secret-base" data-folder="secret-base" data-script="secret-base-trial-v7.json" data-audio="secret-base.mp3">
+            <div class="dock-show-item" data-show-key="tinh-hoa" data-folder="tinhhoa" data-script="tinhhoav2.json" data-audio="tinhhoa.mp3">
               <div class="item-text">
-                <span class="item-title">Secret Base (Trial V7)</span>
-                <span class="item-sub" data-i18n="secret_base_sub">Ballad cảm xúc • 5m49s</span>
+                <span class="item-title">Tinh Hoa</span>
+                <span class="item-sub" data-i18n="tinh_hoa_sub">Lá cờ và cây tre Việt Nam</span>
               </div>
               <button class="btn-dock-play" data-i18n="btn_play_show">Phát show</button>
             </div>
@@ -449,18 +449,26 @@
               <button class="btn-dock-play" data-i18n="btn_play_show">Phát show</button>
             </div>
 
-            <div class="dock-show-item" data-show-key="hanabi" data-folder="hanabi" data-script="hanabi.json" data-audio="hanabi.mp3">
-              <div class="item-text">
-                <span class="item-title">Hanabi Festival</span>
-                <span class="item-sub" data-i18n="hanabi_sub">Lễ hội rực rỡ sắc màu</span>
-              </div>
-              <button class="btn-dock-play" data-i18n="btn_play_show">Phát show</button>
-            </div>
-
             <div class="dock-show-item" data-show-key="lose-control" data-folder="lose-controll" data-script="lose-control-v2.json" data-audio="lose-control-v2.mp3">
               <div class="item-text">
                 <span class="item-title">Lose Control V2</span>
                 <span class="item-sub" data-i18n="lose_control_sub">Năng lượng điện tử bùng nổ</span>
+              </div>
+              <button class="btn-dock-play" data-i18n="btn_play_show">Phát show</button>
+            </div>
+
+            <div class="dock-show-item" data-show-key="secret-base" data-folder="secret-base" data-script="secret-base-trial-v7.json" data-audio="secret-base.mp3">
+              <div class="item-text">
+                <span class="item-title">Secret Base (Trial V7)</span>
+                <span class="item-sub" data-i18n="secret_base_sub">Ballad cảm xúc • 5m49s</span>
+              </div>
+              <button class="btn-dock-play" data-i18n="btn_play_show">Phát show</button>
+            </div>
+
+            <div class="dock-show-item" data-show-key="hanabi" data-folder="hanabi" data-script="hanabi.json" data-audio="hanabi.mp3">
+              <div class="item-text">
+                <span class="item-title">Hanabi Festival</span>
+                <span class="item-sub" data-i18n="hanabi_sub">Lễ hội rực rỡ sắc màu</span>
               </div>
               <button class="btn-dock-play" data-i18n="btn_play_show">Phát show</button>
             </div>
@@ -599,11 +607,11 @@
         </div>
       </div>
       <div class="audio-modal-actions">
-        <button class="modal-btn modal-btn-primary" id="btn-modal-choose-file" data-i18n="modal_btn_choose">
-          Chọn tệp MP3 từ máy của bạn
-        </button>
-        <button class="modal-btn modal-btn-ghost" id="btn-modal-play-silent" data-i18n="modal_btn_silent">
+        <button class="modal-btn modal-btn-primary" id="btn-modal-play-silent" data-i18n="modal_btn_silent">
           Xem pháo hoa (không nhạc nền)
+        </button>
+        <button class="modal-btn modal-btn-ghost" id="btn-modal-choose-file" data-i18n="modal_btn_choose">
+          Chọn tệp MP3 từ máy của bạn
         </button>
       </div>
     </div>

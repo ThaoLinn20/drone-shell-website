@@ -1,0 +1,1466 @@
+[
+  {
+    "time": 0,
+    "type": "sequence",
+    "pattern": "random",
+    "preset": "snow",
+    "sectorId": "center",
+    "shapeType": "sphere",
+    "dynamicsType": "double-helix",
+    "pistil": false,
+    "effects": [
+      {
+        "id": "no-trail_znbbg",
+        "type": "no-trail",
+        "startRatio": 0,
+        "endRatio": 0.59,
+        "start": 0,
+        "end": 1.36
+      },
+      "burst-smoke"
+    ],
+    "cometTrail": "thin",
+    "uiDuration": 2.5,
+    "x1": 0.1,
+    "x2": 0.9,
+    "y1": 0.1,
+    "y2": 0.2,
+    "duration": 0.2,
+    "color": "red",
+    "count": 20,
+    "instantBurst": false,
+    "useAngle": true,
+    "angle": 0,
+    "shellSize": 0.2,
+    "burstSmoke": true,
+    "burst-smoke": true,
+    "secondBurstEnabled": true,
+    "secondBurst": {
+      "enabled": true,
+      "childShells": [
+        {
+          "ratio": 0.2,
+          "triggerTiming": 0.5,
+          "distributionMode": "random",
+          "shapeType": "sphere",
+          "dynamicsType": "standard",
+          "color": "#ff3333",
+          "scale": 0.35,
+          "effects": []
+        }
+      ]
+    }
+  },
+  {
+    "time": 1.6,
+    "type": "sequence",
+    "pattern": "sweep",
+    "preset": "weeping_willow_comets_v3",
+    "sectorId": "center",
+    "shapeType": "willow-up",
+    "dynamicsType": "falling-comets-glitter",
+    "pistil": false,
+    "effects": [
+      {
+        "id": "glitter-strobe_9zz0m",
+        "type": "glitter-strobe",
+        "startRatio": 0.1,
+        "endRatio": 0.5,
+        "start": 0.23,
+        "end": 1.15
+      },
+      "burst-smoke",
+      "terminal-flare"
+    ],
+    "cometTrail": "thin",
+    "uiDuration": 2.5,
+    "x1": 0.3,
+    "x2": 0.7,
+    "y1": 0.3,
+    "y2": 0.3,
+    "duration": 0.4,
+    "shellSize": 2,
+    "color": "red",
+    "count": 5,
+    "instantBurst": true,
+    "no-burst": true,
+    "burst-smoke": true,
+    "terminalFlare": true,
+    "terminal-flare": true,
+    "terminalFlareTriggerRatio": 0.76
+  },
+  {
+    "time": 5.4,
+    "type": "sequence",
+    "pattern": "random",
+    "preset": "snow",
+    "sectorId": "center",
+    "shapeType": "sphere",
+    "dynamicsType": "double-helix",
+    "pistil": false,
+    "effects": [
+      {
+        "id": "no-trail_znbbg",
+        "type": "no-trail",
+        "startRatio": 0,
+        "endRatio": 0.59,
+        "start": 0,
+        "end": 1.36
+      }
+    ],
+    "cometTrail": "thin",
+    "uiDuration": 2.5,
+    "x1": 0.1,
+    "x2": 0.9,
+    "y1": 0.1,
+    "y2": 0.2,
+    "duration": 0.2,
+    "color": "red",
+    "count": 20,
+    "instantBurst": false,
+    "useAngle": true,
+    "angle": 0,
+    "shellSize": 0.2,
+    "secondBurstEnabled": true,
+    "secondBurst": {
+      "enabled": true,
+      "childShells": [
+        {
+          "ratio": 0.2,
+          "triggerTiming": 0.5,
+          "distributionMode": "random",
+          "shapeType": "sphere",
+          "dynamicsType": "standard",
+          "color": "#ff3333",
+          "scale": 0.35,
+          "effects": []
+        }
+      ]
+    }
+  },
+  {
+    "time": 7.9,
+    "type": "sequence",
+    "pattern": "sweep",
+    "preset": "star",
+    "sectorId": "center",
+    "shapeType": "star",
+    "dynamicsType": "galaxy-spin",
+    "pistil": false,
+    "effects": [
+      {
+        "id": "crossette_d9lyi",
+        "type": "crossette",
+        "startRatio": 0.6,
+        "endRatio": 1,
+        "start": 1.38,
+        "end": 2.3
+      },
+      {
+        "id": "breathing-pulse_1794667580280_0uuu4",
+        "type": "breathing-pulse",
+        "startRatio": 0.1,
+        "endRatio": 0.5,
+        "start": 0.23,
+        "end": 1.15
+      }
+    ],
+    "cometTrail": "thin",
+    "uiDuration": 2.5,
+    "x1": 0.5,
+    "x2": 0.5,
+    "y1": 0.5,
+    "y2": 0.5,
+    "duration": 0.4,
+    "color": "gold",
+    "instantBurst": true,
+    "no-burst": true,
+    "shellSize": 3,
+    "count": 1
+  },
+  {
+    "time": 8.1,
+    "type": "sequence",
+    "pattern": "random",
+    "preset": "snow",
+    "sectorId": "center",
+    "shapeType": "sphere",
+    "dynamicsType": "double-helix",
+    "pistil": false,
+    "effects": [
+      {
+        "id": "dark_phase_bfz8l",
+        "type": "dark_phase",
+        "startRatio": 0,
+        "endRatio": 0.4,
+        "start": 0,
+        "end": 0.92
+      }
+    ],
+    "cometTrail": "thin",
+    "uiDuration": 2.5,
+    "x1": 0.1,
+    "x2": 0.9,
+    "y1": 0.1,
+    "y2": 0.2,
+    "duration": 0.2,
+    "color": "red",
+    "count": 20,
+    "instantBurst": false,
+    "useAngle": true,
+    "angle": 0,
+    "shellSize": 0.2,
+    "secondBurstEnabled": true,
+    "secondBurst": {
+      "enabled": true,
+      "childShells": [
+        {
+          "ratio": 0.2,
+          "triggerTiming": 0.5,
+          "distributionMode": "random",
+          "shapeType": "sphere",
+          "dynamicsType": "standard",
+          "color": "#ff3333",
+          "scale": 0.35,
+          "effects": []
+        }
+      ]
+    }
+  },
+  {
+    "time": 10.1,
+    "type": "sequence",
+    "pattern": "sweep",
+    "preset": "star",
+    "sectorId": "center",
+    "shapeType": "star",
+    "dynamicsType": "galaxy-spin",
+    "pistil": false,
+    "effects": [
+      {
+        "id": "crossette_d9lyi",
+        "type": "crossette",
+        "startRatio": 0.6,
+        "endRatio": 1,
+        "start": 1.38,
+        "end": 2.3
+      },
+      {
+        "id": "breathing-pulse_1794667580280_0uuu4",
+        "type": "breathing-pulse",
+        "startRatio": 0.1,
+        "endRatio": 0.5,
+        "start": 0.23,
+        "end": 1.15
+      }
+    ],
+    "cometTrail": "thin",
+    "uiDuration": 2.5,
+    "x1": 0.5,
+    "x2": 0.5,
+    "y1": 0.5,
+    "y2": 0.5,
+    "duration": 0.4,
+    "color": "gold",
+    "instantBurst": true,
+    "no-burst": true,
+    "shellSize": 3,
+    "count": 1
+  },
+  {
+    "time": 10.1,
+    "type": "sequence",
+    "pattern": "sweep",
+    "preset": "snow",
+    "sectorId": "center",
+    "shapeType": "sphere",
+    "dynamicsType": "double-helix",
+    "pistil": false,
+    "effects": [
+      {
+        "id": "no-trail_znbbg",
+        "type": "no-trail",
+        "startRatio": 0,
+        "endRatio": 0.59,
+        "start": 0,
+        "end": 1.36
+      }
+    ],
+    "cometTrail": "thin",
+    "uiDuration": 2.5,
+    "x1": 0.1,
+    "x2": 0.9,
+    "y1": 0.1,
+    "y2": 0.2,
+    "duration": 0.2,
+    "color": "red",
+    "count": 20,
+    "instantBurst": false,
+    "useAngle": true,
+    "angle": 0,
+    "shellSize": 0.2,
+    "secondBurstEnabled": true,
+    "secondBurst": {
+      "enabled": true,
+      "childShells": [
+        {
+          "ratio": 0.2,
+          "triggerTiming": 0.5,
+          "distributionMode": "random",
+          "shapeType": "sphere",
+          "dynamicsType": "standard",
+          "color": "#ff3333",
+          "scale": 0.35,
+          "effects": []
+        }
+      ]
+    }
+  },
+  {
+    "time": 12.9,
+    "type": "sequence",
+    "pattern": "sweep",
+    "preset": "star",
+    "sectorId": "center",
+    "shapeType": "star",
+    "dynamicsType": "galaxy-spin",
+    "pistil": false,
+    "effects": [
+      {
+        "id": "crossette_d9lyi",
+        "type": "crossette",
+        "startRatio": 0.6,
+        "endRatio": 1,
+        "start": 1.38,
+        "end": 2.3
+      },
+      {
+        "id": "breathing-pulse_1794667580280_0uuu4",
+        "type": "breathing-pulse",
+        "startRatio": 0.1,
+        "endRatio": 0.5,
+        "start": 0.23,
+        "end": 1.15
+      }
+    ],
+    "cometTrail": "thin",
+    "uiDuration": 2.5,
+    "x1": 0.5,
+    "x2": 0.5,
+    "y1": 0.5,
+    "y2": 0.5,
+    "duration": 0.4,
+    "color": "gold",
+    "instantBurst": true,
+    "no-burst": true,
+    "shellSize": 3,
+    "count": 1
+  },
+  {
+    "time": 13.2,
+    "type": "sequence",
+    "pattern": "random",
+    "preset": "snow",
+    "sectorId": "center",
+    "shapeType": "sphere",
+    "dynamicsType": "double-helix",
+    "pistil": false,
+    "effects": [
+      {
+        "id": "no-trail_znbbg",
+        "type": "no-trail",
+        "startRatio": 0,
+        "endRatio": 0.59,
+        "start": 0,
+        "end": 1.36
+      },
+      "burst-smoke"
+    ],
+    "cometTrail": "thin",
+    "uiDuration": 2.5,
+    "x1": 0.1,
+    "x2": 0.9,
+    "y1": 0.1,
+    "y2": 0.2,
+    "duration": 0.2,
+    "color": "red",
+    "count": 20,
+    "instantBurst": false,
+    "useAngle": true,
+    "angle": 0,
+    "shellSize": 0.2,
+    "burstSmoke": true,
+    "burst-smoke": true,
+    "secondBurstEnabled": true,
+    "secondBurst": {
+      "enabled": true,
+      "childShells": [
+        {
+          "ratio": 0.2,
+          "triggerTiming": 0.5,
+          "distributionMode": "random",
+          "shapeType": "sphere",
+          "dynamicsType": "standard",
+          "color": "#ff3333",
+          "scale": 0.35,
+          "effects": []
+        }
+      ]
+    }
+  },
+  {
+    "time": 15.9,
+    "type": "sequence",
+    "pattern": "random",
+    "preset": "snow",
+    "sectorId": "center",
+    "shapeType": "sphere",
+    "dynamicsType": "double-helix",
+    "pistil": false,
+    "effects": [
+      {
+        "id": "no-trail_znbbg",
+        "type": "no-trail",
+        "startRatio": 0,
+        "endRatio": 0.59,
+        "start": 0,
+        "end": 1.36
+      }
+    ],
+    "cometTrail": "thin",
+    "uiDuration": 2.5,
+    "x1": 0.1,
+    "x2": 0.9,
+    "y1": 0.1,
+    "y2": 0.2,
+    "duration": 0.2,
+    "color": "red",
+    "count": 20,
+    "instantBurst": false,
+    "useAngle": true,
+    "angle": 0,
+    "shellSize": 0.2,
+    "secondBurstEnabled": true,
+    "secondBurst": {
+      "enabled": true,
+      "childShells": [
+        {
+          "ratio": 0.2,
+          "triggerTiming": 0.5,
+          "distributionMode": "random",
+          "shapeType": "sphere",
+          "dynamicsType": "standard",
+          "color": "#ff3333",
+          "scale": 0.35,
+          "effects": [
+            "strobe"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "time": 15.7,
+    "type": "sequence",
+    "pattern": "sweep",
+    "preset": "star",
+    "sectorId": "center",
+    "shapeType": "star",
+    "dynamicsType": "galaxy-spin",
+    "pistil": false,
+    "effects": [
+      {
+        "id": "crossette_d9lyi",
+        "type": "crossette",
+        "startRatio": 0.6,
+        "endRatio": 1,
+        "start": 1.38,
+        "end": 2.3
+      },
+      {
+        "id": "breathing-pulse_1794667580280_0uuu4",
+        "type": "breathing-pulse",
+        "startRatio": 0.1,
+        "endRatio": 0.5,
+        "start": 0.23,
+        "end": 1.15
+      }
+    ],
+    "cometTrail": "thin",
+    "uiDuration": 2.5,
+    "x1": 0.5,
+    "x2": 0.5,
+    "y1": 0.5,
+    "y2": 0.5,
+    "duration": 0.4,
+    "color": "gold",
+    "instantBurst": true,
+    "no-burst": true,
+    "shellSize": 3,
+    "count": 1
+  },
+  {
+    "time": 17.9,
+    "type": "sequence",
+    "pattern": "random",
+    "preset": "snow",
+    "sectorId": "center",
+    "shapeType": "sphere",
+    "dynamicsType": "double-helix",
+    "pistil": false,
+    "effects": [
+      {
+        "id": "no-trail_tso3m",
+        "type": "no-trail",
+        "startRatio": 0,
+        "endRatio": 0.59,
+        "start": 0,
+        "end": 1.36
+      },
+      {
+        "id": "crossette_dyrem",
+        "type": "crossette",
+        "startRatio": 0.76,
+        "endRatio": 1,
+        "start": 1.75,
+        "end": 2.3
+      }
+    ],
+    "cometTrail": "thin",
+    "uiDuration": 2.5,
+    "x1": 0.1,
+    "x2": 0.9,
+    "y1": 0.1,
+    "y2": 0.2,
+    "duration": 0.2,
+    "color": "red",
+    "count": 20,
+    "instantBurst": false,
+    "useAngle": true,
+    "angle": 0,
+    "shellSize": 0.2
+  },
+  {
+    "time": 8.1,
+    "type": "sequence",
+    "pattern": "sweep",
+    "preset": "ring_comet",
+    "sectorId": "center",
+    "shapeType": "ring",
+    "dynamicsType": "galaxy-spin",
+    "pistil": false,
+    "effects": [],
+    "cometTrail": "thin",
+    "uiDuration": 2.5,
+    "x1": 0.3,
+    "x2": 0.7,
+    "y1": 0.4,
+    "y2": 0.4,
+    "duration": 0.2,
+    "color": "red",
+    "instantBurst": true,
+    "no-burst": true,
+    "count": 6,
+    "shellSize": 4
+  },
+  {
+    "time": 10.1,
+    "type": "sequence",
+    "pattern": "sweep",
+    "preset": "ring_comet",
+    "sectorId": "center",
+    "shapeType": "ring",
+    "dynamicsType": "galaxy-spin",
+    "pistil": false,
+    "effects": [],
+    "cometTrail": "thin",
+    "uiDuration": 2.5,
+    "x1": 0.3,
+    "x2": 0.7,
+    "y1": 0.4,
+    "y2": 0.4,
+    "duration": 0.2,
+    "color": "red",
+    "instantBurst": true,
+    "no-burst": true,
+    "count": 6,
+    "shellSize": 4
+  },
+  {
+    "time": 13,
+    "type": "sequence",
+    "pattern": "sweep",
+    "preset": "ring_comet",
+    "sectorId": "center",
+    "shapeType": "ring",
+    "dynamicsType": "galaxy-spin",
+    "pistil": false,
+    "effects": [],
+    "cometTrail": "thin",
+    "uiDuration": 2.5,
+    "x1": 0.3,
+    "x2": 0.7,
+    "y1": 0.4,
+    "y2": 0.4,
+    "duration": 0.2,
+    "color": "red",
+    "instantBurst": true,
+    "no-burst": true,
+    "count": 6,
+    "shellSize": 4
+  },
+  {
+    "time": 15.9,
+    "type": "sequence",
+    "pattern": "sweep",
+    "preset": "ring_comet",
+    "sectorId": "center",
+    "shapeType": "ring",
+    "dynamicsType": "galaxy-spin",
+    "pistil": false,
+    "effects": [],
+    "cometTrail": "thin",
+    "uiDuration": 2.5,
+    "x1": 0.3,
+    "x2": 0.7,
+    "y1": 0.4,
+    "y2": 0.4,
+    "duration": 0.2,
+    "color": "red",
+    "instantBurst": true,
+    "no-burst": true,
+    "count": 6,
+    "shellSize": 4
+  },
+  {
+    "time": 19.7,
+    "type": "sequence",
+    "pattern": "sweep",
+    "count": 3,
+    "duration": 0.1,
+    "preset": "crysanthemum_spiral_v2",
+    "sectorId": "center",
+    "shapeType": "sphere_rings",
+    "dynamicsType": "crysanthemum-spiral-v2",
+    "instantBurst": false,
+    "effects": [
+      "cascade-wave",
+      "terminal-flare"
+    ],
+    "cometTrail": "normal",
+    "uiDuration": 2.8,
+    "x1": 0.2,
+    "x2": 0.2,
+    "y1": 0.6,
+    "y2": 0.7,
+    "pistil": false,
+    "cascadeWave": true,
+    "cascade-wave": true,
+    "cascadeDuration": 1.85,
+    "cascadeMode": "random-shuffle",
+    "terminalFlare": true,
+    "terminal-flare": true,
+    "terminalFlareTriggerRatio": 0.73,
+    "color": "gold"
+  },
+  {
+    "time": 21.2,
+    "type": "sequence",
+    "pattern": "sweep",
+    "count": 3,
+    "duration": 0.1,
+    "preset": "crysanthemum_spiral_v2",
+    "sectorId": "center",
+    "shapeType": "sphere_rings",
+    "dynamicsType": "crysanthemum-spiral-v2",
+    "instantBurst": false,
+    "effects": [
+      "cascade-wave",
+      "terminal-flare"
+    ],
+    "cometTrail": "normal",
+    "uiDuration": 2.8,
+    "x1": 0.5,
+    "x2": 0.5,
+    "y1": 0.6,
+    "y2": 0.7,
+    "pistil": false,
+    "cascadeWave": true,
+    "cascade-wave": true,
+    "cascadeDuration": 1.85,
+    "cascadeMode": "random-shuffle",
+    "terminalFlare": true,
+    "terminal-flare": true,
+    "terminalFlareTriggerRatio": 0.73,
+    "color": "gold"
+  },
+  {
+    "time": 22.7,
+    "type": "sequence",
+    "pattern": "sweep",
+    "count": 3,
+    "duration": 0.1,
+    "preset": "crysanthemum_spiral_v2",
+    "sectorId": "center",
+    "shapeType": "sphere_rings",
+    "dynamicsType": "crysanthemum-spiral-v2",
+    "instantBurst": false,
+    "effects": [
+      "cascade-wave",
+      "terminal-flare"
+    ],
+    "cometTrail": "normal",
+    "uiDuration": 2.8,
+    "x1": 0.8,
+    "x2": 0.8,
+    "y1": 0.6,
+    "y2": 0.7,
+    "pistil": false,
+    "cascadeWave": true,
+    "cascade-wave": true,
+    "cascadeDuration": 1.85,
+    "cascadeMode": "random-shuffle",
+    "terminalFlare": true,
+    "terminal-flare": true,
+    "terminalFlareTriggerRatio": 0.73,
+    "color": "gold"
+  },
+  {
+    "time": 26.2,
+    "type": "sequence",
+    "pattern": "sweep",
+    "count": 3,
+    "duration": 0.1,
+    "preset": "crysanthemum_spiral_v2",
+    "sectorId": "center",
+    "shapeType": "sphere_rings",
+    "dynamicsType": "crysanthemum-spiral",
+    "instantBurst": false,
+    "effects": [
+      "cascade-wave",
+      "terminal-flare"
+    ],
+    "cometTrail": "normal",
+    "uiDuration": 2.8,
+    "x1": 0.2,
+    "x2": 0.2,
+    "y1": 0.6,
+    "y2": 0.7,
+    "pistil": false,
+    "cascadeWave": true,
+    "cascade-wave": true,
+    "cascadeDuration": 1.85,
+    "cascadeMode": "counter-clockwise",
+    "terminalFlare": true,
+    "terminal-flare": true,
+    "terminalFlareTriggerRatio": 0.73,
+    "color": "gold",
+    "ringCount": 10,
+    "terminalFlareIntensity": 1.7,
+    "terminalFlareSizeMultiplier": 1.2
+  },
+  {
+    "time": 29.2,
+    "type": "sequence",
+    "pattern": "sweep",
+    "count": 3,
+    "duration": 0.1,
+    "preset": "crysanthemum_spiral_v2",
+    "sectorId": "center",
+    "shapeType": "sphere_rings",
+    "dynamicsType": "crysanthemum-spiral",
+    "instantBurst": false,
+    "effects": [
+      "cascade-wave",
+      "terminal-flare"
+    ],
+    "cometTrail": "normal",
+    "uiDuration": 2.8,
+    "x1": 0.8,
+    "x2": 0.8,
+    "y1": 0.6,
+    "y2": 0.7,
+    "pistil": false,
+    "cascadeWave": true,
+    "cascade-wave": true,
+    "cascadeDuration": 1.85,
+    "cascadeMode": "radial-outward",
+    "terminalFlare": true,
+    "terminal-flare": true,
+    "terminalFlareTriggerRatio": 0.73,
+    "color": "gold",
+    "ringCount": 10,
+    "terminalFlareIntensity": 1.7,
+    "terminalFlareSizeMultiplier": 1.2
+  },
+  {
+    "time": 27.9,
+    "type": "sequence",
+    "pattern": "sweep",
+    "count": 3,
+    "duration": 0.1,
+    "preset": "crysanthemum_spiral_v2",
+    "sectorId": "center",
+    "shapeType": "sphere_rings",
+    "dynamicsType": "crysanthemum-spiral",
+    "instantBurst": false,
+    "effects": [
+      "cascade-wave",
+      "terminal-flare"
+    ],
+    "cometTrail": "normal",
+    "uiDuration": 2.8,
+    "x1": 0.5,
+    "x2": 0.5,
+    "y1": 0.6,
+    "y2": 0.7,
+    "pistil": false,
+    "cascadeWave": true,
+    "cascade-wave": true,
+    "cascadeDuration": 1.85,
+    "cascadeMode": "clockwise",
+    "terminalFlare": true,
+    "terminal-flare": true,
+    "terminalFlareTriggerRatio": 0.73,
+    "color": "gold",
+    "ringCount": 10,
+    "terminalFlareIntensity": 1.7,
+    "terminalFlareSizeMultiplier": 1.2
+  },
+  {
+    "time": 34.3,
+    "type": "cometsequence",
+    "pattern": "random",
+    "count": 50,
+    "duration": 15,
+    "preset": "comet_tadpole_burst",
+    "sectorId": "center",
+    "shapeType": "sphere",
+    "dynamicsType": "tadpole-spiral",
+    "instantBurst": false,
+    "effects": [
+      {
+        "id": "tadpole-flurry_nk2ps",
+        "type": "tadpole-flurry",
+        "startRatio": 0.1,
+        "endRatio": 0.5,
+        "start": 0.37,
+        "end": 1.85
+      }
+    ],
+    "cometTrail": "thick",
+    "uiDuration": 1.8,
+    "shellSize": 1,
+    "particleCountMultiplier": 0.25,
+    "starLifeMultiplier": 1.6,
+    "x1": 0.6,
+    "x2": 0.5,
+    "color": "gold",
+    "secondBurst": {
+      "enabled": false,
+      "childShells": [
+        {
+          "ratio": 0.45,
+          "triggerTiming": 0.85,
+          "distributionMode": "random",
+          "shapeType": "willow",
+          "dynamicsType": "willow",
+          "color": "#ffd700",
+          "scale": 0.3,
+          "effects": [
+            {
+              "id": "dark_phase_1794669210698_dlymy",
+              "type": "dark_phase",
+              "startRatio": 0,
+              "endRatio": 0.25,
+              "start": 0,
+              "end": 0.35
+            }
+          ]
+        }
+      ]
+    },
+    "launchSound": "silent",
+    "sound": {
+      "launch": "silent",
+      "burst": "silent"
+    },
+    "burstSound": "silent",
+    "y1": 0.5,
+    "y2": 0.6,
+    "useAngle": true,
+    "angle": 0,
+    "pistil": false
+  },
+  {
+    "time": 34.3,
+    "type": "cometsequence",
+    "pattern": "random",
+    "count": 50,
+    "duration": 15,
+    "preset": "comet_tadpole_burst",
+    "sectorId": "center",
+    "shapeType": "sphere",
+    "dynamicsType": "tadpole-spiral",
+    "instantBurst": false,
+    "effects": [
+      {
+        "id": "tadpole-flurry_nk2ps",
+        "type": "tadpole-flurry",
+        "startRatio": 0.1,
+        "endRatio": 0.5,
+        "start": 0.37,
+        "end": 1.85
+      }
+    ],
+    "cometTrail": "thick",
+    "uiDuration": 1.8,
+    "shellSize": 1,
+    "particleCountMultiplier": 0.25,
+    "starLifeMultiplier": 1.6,
+    "x1": 0.4,
+    "x2": 0.6,
+    "color": "gold",
+    "secondBurst": {
+      "enabled": false,
+      "childShells": [
+        {
+          "ratio": 0.45,
+          "triggerTiming": 0.85,
+          "distributionMode": "random",
+          "shapeType": "willow",
+          "dynamicsType": "willow",
+          "color": "#ffd700",
+          "scale": 0.3,
+          "effects": []
+        }
+      ]
+    },
+    "sound": {
+      "burst": "silent",
+      "launch": "heavy",
+      "volumeMultiplier": 0.45
+    },
+    "burstSound": "silent",
+    "launchSound": "heavy",
+    "soundVolume": 0.45,
+    "y1": 0.5,
+    "y2": 0.6,
+    "useAngle": true,
+    "angle": 0,
+    "pistil": false
+  },
+  {
+    "time": 34.3,
+    "type": "cometsequence",
+    "pattern": "random",
+    "count": 50,
+    "duration": 15,
+    "preset": "comet_tadpole_burst",
+    "sectorId": "center",
+    "shapeType": "sphere",
+    "dynamicsType": "tadpole-spiral",
+    "instantBurst": false,
+    "effects": [
+      {
+        "id": "tadpole-flurry_nk2ps",
+        "type": "tadpole-flurry",
+        "startRatio": 0.1,
+        "endRatio": 0.5,
+        "start": 0.37,
+        "end": 1.85
+      }
+    ],
+    "cometTrail": "thick",
+    "uiDuration": 1.8,
+    "shellSize": 1,
+    "particleCountMultiplier": 0.25,
+    "starLifeMultiplier": 1.6,
+    "x1": 0.4,
+    "x2": 0.6,
+    "color": "gold",
+    "secondBurst": {
+      "enabled": false,
+      "childShells": [
+        {
+          "ratio": 0.45,
+          "triggerTiming": 0.85,
+          "distributionMode": "random",
+          "shapeType": "willow",
+          "dynamicsType": "willow",
+          "color": "#ffd700",
+          "scale": 0.3,
+          "effects": [
+            {
+              "id": "dark_phase_1794669210698_dlymy",
+              "type": "dark_phase",
+              "startRatio": 0,
+              "endRatio": 0.25,
+              "start": 0,
+              "end": 0.35
+            }
+          ]
+        }
+      ]
+    },
+    "launchSound": "silent",
+    "sound": {
+      "launch": "silent",
+      "burst": "silent"
+    },
+    "burstSound": "silent",
+    "y1": 0.5,
+    "y2": 0.6,
+    "useAngle": true,
+    "angle": 0,
+    "pistil": false
+  },
+  {
+    "time": 34.3,
+    "type": "sequence",
+    "pattern": "random",
+    "duration": 15,
+    "preset": "weeping_willow_comets",
+    "sectorId": "center",
+    "shapeType": "willow",
+    "dynamicsType": "falling-comets",
+    "instantBurst": true,
+    "effects": [
+      {
+        "id": "dark_phase_xjwv1",
+        "type": "dark_phase",
+        "startRatio": 0,
+        "endRatio": 0.4,
+        "start": 0,
+        "end": 1.48
+      }
+    ],
+    "cometTrail": "thin",
+    "uiDuration": 1.8,
+    "shellSize": 1,
+    "particleCountMultiplier": 0.25,
+    "starLifeMultiplier": 1.6,
+    "x1": 0.4,
+    "x2": 0.5,
+    "y1": 0.6,
+    "y2": 0.8,
+    "pistil": false,
+    "color": "gold",
+    "secondBurstEnabled": true,
+    "secondBurst": {
+      "enabled": true,
+      "childShells": [
+        {
+          "ratio": 0.45,
+          "triggerTiming": 0.85,
+          "distributionMode": "random",
+          "shapeType": "willow",
+          "dynamicsType": "willow",
+          "color": "#ffd700",
+          "scale": 0.3,
+          "effects": [
+            {
+              "id": "dark_phase_1794669210698_dlymy",
+              "type": "dark_phase",
+              "startRatio": 0,
+              "endRatio": 0.25,
+              "start": 0,
+              "end": 0.35
+            }
+          ]
+        }
+      ]
+    },
+    "launchSound": "silent",
+    "sound": {
+      "launch": "silent",
+      "burst": "silent"
+    },
+    "burstSound": "silent",
+    "count": 50
+  },
+  {
+    "time": 34.3,
+    "type": "sequence",
+    "pattern": "random",
+    "duration": 15,
+    "preset": "weeping_willow_comets",
+    "sectorId": "center",
+    "shapeType": "willow",
+    "dynamicsType": "falling-comets",
+    "instantBurst": true,
+    "effects": [
+      {
+        "id": "dark_phase_xjwv1",
+        "type": "dark_phase",
+        "startRatio": 0,
+        "endRatio": 0.4,
+        "start": 0,
+        "end": 1.48
+      }
+    ],
+    "cometTrail": "thin",
+    "uiDuration": 1.8,
+    "shellSize": 1,
+    "particleCountMultiplier": 0.25,
+    "starLifeMultiplier": 1.6,
+    "x1": 0.6,
+    "x2": 0.5,
+    "y1": 0.6,
+    "y2": 0.8,
+    "pistil": false,
+    "color": "gold",
+    "secondBurstEnabled": true,
+    "secondBurst": {
+      "enabled": true,
+      "childShells": [
+        {
+          "ratio": 0.45,
+          "triggerTiming": 0.85,
+          "distributionMode": "random",
+          "shapeType": "willow",
+          "dynamicsType": "willow",
+          "color": "#ffd700",
+          "scale": 0.3,
+          "effects": [
+            {
+              "id": "dark_phase_1794669210698_dlymy",
+              "type": "dark_phase",
+              "startRatio": 0,
+              "endRatio": 0.25,
+              "start": 0,
+              "end": 0.35
+            }
+          ]
+        }
+      ]
+    },
+    "launchSound": "silent",
+    "sound": {
+      "launch": "silent",
+      "burst": "silent"
+    },
+    "burstSound": "silent",
+    "count": 50
+  },
+  {
+    "time": 34.3,
+    "type": "sequence",
+    "pattern": "random",
+    "duration": 15,
+    "preset": "weeping_willow_comets",
+    "sectorId": "center",
+    "shapeType": "willow",
+    "dynamicsType": "falling-comets",
+    "instantBurst": true,
+    "effects": [
+      {
+        "id": "dark_phase_xjwv1",
+        "type": "dark_phase",
+        "startRatio": 0,
+        "endRatio": 0.4,
+        "start": 0,
+        "end": 1.48
+      }
+    ],
+    "cometTrail": "thin",
+    "uiDuration": 1.8,
+    "shellSize": 1,
+    "particleCountMultiplier": 0.25,
+    "starLifeMultiplier": 1.6,
+    "x1": 0.2,
+    "x2": 0.3,
+    "y1": 0.6,
+    "y2": 0.8,
+    "pistil": false,
+    "color": "gold",
+    "secondBurstEnabled": true,
+    "secondBurst": {
+      "enabled": true,
+      "childShells": [
+        {
+          "ratio": 0.45,
+          "triggerTiming": 0.85,
+          "distributionMode": "random",
+          "shapeType": "willow",
+          "dynamicsType": "willow",
+          "color": "#ffd700",
+          "scale": 0.3,
+          "effects": [
+            {
+              "id": "dark_phase_1794669210698_dlymy",
+              "type": "dark_phase",
+              "startRatio": 0,
+              "endRatio": 0.25,
+              "start": 0,
+              "end": 0.35
+            }
+          ]
+        }
+      ]
+    },
+    "launchSound": "silent",
+    "sound": {
+      "launch": "silent",
+      "burst": "silent"
+    },
+    "burstSound": "silent",
+    "count": 50
+  },
+  {
+    "time": 34.3,
+    "type": "sequence",
+    "pattern": "random",
+    "duration": 15,
+    "preset": "weeping_willow_comets",
+    "sectorId": "center",
+    "shapeType": "willow",
+    "dynamicsType": "falling-comets",
+    "instantBurst": true,
+    "effects": [
+      {
+        "id": "dark_phase_xjwv1",
+        "type": "dark_phase",
+        "startRatio": 0,
+        "endRatio": 0.4,
+        "start": 0,
+        "end": 1.48
+      }
+    ],
+    "cometTrail": "thin",
+    "uiDuration": 1.8,
+    "shellSize": 1,
+    "particleCountMultiplier": 0.25,
+    "starLifeMultiplier": 1.6,
+    "x1": 0.7,
+    "y1": 0.6,
+    "y2": 0.8,
+    "pistil": false,
+    "color": "gold",
+    "secondBurstEnabled": true,
+    "secondBurst": {
+      "enabled": true,
+      "childShells": [
+        {
+          "ratio": 0.45,
+          "triggerTiming": 0.85,
+          "distributionMode": "random",
+          "shapeType": "willow",
+          "dynamicsType": "willow",
+          "color": "#ffd700",
+          "scale": 0.3,
+          "effects": [
+            {
+              "id": "dark_phase_1794669210698_dlymy",
+              "type": "dark_phase",
+              "startRatio": 0,
+              "endRatio": 0.25,
+              "start": 0,
+              "end": 0.35
+            }
+          ]
+        }
+      ]
+    },
+    "launchSound": "silent",
+    "sound": {
+      "launch": "silent",
+      "burst": "silent"
+    },
+    "burstSound": "silent",
+    "count": 50,
+    "x2": 0.8
+  },
+  {
+    "time": 34.3,
+    "type": "sequence",
+    "pattern": "random",
+    "duration": 15,
+    "preset": "weeping_willow_comets",
+    "sectorId": "center",
+    "shapeType": "willow",
+    "dynamicsType": "falling-comets",
+    "instantBurst": true,
+    "effects": [
+      {
+        "id": "dark_phase_xjwv1",
+        "type": "dark_phase",
+        "startRatio": 0,
+        "endRatio": 0.4,
+        "start": 0,
+        "end": 1.48
+      }
+    ],
+    "cometTrail": "thin",
+    "uiDuration": 1.8,
+    "shellSize": 1,
+    "particleCountMultiplier": 0.25,
+    "starLifeMultiplier": 1.6,
+    "x1": 0.45,
+    "y1": 0.8,
+    "y2": 0.8,
+    "pistil": false,
+    "color": "gold",
+    "secondBurstEnabled": true,
+    "secondBurst": {
+      "enabled": true,
+      "childShells": [
+        {
+          "ratio": 0.45,
+          "triggerTiming": 0.85,
+          "distributionMode": "random",
+          "shapeType": "willow",
+          "dynamicsType": "willow",
+          "color": "#ffd700",
+          "scale": 0.3,
+          "effects": [
+            {
+              "id": "dark_phase_1794669210698_dlymy",
+              "type": "dark_phase",
+              "startRatio": 0,
+              "endRatio": 0.25,
+              "start": 0,
+              "end": 0.35
+            }
+          ]
+        }
+      ]
+    },
+    "launchSound": "silent",
+    "sound": {
+      "launch": "silent",
+      "burst": "silent"
+    },
+    "burstSound": "silent",
+    "count": 50,
+    "x2": 0.55
+  },
+  {
+    "time": 34.3,
+    "type": "sequence",
+    "pattern": "random",
+    "duration": 15,
+    "preset": "weeping_willow_comets",
+    "sectorId": "center",
+    "shapeType": "willow",
+    "dynamicsType": "falling-comets",
+    "instantBurst": true,
+    "effects": [
+      {
+        "id": "dark_phase_xjwv1",
+        "type": "dark_phase",
+        "startRatio": 0,
+        "endRatio": 0.4,
+        "start": 0,
+        "end": 1.48
+      }
+    ],
+    "cometTrail": "thin",
+    "uiDuration": 1.8,
+    "shellSize": 1,
+    "particleCountMultiplier": 0.25,
+    "starLifeMultiplier": 1.6,
+    "x1": 0.3,
+    "x2": 0.7,
+    "y1": 0.3,
+    "y2": 0.3,
+    "pistil": false,
+    "color": "gold",
+    "secondBurstEnabled": true,
+    "secondBurst": {
+      "enabled": true,
+      "childShells": [
+        {
+          "ratio": 0.45,
+          "triggerTiming": 0.85,
+          "distributionMode": "random",
+          "shapeType": "willow",
+          "dynamicsType": "willow",
+          "color": "#ffd700",
+          "scale": 0.3,
+          "effects": [
+            {
+              "id": "dark_phase_1794669210698_dlymy",
+              "type": "dark_phase",
+              "startRatio": 0,
+              "endRatio": 0.25,
+              "start": 0,
+              "end": 0.35
+            }
+          ]
+        }
+      ]
+    },
+    "launchSound": "silent",
+    "sound": {
+      "launch": "silent",
+      "burst": "silent"
+    },
+    "burstSound": "silent",
+    "count": 50
+  },
+  {
+    "time": 34.3,
+    "type": "sequence",
+    "pattern": "random",
+    "duration": 15,
+    "preset": "weeping_willow_comets",
+    "sectorId": "center",
+    "shapeType": "willow",
+    "dynamicsType": "falling-comets",
+    "instantBurst": true,
+    "effects": [
+      {
+        "id": "dark_phase_xjwv1",
+        "type": "dark_phase",
+        "startRatio": 0,
+        "endRatio": 0.4,
+        "start": 0,
+        "end": 1.48
+      }
+    ],
+    "cometTrail": "thin",
+    "uiDuration": 1.8,
+    "shellSize": 1,
+    "particleCountMultiplier": 0.25,
+    "starLifeMultiplier": 1.6,
+    "x1": 0.2,
+    "x2": 0.8,
+    "y1": 0.3,
+    "y2": 0.3,
+    "pistil": false,
+    "color": "gold",
+    "secondBurstEnabled": true,
+    "secondBurst": {
+      "enabled": true,
+      "childShells": [
+        {
+          "ratio": 0.45,
+          "triggerTiming": 0.85,
+          "distributionMode": "random",
+          "shapeType": "willow",
+          "dynamicsType": "willow",
+          "color": "#ffd700",
+          "scale": 0.3,
+          "effects": [
+            {
+              "id": "dark_phase_1794669210698_dlymy",
+              "type": "dark_phase",
+              "startRatio": 0,
+              "endRatio": 0.25,
+              "start": 0,
+              "end": 0.35
+            }
+          ]
+        }
+      ]
+    },
+    "launchSound": "silent",
+    "sound": {
+      "launch": "silent",
+      "burst": "silent"
+    },
+    "burstSound": "silent",
+    "count": 50
+  }
+]
