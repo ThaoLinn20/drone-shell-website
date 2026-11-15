@@ -548,7 +548,7 @@ function renderShellChips(category) {
   currentShellCategory = category;
   dockShellsView.innerHTML = '';
 
-  const count = category === 'big' ? 8 : 26;
+  const count = category === 'big' ? 10 : 26;
   const folder = category === 'big' ? 'big-shell' : 'small-shell';
 
   for (let i = 1; i <= count; i++) {

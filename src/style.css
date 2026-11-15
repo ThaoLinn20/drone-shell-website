@@ -20,6 +20,8 @@
   --color-accent: #00e5ff;
   --color-accent-glow: rgba(0, 229, 255, 0.35);
   --color-accent-hover: #38bdf8;
+  --color-cyan: #00e5ff;
+  --color-blue: #0284c7;
   --color-emerald: #10b981;
   --color-ruby: #f43f5e;
   --color-gold: #fbbf24;
@@ -1590,7 +1592,7 @@ html, body {
 }
 
 .modal-btn-primary {
-  background: linear-gradient(135deg, var(--color-cyan) 0%, var(--color-blue) 100%);
+  background: linear-gradient(135deg, var(--color-cyan, #00e5ff) 0%, var(--color-blue, #0284c7) 100%);
   border: none;
   color: #030712;
   box-shadow: 0 4px 14px rgba(0, 229, 255, 0.35);
