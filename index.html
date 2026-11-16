@@ -450,7 +450,7 @@
               </div>
             </div>
 
-            <div class="dock-show-item" data-show-key="blood-tear" data-folder="blood-tear-full" data-script="blood_tear_v2.json" data-audio="blood_tear_full.mp3">
+            <div class="dock-show-item" data-show-key="blood-tear" data-folder="blood-tear-full" data-script="blood_tear_v2.json" data-audio="blood_tear_full.mp3" data-youtube-id="0Qn4UKn5QyQ" data-audio-offset="0">
               <div class="item-text">
                 <span class="item-title">Blood Tear Full</span>
                 <span class="item-sub" data-i18n="blood_tear_sub">Kịch tính dồn dập • 4m05s</span>
@@ -467,7 +467,7 @@
               </div>
             </div>
 
-            <div class="dock-show-item" data-show-key="lose-control" data-folder="lose-controll" data-script="lose-control-v2.json" data-audio="lose-control-v2.mp3">
+            <div class="dock-show-item" data-show-key="lose-control" data-folder="lose-controll" data-script="lose-control-v2.json" data-audio="lose-control-v2.mp3" data-youtube-id="p_YluOzAZhM" data-audio-offset="95">
               <div class="item-text">
                 <span class="item-title">Lose Control V2</span>
                 <span class="item-sub" data-i18n="lose_control_sub">Năng lượng điện tử bùng nổ</span>
@@ -484,7 +484,7 @@
               </div>
             </div>
 
-            <div class="dock-show-item" data-show-key="secret-base" data-folder="secret-base" data-script="secret-base-trial-v7.json" data-audio="secret-base.mp3">
+            <div class="dock-show-item" data-show-key="secret-base" data-folder="secret-base" data-script="secret-base-trial-v7.json" data-audio="secret-base.mp3" data-youtube-id="SJywJjwqIK8" data-audio-offset="0">
               <div class="item-text">
                 <span class="item-title">Secret Base (Trial V7)</span>
                 <span class="item-sub" data-i18n="secret_base_sub">Ballad cảm xúc • 5m49s</span>
@@ -518,7 +518,7 @@
               </div>
             </div>
 
-            <div class="dock-show-item" data-show-key="monody" data-folder="monody" data-script="monody-Orchestra.json" data-audio="monody-Orchestra.mp3">
+            <div class="dock-show-item" data-show-key="monody" data-folder="monody" data-script="monody-Orchestra.json" data-audio="monody-Orchestra.mp3" data-youtube-id="qv5-RtpcdQQ" data-audio-offset="201">
               <div class="item-text">
                 <span class="item-title">Monody Orchestra</span>
                 <span class="item-sub" data-i18n="monody_sub">Giao hưởng pháo hoa hoành tráng</span>
@@ -545,6 +545,20 @@
       <button id="btn-dock-toggle" class="btn-dock-toggle" data-i18n-title="btn_dock_toggle_title" title="Mở lại bảng chọn kịch bản">
         <span data-i18n="btn_dock_toggle">Kịch bản &and;</span>
       </button>
+
+      <!-- YouTube Audio Companion Mini-Player (Compliant with YouTube ToS) -->
+      <div id="youtube-companion-wrap" class="youtube-companion-wrap">
+        <div class="youtube-companion-header">
+          <div class="yt-header-left">
+            <span class="yt-badge">YouTube</span>
+            <span id="yt-companion-title" class="yt-title">Nhạc nền YouTube</span>
+          </div>
+          <button type="button" id="btn-yt-toggle-mini" class="yt-btn-minimize" title="Thu nhỏ / Mở rộng" aria-label="Thu nhỏ hoặc mở rộng video">&ndash;</button>
+        </div>
+        <div class="youtube-player-frame" id="youtube-player-frame">
+          <div id="yt-player"></div>
+        </div>
+      </div>
     </section>
 
     <!-- ==================================================================== -->
@@ -674,6 +688,9 @@
         </div>
       </div>
       <div class="audio-modal-actions">
+        <button class="modal-btn modal-btn-youtube" id="btn-modal-play-youtube" data-i18n="modal_btn_youtube" style="display: none;">
+          Phát kèm nhạc YouTube (Khuyên dùng)
+        </button>
         <button class="modal-btn modal-btn-primary" id="btn-modal-play-silent" data-i18n="modal_btn_silent">
           Xem pháo hoa (không nhạc nền)
         </button>

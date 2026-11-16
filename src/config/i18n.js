@@ -97,6 +97,7 @@ export const translations = {
     // Audio Modal
     modal_badge: 'Bản quyền âm nhạc',
     modal_notice: 'Bạn có thể chọn tệp âm thanh có sẵn từ thiết bị của mình để phát đồng bộ, hoặc xem kịch bản pháo hoa trực tiếp kèm hiệu ứng âm thanh nổ 3D sống động.',
+    modal_btn_youtube: 'Phát kèm nhạc YouTube (Khuyên dùng)',
     modal_btn_choose: 'Chọn tệp MP3 từ máy của bạn',
     modal_btn_silent: 'Xem pháo hoa (không nhạc nền)',
 
@@ -201,6 +202,7 @@ export const translations = {
     // Audio Modal
     modal_badge: 'Music Copyright',
     modal_notice: 'You can choose an existing audio file from your device to sync, or watch the fireworks directly with spatial 3D explosion sound effects.',
+    modal_btn_youtube: 'Play with YouTube Music (Recommended)',
     modal_btn_choose: 'Choose MP3 File from Device',
     modal_btn_silent: 'Watch Fireworks (No BGM)',
 
@@ -305,6 +307,7 @@ export const translations = {
     // Audio Modal
     modal_badge: '音楽の著作権',
     modal_notice: 'お手持ちの端末からオーディオファイルを選択して同期再生するか、迫力ある3D効果音で花火をそのまま鑑賞できます。',
+    modal_btn_youtube: 'YouTube音楽と再生 (推奨)',
     modal_btn_choose: '端末からMP3を選択',
     modal_btn_silent: '花火のみ鑑賞（BGMなし）',
 
@@ -409,6 +412,7 @@ export const translations = {
     // Audio Modal
     modal_badge: '音樂版權聲明',
     modal_notice: '您可以從您的裝置選擇現有的音訊檔案進行同步播放，或直接觀賞帶有生動 3D 爆炸音效的煙花秀。',
+    modal_btn_youtube: '播放 YouTube 音樂 (推薦)',
     modal_btn_choose: '從電腦選擇 MP3 檔案',
     modal_btn_silent: '觀賞煙花 (無背景音樂)',
 
