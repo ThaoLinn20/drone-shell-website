@@ -832,7 +832,7 @@ async function startShow(card, useBlobUrl = null, isSilent = false, useYouTube =
   const audioOffset = Number(card.dataset.audioOffset) || 0;
   const isBlob = card.dataset.isBlob === 'true';
   const scriptUrl = isBlob
-    ? `${import.meta.env.BASE_URL}api/shows?id=${card.dataset.blobId}`
+    ? `${import.meta.env.BASE_URL}.netlify/functions/shows?id=${card.dataset.blobId}`
     : `${import.meta.env.BASE_URL}scripts/shows/${folder}/${scriptFile}`;
 
   const shouldPlayYouTube = useYouTube || (!isSilent && !useBlobUrl && !loadedAudioMap.has(folder) && Boolean(youtubeId));
@@ -1025,7 +1025,7 @@ function renderShowsList(showsList) {
     downloadBtn.addEventListener('click', async (e) => {
       e.stopPropagation();
       if (show.isRemoteBlob) {
-        const scriptUrl = `${import.meta.env.BASE_URL}api/shows?id=${show.id}`;
+        const scriptUrl = `${import.meta.env.BASE_URL}.netlify/functions/shows?id=${show.id}`;
         await downloadScriptFile(scriptUrl, `${show.id}.json`, downloadBtn);
       } else {
         const folder = card.dataset.folder;
@@ -1054,8 +1054,11 @@ function renderShowsList(showsList) {
 async function loadAndRenderShows() {
   let showsList = [...fallbackShows];
   try {
-    const res = await fetch(`${import.meta.env.BASE_URL}api/shows`, { cache: 'no-cache' });
-    if (res.ok) {
+    let res = await fetch(`${import.meta.env.BASE_URL}.netlify/functions/shows`, { cache: 'no-cache' });
+    if (!res.ok || !(res.headers.get('content-type') || '').includes('application/json')) {
+      res = await fetch(`${import.meta.env.BASE_URL}api/shows`, { cache: 'no-cache' });
+    }
+    if (res.ok && (res.headers.get('content-type') || '').includes('application/json')) {
       const data = await res.json();
       if (data && Array.isArray(data.shows) && data.shows.length > 0) {
         const blobShows = data.shows.map((s) => ({
