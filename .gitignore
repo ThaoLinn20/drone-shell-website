@@ -31,3 +31,8 @@ public/image/
 
 # Ignore copyrighted audio in show packages
 public/scripts/shows/**/*.mp3
+
+# Environment files
+.env
+.env.*
+!.env.example
