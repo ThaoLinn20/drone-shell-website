@@ -46,6 +46,7 @@
 
 html, body {
   height: 100%;
+  height: 100dvh;
   width: 100%;
   overflow: hidden;
   background-color: var(--bg-dark);
@@ -63,10 +64,12 @@ html, body {
   left: 0;
   width: 100%;
   height: 100%;
+  height: 100dvh;
   z-index: 1;
   display: block;
   outline: none;
   cursor: crosshair;
+  touch-action: none;
 }
 
 /* Glassmorphism Generic Panel */
@@ -484,12 +487,14 @@ html, body {
    ========================================================================== */
 .snap-container {
   height: 100vh;
+  height: 100dvh;
   width: 100%;
   overflow-y: scroll;
   scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
   position: relative;
   z-index: 10;
+  -webkit-overflow-scrolling: touch;
 }
 
 .snap-container::-webkit-scrollbar {
@@ -509,8 +514,11 @@ html, body {
 /* Common Page Block (100vh) */
 .page-block {
   height: 100vh;
+  height: 100dvh;
   min-height: 100vh;
+  min-height: 100dvh;
   max-height: 100vh;
+  max-height: 100dvh;
   width: 100%;
   scroll-snap-align: start;
   scroll-snap-stop: always;
@@ -1065,6 +1073,13 @@ html, body {
   color: var(--text-dim);
 }
 
+.dock-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-shrink: 0;
+}
+
 .btn-dock-play {
   background: rgba(0, 229, 255, 0.12);
   border: 1px solid rgba(0, 229, 255, 0.4);
@@ -1088,6 +1103,30 @@ html, body {
   color: #030712;
 }
 
+.btn-dock-download {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-glass);
+  color: var(--text-secondary);
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.btn-dock-download:hover {
+  background: rgba(0, 229, 255, 0.15);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  transform: translateY(-1px);
+}
+
 /* Shells View (Horizontal Chips) */
 .dock-shells-list {
   display: none;
@@ -1103,13 +1142,16 @@ html, body {
 }
 
 .shell-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   background: var(--bg-card);
   border: 1px solid var(--border-glass);
   color: var(--text-secondary);
   font-family: var(--font-mono);
   font-size: 0.8rem;
   font-weight: 600;
-  padding: 0.45rem 0.8rem;
+  padding: 0.35rem 0.35rem 0.35rem 0.75rem;
   border-radius: var(--radius-xs);
   cursor: pointer;
   text-align: center;
@@ -1131,6 +1173,38 @@ html, body {
   border-color: var(--color-accent);
   color: #ffffff;
   box-shadow: 0 0 12px var(--color-accent);
+}
+
+.shell-chip-label {
+  display: inline-block;
+  cursor: pointer;
+}
+
+.shell-chip-download {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s ease;
+}
+
+.shell-chip-download svg {
+  pointer-events: none;
+  display: block;
+}
+
+.shell-chip-download:hover {
+  background: rgba(0, 229, 255, 0.25);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  transform: scale(1.08);
 }
 
 /* ==========================================================================
@@ -1337,7 +1411,29 @@ html, body {
 .footer-social-links {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.6rem;
+}
+
+.footer-icon-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-glass);
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.footer-icon-btn:hover {
+  background: rgba(0, 229, 255, 0.15);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 229, 255, 0.3);
 }
 
 .footer-link {
@@ -1383,6 +1479,329 @@ html, body {
   .dock-actions,
   .dock-tabs {
     flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --nav-height: 56px;
+  }
+
+  /* Hide desktop side-nav dots on mobile */
+  .side-nav {
+    display: none !important;
+  }
+
+  .navbar-fixed {
+    height: 56px;
+  }
+
+  .nav-container {
+    padding: 0 0.85rem;
+  }
+
+  .nav-brand-title {
+    font-size: 1.05rem;
+  }
+
+  .nav-brand-badge {
+    display: none;
+  }
+
+  .nav-center-menu {
+    display: none;
+  }
+
+  .nav-actions {
+    gap: 0.5rem;
+  }
+
+  .btn-nav-circle {
+    width: 34px;
+    height: 34px;
+  }
+
+  .page-block {
+    padding: calc(var(--nav-height) + 0.5rem) 0.85rem 0.85rem;
+    overflow-y: auto;
+  }
+
+  /* Block 1: Intro */
+  .block-intro {
+    align-items: flex-start;
+    padding-top: calc(var(--nav-height) + 0.75rem);
+    padding-bottom: 2rem;
+    overflow-y: auto;
+  }
+
+  .block-intro .block-inner-split {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .intro-left-card {
+    padding: 1.25rem 1rem;
+    gap: 0.75rem;
+  }
+
+  .intro-title {
+    font-size: 1.85rem;
+    line-height: 1.2;
+  }
+
+  .intro-bullets li {
+    font-size: 0.92rem;
+  }
+
+  .intro-desc {
+    font-size: 0.85rem;
+    line-height: 1.45;
+  }
+
+  .intro-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.6rem;
+  }
+
+  .intro-actions .btn-primary,
+  .intro-actions .btn-secondary {
+    width: 100%;
+    justify-content: center;
+    padding: 0.7rem 1.2rem;
+    font-size: 0.9rem;
+  }
+
+  .intro-video-card {
+    border-radius: var(--radius-md);
+    padding: 0.5rem;
+  }
+
+  .intro-video-card iframe {
+    height: 210px;
+  }
+
+  /* Block 2: Experience Arena */
+  .block-experience {
+    padding: 0;
+    justify-content: flex-end;
+    overflow: hidden;
+  }
+
+  .experience-sky-hint {
+    top: calc(var(--nav-height) + 0.5rem);
+    width: 90%;
+    text-align: center;
+  }
+
+  .sky-hint-pill {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .experience-dock {
+    position: absolute;
+    bottom: max(0.5rem, env(safe-area-inset-bottom));
+    left: 0.5rem;
+    right: 0.5rem;
+    width: calc(100% - 1rem);
+    max-width: none;
+    padding: 0.6rem 0.75rem 0.75rem;
+    gap: 0.45rem;
+    border-radius: var(--radius-md);
+  }
+
+  .dock-scrubber-bar {
+    padding: 0 2.2rem 0.35rem 0;
+    gap: 0.4rem;
+  }
+
+  .scrubber-time-label {
+    font-size: 0.72rem;
+    min-width: 36px;
+  }
+
+  .dock-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.45rem;
+    padding-bottom: 0.4rem;
+  }
+
+  .dock-tabs {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 0.35rem;
+  }
+
+  .dock-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .dock-tab {
+    padding: 0.32rem 0.65rem;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .dock-status {
+    font-size: 0.75rem;
+    justify-content: flex-start;
+  }
+
+  .status-text {
+    font-size: 0.75rem;
+  }
+
+  .status-timer {
+    font-size: 0.72rem;
+    padding: 0.15rem 0.4rem;
+  }
+
+  .dock-actions {
+    display: flex;
+    gap: 0.4rem;
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .dock-btn {
+    padding: 0.32rem 0.6rem;
+    font-size: 0.75rem;
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dock-btn-sound {
+    min-width: auto;
+  }
+
+  .dock-btn-close {
+    top: 6px;
+    right: 8px;
+    width: 28px;
+    height: 28px;
+    font-size: 1.2rem;
+  }
+
+  .dock-content {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0.15rem 0;
+  }
+
+  .dock-show-item {
+    padding: 0.4rem 0.6rem;
+    gap: 0.6rem;
+  }
+
+  .dock-show-item .item-title {
+    font-size: 0.8rem;
+  }
+
+  .dock-show-item .item-sub {
+    font-size: 0.7rem;
+  }
+
+  .dock-item-actions {
+    gap: 0.35rem;
+  }
+
+  .btn-dock-play {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.75rem;
+    min-height: 36px;
+  }
+
+  .btn-dock-download {
+    width: 34px;
+    height: 34px;
+    min-height: 34px;
+    padding: 0;
+  }
+
+  .shell-chip {
+    padding: 0.25rem 0.35rem 0.25rem 0.6rem;
+    font-size: 0.75rem;
+    min-height: 36px;
+    gap: 0.35rem;
+  }
+
+  .shell-chip-download {
+    width: 26px;
+    height: 26px;
+  }
+
+  /* Block 3: Community */
+  .block-community {
+    overflow-y: auto;
+    padding-bottom: calc(2rem + env(safe-area-inset-bottom));
+  }
+
+  .community-title {
+    font-size: 1.6rem;
+    text-align: center;
+  }
+
+  .flow-card {
+    padding: 1.25rem 1rem;
+  }
+
+  /* Audio Modal */
+  .audio-modal-card {
+    padding: 1.25rem 1.1rem;
+    border-radius: var(--radius-md);
+    max-width: calc(100vw - 1.5rem);
+  }
+
+  .audio-modal-title {
+    font-size: 1.15rem;
+  }
+
+  .audio-modal-desc {
+    font-size: 0.82rem;
+  }
+
+  .audio-modal-notice {
+    font-size: 0.78rem;
+    padding: 0.5rem 0.65rem;
+    margin-bottom: 1rem;
+  }
+
+  .modal-btn {
+    padding: 0.65rem 1rem;
+    font-size: 0.82rem;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .intro-title {
+    font-size: 1.65rem;
+  }
+
+  .intro-video-card iframe {
+    height: 180px;
+  }
+
+  .dock-btn {
+    font-size: 0.7rem;
+    padding: 0.28rem 0.45rem;
+  }
+
+  .dock-tab {
+    padding: 0.28rem 0.5rem;
+    font-size: 0.72rem;
   }
 }
 
@@ -1591,6 +2010,19 @@ html, body {
   transition: all 0.2s ease;
 }
 
+.modal-btn-youtube {
+  background: linear-gradient(135deg, #ff0033 0%, #cc0029 100%);
+  border: none;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(255, 0, 51, 0.35);
+}
+
+.modal-btn-youtube:hover {
+  filter: brightness(1.15);
+  box-shadow: 0 6px 20px rgba(255, 0, 51, 0.55);
+  transform: translateY(-1px);
+}
+
 .modal-btn-primary {
   background: linear-gradient(135deg, var(--color-cyan, #00e5ff) 0%, var(--color-blue, #0284c7) 100%);
   border: none;
@@ -1614,3 +2046,118 @@ html, body {
   background: rgba(255, 255, 255, 0.12);
   color: var(--text-primary);
 }
+
+/* ==========================================================================
+   YouTube Companion Mini-Player (Compliant with YouTube ToS)
+   ========================================================================== */
+.youtube-companion-wrap {
+  position: absolute;
+  top: calc(var(--nav-height) + 1.25rem);
+  right: 1.5rem;
+  width: 220px;
+  background: rgba(13, 19, 33, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(0, 229, 255, 0.35);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 15px rgba(0, 229, 255, 0.18);
+  z-index: 40;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-10px) scale(0.95);
+}
+
+.youtube-companion-wrap.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+.youtube-companion-wrap.minimized .youtube-player-frame {
+  display: none;
+}
+
+.youtube-companion-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.35rem 0.6rem;
+  background: rgba(0, 0, 0, 0.55);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  user-select: none;
+}
+
+.yt-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  overflow: hidden;
+}
+
+.yt-badge {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: #ffffff;
+  background: #ff0033;
+  padding: 0.15rem 0.35rem;
+  border-radius: 3px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.yt-title {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+.yt-btn-minimize {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0 0.2rem;
+  transition: color 0.2s ease;
+}
+
+.yt-btn-minimize:hover {
+  color: #ffffff;
+}
+
+.youtube-player-frame {
+  width: 220px;
+  height: 124px;
+  background: #000000;
+  overflow: hidden;
+  position: relative;
+}
+
+.youtube-player-frame iframe {
+  width: 100% !important;
+  height: 100% !important;
+  border: none;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .youtube-companion-wrap {
+    top: calc(var(--nav-height) + 0.5rem);
+    right: 0.75rem;
+    width: 180px;
+  }
+  .youtube-player-frame {
+    width: 180px;
+    height: 101px;
+  }
+}
+

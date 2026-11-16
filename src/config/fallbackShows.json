@@ -1,0 +1,62 @@
+[
+  {
+    "id": "tinh-hoa",
+    "title": "Tinh Hoa",
+    "sub": "Lá cờ và cây tre Việt Nam",
+    "folder": "tinhhoa",
+    "script": "tinhhoav2.json",
+    "audio": "tinhhoa.mp3",
+    "youtubeId": "",
+    "audioOffset": 0
+  },
+  {
+    "id": "blood-tear",
+    "title": "Blood Tear Full",
+    "sub": "Kịch tính dồn dập • 4m05s",
+    "folder": "blood-tear-full",
+    "script": "blood_tear_v2.json",
+    "audio": "blood_tear_full.mp3",
+    "youtubeId": "0Qn4UKn5QyQ",
+    "audioOffset": 0
+  },
+  {
+    "id": "lose-control",
+    "title": "Lose Control V2",
+    "sub": "Năng lượng điện tử bùng nổ",
+    "folder": "lose-controll",
+    "script": "lose-control-v2.json",
+    "audio": "lose-control-v2.mp3",
+    "youtubeId": "p_YluOzAZhM",
+    "audioOffset": 95
+  },
+  {
+    "id": "secret-base",
+    "title": "Secret Base (Trial V7)",
+    "sub": "Ballad cảm xúc • 5m49s",
+    "folder": "secret-base",
+    "script": "secret-base-trial-v7.json",
+    "audio": "secret-base.mp3",
+    "youtubeId": "SJywJjwqIK8",
+    "audioOffset": 0
+  },
+  {
+    "id": "hanabi",
+    "title": "Hanabi Festival",
+    "sub": "Lễ hội rực rỡ sắc màu",
+    "folder": "hanabi",
+    "script": "hanabi.json",
+    "audio": "hanabi.mp3",
+    "youtubeId": "",
+    "audioOffset": 0
+  },
+  {
+    "id": "monody",
+    "title": "Monody Orchestra",
+    "sub": "Giao hưởng pháo hoa hoành tráng",
+    "folder": "monody",
+    "script": "monody-Orchestra.json",
+    "audio": "monody-Orchestra.mp3",
+    "youtubeId": "qv5-RtpcdQQ",
+    "audioOffset": 201
+  }
+]

@@ -12,6 +12,8 @@ import { SkyLightReactionSystem } from './systems/SkyLightReactionSystem.js';
 import { FireworkSequencer } from './directors/FireworkSequencer.js';
 import { ShowDirector } from './directors/ShowDirector.js';
 import { AudioSystem } from './systems/AudioSystem.js';
+import { YouTubeSyncManager } from './core/YouTubeSyncManager.js';
+import fallbackShows from './config/fallbackShows.json';
 import { renderingConfig } from './config/rendering.js';
 import { translations, t, getAudioModalDesc } from './config/i18n.js';
 import './style.css';
@@ -57,6 +59,14 @@ const cometSystem = new CometSystem(
 const fireworkSequencer = new FireworkSequencer(fireworkSystem, cometSystem);
 const showDirector = new ShowDirector(fireworkSequencer, fireworkSystem);
 const audioSystem = new AudioSystem(cameraManager);
+const youtubeSyncManager = new YouTubeSyncManager({
+  containerId: 'youtube-companion-wrap',
+  playerId: 'yt-player',
+  titleElId: 'yt-companion-title'
+});
+let currentPlaybackMode = null; // 'local' | 'youtube' | 'silent' | null
+let currentAudioOffset = 0;
+let lastYtSyncTime = 0;
 
 const postProcessing = renderingConfig?.post?.enabled
   ? new PostProcessingPipeline(
@@ -234,17 +244,18 @@ window.addEventListener('click', (event) => {
   if (audioSystem) audioSystem.resumeContext();
   const target = event.target;
   if (
-    target &&
-    (target.tagName === 'A' ||
-      target.tagName === 'BUTTON' ||
-      target.tagName === 'VIDEO' ||
-      target.closest('a') ||
-      target.closest('button') ||
-      target.closest('video') ||
-      target.closest('.experience-dock') ||
-      target.closest('.intro-left-card') ||
-      target.closest('.flow-card') ||
-      target.closest('.navbar-fixed'))
+    currentBlockIndex !== 1 ||
+    (target &&
+      (target.tagName === 'A' ||
+        target.tagName === 'BUTTON' ||
+        target.tagName === 'VIDEO' ||
+        target.closest('a') ||
+        target.closest('button') ||
+        target.closest('video') ||
+        target.closest('.experience-dock') ||
+        target.closest('.intro-left-card') ||
+        target.closest('.flow-card') ||
+        target.closest('.navbar-fixed')))
   ) {
     return;
   }
@@ -380,6 +391,9 @@ if (scrubberTrackWrap) {
       if (now - lastThrottledSeekTime > 75) {
         if (showDirector && (showDirector.isPlaying || showDirector.scriptConfig)) {
           showDirector.seek(scrubbedTime);
+          if (currentPlaybackMode === 'youtube' && youtubeSyncManager) {
+            youtubeSyncManager.seekTo(scrubbedTime);
+          }
         }
         lastThrottledSeekTime = now;
       }
@@ -404,6 +418,9 @@ if (scrubberTrackWrap) {
 
     if (showDirector && (showDirector.isPlaying || showDirector.scriptConfig)) {
       showDirector.seek(scrubbedTime);
+      if (currentPlaybackMode === 'youtube' && youtubeSyncManager) {
+        youtubeSyncManager.seekTo(scrubbedTime);
+      }
     }
     
   });
@@ -420,8 +437,14 @@ if (scrubberTrackWrap) {
 
     if (showDirector && (showDirector.isPlaying || showDirector.scriptConfig)) {
       showDirector.seek(scrubbedTime);
+      if (currentPlaybackMode === 'youtube' && youtubeSyncManager) {
+        youtubeSyncManager.seekTo(scrubbedTime);
+      }
       if (!showDirector.isPlaying && currentActiveShowCard) {
         showDirector.play();
+        if (currentPlaybackMode === 'youtube' && youtubeSyncManager) {
+          youtubeSyncManager.play();
+        }
       }
     }
     
@@ -435,6 +458,10 @@ function stopCurrentShow() {
   if (showDirector) {
     showDirector.stop();
   }
+  if (youtubeSyncManager) {
+    youtubeSyncManager.stop();
+  }
+  currentPlaybackMode = null;
   if (currentActiveShowCard) {
     currentActiveShowCard.classList.remove('active-show');
     const btn = currentActiveShowCard.querySelector('.btn-dock-play');
@@ -522,6 +549,9 @@ function handleToggleSound(e) {
       localStorage.setItem('fdshow_sound_muted', isMuted ? 'true' : 'false');
     }
     updateSoundButtonUI();
+    if (youtubeSyncManager) {
+      youtubeSyncManager.setMuted(isMuted);
+    }
     if (stageStatusText) {
       stageStatusText.textContent = isMuted
         ? t('status_sound_muted', currentLang)
@@ -540,6 +570,36 @@ if (btnToggleSound) {
 
 updateSoundButtonUI();
 
+// Helper: Download script file as JSON blob
+async function downloadScriptFile(scriptUrl, filename, triggerBtn = null) {
+  try {
+    if (triggerBtn) {
+      triggerBtn.style.pointerEvents = 'none';
+      triggerBtn.style.opacity = '0.6';
+    }
+
+    const res = await fetch(scriptUrl);
+    if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
+    const blob = await res.blob();
+    const blobUrl = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+  } catch (err) {
+    console.warn('Fallback opening script:', err);
+    window.open(scriptUrl, '_blank');
+  } finally {
+    if (triggerBtn) {
+      triggerBtn.style.pointerEvents = '';
+      triggerBtn.style.opacity = '';
+    }
+  }
+}
+
 let currentShellCategory = null;
 
 // Render Shell Chips for Big/Small shell modes
@@ -554,9 +614,34 @@ function renderShellChips(category) {
   for (let i = 1; i <= count; i++) {
     const chip = document.createElement('div');
     chip.className = 'shell-chip';
-    chip.textContent = category === 'big' ? `${t('shell_big_label', currentLang)} ${i}` : `S-${i}`;
-    chip.title = `${t('shell_chip_title', currentLang)} ${folder}/shell${i}.json`;
     chip.dataset.path = `${import.meta.env.BASE_URL}scripts/fireworks/${folder}/shell${i}.json`;
+    chip.dataset.filename = `${folder}-shell${i}.json`;
+
+    const label = document.createElement('span');
+    label.className = 'shell-chip-label';
+    label.textContent = category === 'big' ? `${t('shell_big_label', currentLang)} ${i}` : `S-${i}`;
+    label.title = `${t('shell_chip_title', currentLang)} ${folder}/shell${i}.json`;
+
+    const dlBtn = document.createElement('button');
+    dlBtn.type = 'button';
+    dlBtn.className = 'shell-chip-download';
+    dlBtn.title = `${t('btn_download_script_title', currentLang)} (${folder}/shell${i}.json)`;
+    dlBtn.setAttribute('aria-label', `${t('btn_download_script_title', currentLang)}`);
+    dlBtn.innerHTML = `
+      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="7 10 12 15 17 10"></polyline>
+        <line x1="12" y1="15" x2="12" y2="3"></line>
+      </svg>
+    `;
+
+    dlBtn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      await downloadScriptFile(chip.dataset.path, chip.dataset.filename, dlBtn);
+    });
+
+    chip.appendChild(label);
+    chip.appendChild(dlBtn);
 
     chip.addEventListener('click', async (e) => {
       e.stopPropagation();
@@ -621,12 +706,23 @@ if (tabSmallShell) tabSmallShell.addEventListener('click', () => switchDockView(
 
 const audioModalBackdrop = document.getElementById('audio-modal-backdrop');
 const btnAudioModalClose = document.getElementById('btn-audio-modal-close');
+const btnModalPlayYouTube = document.getElementById('btn-modal-play-youtube');
 const btnModalChooseFile = document.getElementById('btn-modal-choose-file');
 const btnModalPlaySilent = document.getElementById('btn-modal-play-silent');
 const localAudioInput = document.getElementById('local-audio-input');
 const btnImportAudio = document.getElementById('btn-import-audio');
 const audioModalTitle = document.getElementById('audio-modal-title');
 const audioModalDesc = document.getElementById('audio-modal-desc');
+
+const btnYtToggleMini = document.getElementById('btn-yt-toggle-mini');
+const ytCompanionWrap = document.getElementById('youtube-companion-wrap');
+if (btnYtToggleMini && ytCompanionWrap) {
+  btnYtToggleMini.addEventListener('click', (e) => {
+    e.stopPropagation();
+    ytCompanionWrap.classList.toggle('minimized');
+    btnYtToggleMini.innerHTML = ytCompanionWrap.classList.contains('minimized') ? '+' : '&ndash;';
+  });
+}
 
 let pendingShowCard = null;
 const loadedAudioMap = new Map(); // folder -> { blobUrl, fileName }
@@ -635,6 +731,11 @@ function openAudioModal(card) {
   pendingShowCard = card;
   const showName = card.querySelector('.item-title')?.textContent || 'Show';
   const audioFile = card.dataset.audio || '';
+  const youtubeId = card.dataset.youtubeId;
+
+  if (btnModalPlayYouTube) {
+    btnModalPlayYouTube.style.display = youtubeId ? 'block' : 'none';
+  }
 
   if (audioModalTitle) {
     audioModalTitle.textContent = showName;
@@ -669,11 +770,20 @@ if (audioModalBackdrop) {
   });
 }
 
+if (btnModalPlayYouTube) {
+  btnModalPlayYouTube.addEventListener('click', () => {
+    closeAudioModal();
+    if (pendingShowCard) {
+      startShow(pendingShowCard, null, false, true);
+    }
+  });
+}
+
 if (btnModalPlaySilent) {
   btnModalPlaySilent.addEventListener('click', () => {
     closeAudioModal();
     if (pendingShowCard) {
-      startShow(pendingShowCard, null, true);
+      startShow(pendingShowCard, null, true, false);
     }
   });
 }
@@ -712,15 +822,26 @@ if (localAudioInput) {
   });
 }
 
-async function startShow(card, useBlobUrl = null, isSilent = false) {
+async function startShow(card, useBlobUrl = null, isSilent = false, useYouTube = false) {
   stopCurrentShow();
 
   const folder = card.dataset.folder;
   const scriptFile = card.dataset.script;
   const showName = card.querySelector('.item-title')?.textContent || folder;
-  const scriptUrl = `${import.meta.env.BASE_URL}scripts/shows/${folder}/${scriptFile}`;
+  const youtubeId = card.dataset.youtubeId;
+  const audioOffset = Number(card.dataset.audioOffset) || 0;
+  const isBlob = card.dataset.isBlob === 'true';
+  const scriptUrl = isBlob
+    ? `${import.meta.env.BASE_URL}api/shows?id=${card.dataset.blobId}`
+    : `${import.meta.env.BASE_URL}scripts/shows/${folder}/${scriptFile}`;
 
-  if (stageStatusText) stageStatusText.textContent = t('status_loading', currentLang, { name: showName });
+  const shouldPlayYouTube = useYouTube || (!isSilent && !useBlobUrl && !loadedAudioMap.has(folder) && Boolean(youtubeId));
+
+  if (stageStatusText) {
+    stageStatusText.textContent = shouldPlayYouTube
+      ? `Đang kết nối nhạc từ YouTube: ${showName}...`
+      : t('status_loading', currentLang, { name: showName });
+  }
 
   try {
     let res = await fetch(scriptUrl);
@@ -730,7 +851,9 @@ async function startShow(card, useBlobUrl = null, isSilent = false) {
     if (!res.ok) throw new Error(`Failed to fetch show script: ${scriptUrl}`);
     const scriptData = await res.json();
 
-    const effectiveBlob = useBlobUrl || (loadedAudioMap.has(folder) ? loadedAudioMap.get(folder).blobUrl : null);
+    const effectiveBlob = !shouldPlayYouTube
+      ? (useBlobUrl || (loadedAudioMap.has(folder) ? loadedAudioMap.get(folder).blobUrl : null))
+      : null;
 
     showDurationTotal = 0;
     scriptData.forEach((evt) => {
@@ -750,18 +873,67 @@ async function startShow(card, useBlobUrl = null, isSilent = false) {
     updateScrubberUI(0, showDurationTotal);
 
     showDirector.loadScript(scriptData);
-    showDirector.play();
-    if (skyHint) skyHint.style.opacity = '0';
 
     card.classList.add('active-show');
     const playBtn = card.querySelector('.btn-dock-play');
     if (playBtn) playBtn.textContent = t('btn_playing_show', currentLang);
     currentActiveShowCard = card;
 
-    if (stageStatusText) {
-      stageStatusText.textContent = effectiveBlob
-        ? t('status_playing_music', currentLang, { name: showName })
-        : t('status_playing_3d', currentLang, { name: showName });
+    if (shouldPlayYouTube && youtubeId) {
+      currentPlaybackMode = 'youtube';
+      currentAudioOffset = audioOffset;
+
+      await youtubeSyncManager.loadAndPlay({
+        videoId: youtubeId,
+        startOffset: audioOffset,
+        title: showName,
+        callbacks: {
+          onPlaying: (showTime) => {
+            if (!showDirector.isPlaying) {
+              showDirector.seek(showTime);
+              showDirector.play();
+              if (skyHint) skyHint.style.opacity = '0';
+              if (stageStatusText) {
+                stageStatusText.textContent = `Đang phát show kèm nhạc YouTube: ${showName}`;
+              }
+            }
+          },
+          onPaused: () => {
+            if (showDirector.isPlaying) {
+              showDirector.pause();
+            }
+          },
+          onBuffering: () => {
+            if (showDirector.isPlaying) {
+              showDirector.pause();
+            }
+            if (stageStatusText) {
+              stageStatusText.textContent = `Đang đệm âm thanh YouTube (${showName})...`;
+            }
+          },
+          onEnded: () => {
+            stopCurrentShow();
+          },
+          onError: (err) => {
+            console.warn('YouTube playback error, playing silent:', err);
+            if (stageStatusText) {
+              stageStatusText.textContent = `YouTube không thể phát. Đang xem pháo hoa không nhạc...`;
+            }
+            currentPlaybackMode = 'silent';
+            showDirector.play();
+          }
+        }
+      });
+    } else {
+      currentPlaybackMode = effectiveBlob ? 'local' : 'silent';
+      showDirector.play();
+      if (skyHint) skyHint.style.opacity = '0';
+
+      if (stageStatusText) {
+        stageStatusText.textContent = effectiveBlob
+          ? t('status_playing_music', currentLang, { name: showName })
+          : t('status_playing_3d', currentLang, { name: showName });
+      }
     }
   } catch (err) {
     console.error('Error starting show:', err);
@@ -770,29 +942,142 @@ async function startShow(card, useBlobUrl = null, isSilent = false) {
   }
 }
 
-// Wire up Shows play buttons
-const showItems = Array.from(document.querySelectorAll('.dock-show-item'));
-showItems.forEach((card) => {
-  const playBtn = card.querySelector('.btn-dock-play');
-  if (!playBtn) return;
+// Dynamic Shows Renderer & Netlify Blobs Hydration
+let currentShowsList = [...fallbackShows];
 
-  playBtn.addEventListener('click', async (e) => {
-    e.stopPropagation();
+function renderShowsList(showsList) {
+  if (!dockShowsView) return;
+  dockShowsView.innerHTML = '';
+  currentShowsList = showsList;
 
-    if (card === currentActiveShowCard && showDirector.isPlaying) {
-      stopCurrentShow();
-      return;
+  showsList.forEach((show) => {
+    const card = document.createElement('div');
+    card.className = 'dock-show-item';
+    card.dataset.showKey = show.id;
+    card.dataset.folder = show.folder || '';
+    card.dataset.script = show.script || '';
+    card.dataset.audio = show.audio || '';
+    card.dataset.youtubeId = show.youtubeId || '';
+    card.dataset.audioOffset = show.audioOffset !== undefined ? show.audioOffset : 0;
+    if (show.isRemoteBlob) {
+      card.dataset.isBlob = 'true';
+      card.dataset.blobId = show.id;
     }
 
-    const folder = card.dataset.folder;
-    if (loadedAudioMap.has(folder)) {
-      startShow(card, loadedAudioMap.get(folder).blobUrl, false);
-      return;
-    }
+    const itemText = document.createElement('div');
+    itemText.className = 'item-text';
 
-    openAudioModal(card);
+    const itemTitle = document.createElement('span');
+    itemTitle.className = 'item-title';
+    itemTitle.textContent = show.title;
+
+    const itemSub = document.createElement('span');
+    itemSub.className = 'item-sub';
+    itemSub.textContent = show.sub || (show.duration ? `${Math.floor(show.duration / 60)}m${show.duration % 60}s` : '');
+
+    itemText.appendChild(itemTitle);
+    itemText.appendChild(itemSub);
+
+    const itemActions = document.createElement('div');
+    itemActions.className = 'dock-item-actions';
+
+    const playBtn = document.createElement('button');
+    playBtn.className = 'btn-dock-play';
+    playBtn.textContent = (currentActiveShowCard && currentActiveShowCard.dataset.showKey === show.id && (showDirector.isPlaying || currentPlaybackMode === 'youtube'))
+      ? t('btn_playing_show', currentLang)
+      : t('btn_play_show', currentLang);
+
+    playBtn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+
+      if (card === currentActiveShowCard && (showDirector.isPlaying || currentPlaybackMode === 'youtube')) {
+        stopCurrentShow();
+        return;
+      }
+
+      const folder = card.dataset.folder;
+      if (folder && loadedAudioMap.has(folder)) {
+        startShow(card, loadedAudioMap.get(folder).blobUrl, false, false);
+        return;
+      }
+
+      const youtubeId = card.dataset.youtubeId;
+      if (youtubeId) {
+        startShow(card, null, false, true);
+        return;
+      }
+
+      openAudioModal(card);
+    });
+
+    const downloadBtn = document.createElement('button');
+    downloadBtn.className = 'btn-dock-download';
+    downloadBtn.title = t('btn_download_script_title', currentLang);
+    downloadBtn.setAttribute('aria-label', t('btn_download_script_title', currentLang));
+    downloadBtn.innerHTML = `
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="7 10 12 15 17 10"></polyline>
+        <line x1="12" y1="15" x2="12" y2="3"></line>
+      </svg>
+    `;
+
+    downloadBtn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      if (show.isRemoteBlob) {
+        const scriptUrl = `${import.meta.env.BASE_URL}api/shows?id=${show.id}`;
+        await downloadScriptFile(scriptUrl, `${show.id}.json`, downloadBtn);
+      } else {
+        const folder = card.dataset.folder;
+        const scriptFile = card.dataset.script;
+        if (!folder || !scriptFile) return;
+
+        const scriptUrl = `${import.meta.env.BASE_URL}scripts/shows/${folder}/${scriptFile}`;
+        await downloadScriptFile(scriptUrl, scriptFile, downloadBtn);
+      }
+    });
+
+    itemActions.appendChild(playBtn);
+    itemActions.appendChild(downloadBtn);
+
+    card.appendChild(itemText);
+    card.appendChild(itemActions);
+
+    dockShowsView.appendChild(card);
   });
-});
+
+  if (tabShows) {
+    tabShows.textContent = `${t('tab_shows', currentLang).split('(')[0].trim()} (${showsList.length})`;
+  }
+}
+
+async function loadAndRenderShows() {
+  let showsList = [...fallbackShows];
+  try {
+    const res = await fetch(`${import.meta.env.BASE_URL}api/shows`, { cache: 'no-cache' });
+    if (res.ok) {
+      const data = await res.json();
+      if (data && Array.isArray(data.shows) && data.shows.length > 0) {
+        const blobShows = data.shows.map((s) => ({
+          ...s,
+          isRemoteBlob: true
+        }));
+        const merged = [...blobShows];
+        fallbackShows.forEach((fb) => {
+          if (!merged.some((m) => m.id === fb.id)) {
+            merged.push(fb);
+          }
+        });
+        showsList = merged;
+      }
+    }
+  } catch (_) {
+    // Keep fallbackShows on network error
+  }
+  renderShowsList(showsList);
+}
+
+loadAndRenderShows();
 
 // ==========================================================================
 // 5. Language Switcher (VI / EN)
@@ -867,6 +1152,11 @@ function applyLanguage(lang) {
   // 6. Re-render shell chips if shell view is currently open
   if (currentShellCategory && dockShellsView && dockShellsView.classList.contains('active')) {
     renderShellChips(currentShellCategory);
+  }
+
+  // 7. Re-render shows list for updated button language
+  if (dockShowsView && dockShowsView.classList.contains('active')) {
+    renderShowsList(currentShowsList);
   }
 
   document.documentElement.lang = currentLang;
@@ -1005,6 +1295,21 @@ function animate() {
   }
   if (showDirector && typeof showDirector.update === 'function') {
     showDirector.update(deltaTime);
+
+    // Continuous YouTube drift compensation
+    if (showDirector.isPlaying && currentPlaybackMode === 'youtube' && !youtubeSyncManager.isSeeking) {
+      const now = performance.now();
+      if (now - lastYtSyncTime > 500) {
+        lastYtSyncTime = now;
+        const ytShowTime = youtubeSyncManager.getShowTime();
+        if (youtubeSyncManager.isPlaying && ytShowTime > 0) {
+          const drift = Math.abs(showDirector.elapsedTime - ytShowTime);
+          if (drift > 0.4) {
+            showDirector.seek(ytShowTime);
+          }
+        }
+      }
+    }
 
     // Update timer display and timeline scrubber
     if (showDirector.isPlaying) {

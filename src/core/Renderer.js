@@ -14,13 +14,37 @@ export class Renderer {
     this.instance.toneMappingExposure = renderingConfig.renderer.exposure;
     this.instance.physicallyCorrectLights = true;
 
-    this.instance.setSize(window.innerWidth, window.innerHeight);
-    this.instance.setPixelRatio(Math.min(window.devicePixelRatio, renderingConfig.renderer.maxPixelRatio));
+    this.updateDimensions();
     
     // Important for Three.js environments that we append the DOM
     document.body.appendChild(this.instance.domElement);
 
     window.addEventListener('resize', this.onResize.bind(this));
+    if (typeof window !== 'undefined' && window.visualViewport) {
+      window.visualViewport.addEventListener('resize', this.onResize.bind(this));
+    }
+  }
+
+  getEffectivePixelRatio() {
+    const isMobile = typeof window !== 'undefined' && (
+      /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) ||
+      window.innerWidth <= 768
+    );
+    const maxDpr = isMobile ? 1.5 : (renderingConfig.renderer.maxPixelRatio || 2);
+    return Math.min(window.devicePixelRatio || 1, maxDpr);
+  }
+
+  updateDimensions() {
+    const width = (typeof window !== 'undefined' && window.visualViewport)
+      ? window.visualViewport.width
+      : window.innerWidth;
+    const height = (typeof window !== 'undefined' && window.visualViewport)
+      ? window.visualViewport.height
+      : window.innerHeight;
+
+    this.instance.setSize(width, height);
+    this.instance.setPixelRatio(this.getEffectivePixelRatio());
+    return { width, height };
   }
 
   addResizeListener(listener) {
@@ -28,11 +52,10 @@ export class Renderer {
   }
 
   onResize() {
-    this.instance.setSize(window.innerWidth, window.innerHeight);
-    this.instance.setPixelRatio(Math.min(window.devicePixelRatio, renderingConfig.renderer.maxPixelRatio));
+    const { width, height } = this.updateDimensions();
 
     for (const listener of this.resizeListeners) {
-      listener(window.innerWidth, window.innerHeight, this.instance.getPixelRatio());
+      listener(width, height, this.instance.getPixelRatio());
     }
   }
 

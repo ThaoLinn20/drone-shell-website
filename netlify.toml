@@ -1,0 +1,21 @@
+[build]
+  publish = "dist"
+  command = "npm run build"
+  functions = "netlify/functions"
+
+[[redirects]]
+  from = "/api/shows"
+  to = "/.netlify/functions/shows"
+  status = 200
+
+[[redirects]]
+  from = "/api/shows/*"
+  to = "/.netlify/functions/shows/:splat"
+  status = 200
+
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, POST, DELETE, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"

@@ -39,7 +39,7 @@ export const translations = {
     btn_close_dock_title: 'Ẩn bảng chọn (Thu gọn)',
     scrubber_title: 'Nhấp hoặc kéo để tua thời gian show',
     tab_shows: 'Kịch bản show (5)',
-    tab_big_shell: 'Big Shell (8)',
+    tab_big_shell: 'Big Shell (10)',
     tab_small_shell: 'Small Shell (26)',
     status_ready: 'Bầu trời 3D sẵn sàng',
     btn_import_audio: 'Nạp MP3 từ máy',
@@ -53,6 +53,8 @@ export const translations = {
     btn_stop_show_title: 'Dừng kịch bản hoặc show',
     btn_play_show: 'Phát show',
     btn_playing_show: 'Dừng',
+    btn_download_script: 'Tải',
+    btn_download_script_title: 'Tải kịch bản JSON',
     btn_dock_toggle: 'Kịch bản ∧',
     btn_dock_toggle_title: 'Mở lại bảng chọn kịch bản',
 
@@ -95,6 +97,7 @@ export const translations = {
     // Audio Modal
     modal_badge: 'Bản quyền âm nhạc',
     modal_notice: 'Bạn có thể chọn tệp âm thanh có sẵn từ thiết bị của mình để phát đồng bộ, hoặc xem kịch bản pháo hoa trực tiếp kèm hiệu ứng âm thanh nổ 3D sống động.',
+    modal_btn_youtube: 'Phát kèm nhạc YouTube (Khuyên dùng)',
     modal_btn_choose: 'Chọn tệp MP3 từ máy của bạn',
     modal_btn_silent: 'Xem pháo hoa (không nhạc nền)',
 
@@ -141,7 +144,7 @@ export const translations = {
     btn_close_dock_title: 'Hide Dock (Collapse)',
     scrubber_title: 'Click or drag to scrub show timeline',
     tab_shows: 'Show Scripts (5)',
-    tab_big_shell: 'Big Shell (8)',
+    tab_big_shell: 'Big Shell (10)',
     tab_small_shell: 'Small Shell (26)',
     status_ready: '3D Sky Ready',
     btn_import_audio: 'Load MP3',
@@ -155,6 +158,8 @@ export const translations = {
     btn_stop_show_title: 'Stop script or show',
     btn_play_show: 'Play Show',
     btn_playing_show: 'Stop',
+    btn_download_script: 'Download',
+    btn_download_script_title: 'Download JSON script',
     btn_dock_toggle: 'Scripts ∧',
     btn_dock_toggle_title: 'Reopen scripts dock',
 
@@ -197,6 +202,7 @@ export const translations = {
     // Audio Modal
     modal_badge: 'Music Copyright',
     modal_notice: 'You can choose an existing audio file from your device to sync, or watch the fireworks directly with spatial 3D explosion sound effects.',
+    modal_btn_youtube: 'Play with YouTube Music (Recommended)',
     modal_btn_choose: 'Choose MP3 File from Device',
     modal_btn_silent: 'Watch Fireworks (No BGM)',
 
@@ -243,7 +249,7 @@ export const translations = {
     btn_close_dock_title: '操作パネルを非表示（折りたたむ）',
     scrubber_title: 'クリックまたはドラッグしてシーク',
     tab_shows: 'ショースクリプト (5)',
-    tab_big_shell: '大型花火 (8)',
+    tab_big_shell: '大型花火 (10)',
     tab_small_shell: '小型花火 (26)',
     status_ready: '3Dスカイ準備完了',
     btn_import_audio: 'MP3読込',
@@ -257,6 +263,8 @@ export const translations = {
     btn_stop_show_title: 'スクリプトまたはショーを停止',
     btn_play_show: 'ショー再生',
     btn_playing_show: '停止',
+    btn_download_script: 'ダウンロード',
+    btn_download_script_title: 'JSONスクリプトをダウンロード',
     btn_dock_toggle: 'スクリプト ∧',
     btn_dock_toggle_title: 'スクリプトパネルを開く',
 
@@ -299,6 +307,7 @@ export const translations = {
     // Audio Modal
     modal_badge: '音楽の著作権',
     modal_notice: 'お手持ちの端末からオーディオファイルを選択して同期再生するか、迫力ある3D効果音で花火をそのまま鑑賞できます。',
+    modal_btn_youtube: 'YouTube音楽と再生 (推奨)',
     modal_btn_choose: '端末からMP3を選択',
     modal_btn_silent: '花火のみ鑑賞（BGMなし）',
 
@@ -345,7 +354,7 @@ export const translations = {
     btn_close_dock_title: '隱藏面板 (收起)',
     scrubber_title: '點擊或拖動以跳轉時間',
     tab_shows: '表演劇本 (5)',
-    tab_big_shell: '大型煙花 (8)',
+    tab_big_shell: '大型煙花 (10)',
     tab_small_shell: '小型煙花 (26)',
     status_ready: '3D天空就緒',
     btn_import_audio: '載入 MP3',
@@ -359,6 +368,8 @@ export const translations = {
     btn_stop_show_title: '停止當前劇本或表演',
     btn_play_show: '播放表演',
     btn_playing_show: '停止',
+    btn_download_script: '下載',
+    btn_download_script_title: '下載 JSON 劇本',
     btn_dock_toggle: '劇本 ∧',
     btn_dock_toggle_title: '重新打開劇本面板',
 
@@ -401,6 +412,7 @@ export const translations = {
     // Audio Modal
     modal_badge: '音樂版權聲明',
     modal_notice: '您可以從您的裝置選擇現有的音訊檔案進行同步播放，或直接觀賞帶有生動 3D 爆炸音效的煙花秀。',
+    modal_btn_youtube: '播放 YouTube 音樂 (推薦)',
     modal_btn_choose: '從電腦選擇 MP3 檔案',
     modal_btn_silent: '觀賞煙花 (無背景音樂)',
 
