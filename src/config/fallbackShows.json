@@ -20,16 +20,6 @@
     "audioOffset": 0
   },
   {
-    "id": "lose-control",
-    "title": "Lose Control V2",
-    "sub": "Năng lượng điện tử bùng nổ",
-    "folder": "lose-controll",
-    "script": "lose-control-v2.json",
-    "audio": "lose-control-v2.mp3",
-    "youtubeId": "p_YluOzAZhM",
-    "audioOffset": 95
-  },
-  {
     "id": "secret-base",
     "title": "Secret Base (Trial V7)",
     "sub": "Ballad cảm xúc • 5m49s",
@@ -37,16 +27,6 @@
     "script": "secret-base-trial-v7.json",
     "audio": "secret-base.mp3",
     "youtubeId": "SJywJjwqIK8",
-    "audioOffset": 0
-  },
-  {
-    "id": "hanabi",
-    "title": "Hanabi Festival",
-    "sub": "Lễ hội rực rỡ sắc màu",
-    "folder": "hanabi",
-    "script": "hanabi.json",
-    "audio": "hanabi.mp3",
-    "youtubeId": "",
     "audioOffset": 0
   },
   {
