@@ -541,6 +541,36 @@ if (btnToggleSound) {
 
 updateSoundButtonUI();
 
+// Helper: Download script file as JSON blob
+async function downloadScriptFile(scriptUrl, filename, triggerBtn = null) {
+  try {
+    if (triggerBtn) {
+      triggerBtn.style.pointerEvents = 'none';
+      triggerBtn.style.opacity = '0.6';
+    }
+
+    const res = await fetch(scriptUrl);
+    if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
+    const blob = await res.blob();
+    const blobUrl = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+  } catch (err) {
+    console.warn('Fallback opening script:', err);
+    window.open(scriptUrl, '_blank');
+  } finally {
+    if (triggerBtn) {
+      triggerBtn.style.pointerEvents = '';
+      triggerBtn.style.opacity = '';
+    }
+  }
+}
+
 let currentShellCategory = null;
 
 // Render Shell Chips for Big/Small shell modes
@@ -555,9 +585,34 @@ function renderShellChips(category) {
   for (let i = 1; i <= count; i++) {
     const chip = document.createElement('div');
     chip.className = 'shell-chip';
-    chip.textContent = category === 'big' ? `${t('shell_big_label', currentLang)} ${i}` : `S-${i}`;
-    chip.title = `${t('shell_chip_title', currentLang)} ${folder}/shell${i}.json`;
     chip.dataset.path = `${import.meta.env.BASE_URL}scripts/fireworks/${folder}/shell${i}.json`;
+    chip.dataset.filename = `${folder}-shell${i}.json`;
+
+    const label = document.createElement('span');
+    label.className = 'shell-chip-label';
+    label.textContent = category === 'big' ? `${t('shell_big_label', currentLang)} ${i}` : `S-${i}`;
+    label.title = `${t('shell_chip_title', currentLang)} ${folder}/shell${i}.json`;
+
+    const dlBtn = document.createElement('button');
+    dlBtn.type = 'button';
+    dlBtn.className = 'shell-chip-download';
+    dlBtn.title = `${t('btn_download_script_title', currentLang)} (${folder}/shell${i}.json)`;
+    dlBtn.setAttribute('aria-label', `${t('btn_download_script_title', currentLang)}`);
+    dlBtn.innerHTML = `
+      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="7 10 12 15 17 10"></polyline>
+        <line x1="12" y1="15" x2="12" y2="3"></line>
+      </svg>
+    `;
+
+    dlBtn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      await downloadScriptFile(chip.dataset.path, chip.dataset.filename, dlBtn);
+    });
+
+    chip.appendChild(label);
+    chip.appendChild(dlBtn);
 
     chip.addEventListener('click', async (e) => {
       e.stopPropagation();
@@ -771,28 +826,41 @@ async function startShow(card, useBlobUrl = null, isSilent = false) {
   }
 }
 
-// Wire up Shows play buttons
+// Wire up Shows play & download buttons
 const showItems = Array.from(document.querySelectorAll('.dock-show-item'));
 showItems.forEach((card) => {
   const playBtn = card.querySelector('.btn-dock-play');
-  if (!playBtn) return;
+  if (playBtn) {
+    playBtn.addEventListener('click', async (e) => {
+      e.stopPropagation();
 
-  playBtn.addEventListener('click', async (e) => {
-    e.stopPropagation();
+      if (card === currentActiveShowCard && showDirector.isPlaying) {
+        stopCurrentShow();
+        return;
+      }
 
-    if (card === currentActiveShowCard && showDirector.isPlaying) {
-      stopCurrentShow();
-      return;
-    }
+      const folder = card.dataset.folder;
+      if (loadedAudioMap.has(folder)) {
+        startShow(card, loadedAudioMap.get(folder).blobUrl, false);
+        return;
+      }
 
-    const folder = card.dataset.folder;
-    if (loadedAudioMap.has(folder)) {
-      startShow(card, loadedAudioMap.get(folder).blobUrl, false);
-      return;
-    }
+      openAudioModal(card);
+    });
+  }
 
-    openAudioModal(card);
-  });
+  const downloadBtn = card.querySelector('.btn-dock-download');
+  if (downloadBtn) {
+    downloadBtn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const folder = card.dataset.folder;
+      const scriptFile = card.dataset.script;
+      if (!folder || !scriptFile) return;
+
+      const scriptUrl = `${import.meta.env.BASE_URL}scripts/shows/${folder}/${scriptFile}`;
+      await downloadScriptFile(scriptUrl, scriptFile, downloadBtn);
+    });
+  }
 });
 
 // ==========================================================================
