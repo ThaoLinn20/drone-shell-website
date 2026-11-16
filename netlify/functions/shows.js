@@ -17,7 +17,7 @@ function jsonResponse(data, status = 200) {
 }
 
 function getAuthKey() {
-  return process.env.SHOWS_API_KEY || 'fdshow_admin_secret_2026';
+  return process.env.SHOWS_API_KEY || 'deo-co-key-dau-ma-tim';
 }
 
 function verifyAuth(req) {
@@ -138,7 +138,7 @@ export default async (req, context) => {
 
       try {
         await showStore.delete(`data/${showId}`);
-      } catch (_) {}
+      } catch (_) { }
 
       const manifest = (await showStore.get('manifest', { type: 'json' })) || [];
       const updatedManifest = manifest.filter((item) => item.id !== showId);
