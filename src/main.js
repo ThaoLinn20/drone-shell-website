@@ -13,6 +13,7 @@ import { FireworkSequencer } from './directors/FireworkSequencer.js';
 import { ShowDirector } from './directors/ShowDirector.js';
 import { AudioSystem } from './systems/AudioSystem.js';
 import { YouTubeSyncManager } from './core/YouTubeSyncManager.js';
+import fallbackShows from './config/fallbackShows.json';
 import { renderingConfig } from './config/rendering.js';
 import { translations, t, getAudioModalDesc } from './config/i18n.js';
 import './style.css';
@@ -829,7 +830,10 @@ async function startShow(card, useBlobUrl = null, isSilent = false, useYouTube =
   const showName = card.querySelector('.item-title')?.textContent || folder;
   const youtubeId = card.dataset.youtubeId;
   const audioOffset = Number(card.dataset.audioOffset) || 0;
-  const scriptUrl = `${import.meta.env.BASE_URL}scripts/shows/${folder}/${scriptFile}`;
+  const isBlob = card.dataset.isBlob === 'true';
+  const scriptUrl = isBlob
+    ? `${import.meta.env.BASE_URL}api/shows?id=${card.dataset.blobId}`
+    : `${import.meta.env.BASE_URL}scripts/shows/${folder}/${scriptFile}`;
 
   const shouldPlayYouTube = useYouTube || (!isSilent && !useBlobUrl && !loadedAudioMap.has(folder) && Boolean(youtubeId));
 
@@ -938,11 +942,51 @@ async function startShow(card, useBlobUrl = null, isSilent = false, useYouTube =
   }
 }
 
-// Wire up Shows play & download buttons
-const showItems = Array.from(document.querySelectorAll('.dock-show-item'));
-showItems.forEach((card) => {
-  const playBtn = card.querySelector('.btn-dock-play');
-  if (playBtn) {
+// Dynamic Shows Renderer & Netlify Blobs Hydration
+let currentShowsList = [...fallbackShows];
+
+function renderShowsList(showsList) {
+  if (!dockShowsView) return;
+  dockShowsView.innerHTML = '';
+  currentShowsList = showsList;
+
+  showsList.forEach((show) => {
+    const card = document.createElement('div');
+    card.className = 'dock-show-item';
+    card.dataset.showKey = show.id;
+    card.dataset.folder = show.folder || '';
+    card.dataset.script = show.script || '';
+    card.dataset.audio = show.audio || '';
+    card.dataset.youtubeId = show.youtubeId || '';
+    card.dataset.audioOffset = show.audioOffset !== undefined ? show.audioOffset : 0;
+    if (show.isRemoteBlob) {
+      card.dataset.isBlob = 'true';
+      card.dataset.blobId = show.id;
+    }
+
+    const itemText = document.createElement('div');
+    itemText.className = 'item-text';
+
+    const itemTitle = document.createElement('span');
+    itemTitle.className = 'item-title';
+    itemTitle.textContent = show.title;
+
+    const itemSub = document.createElement('span');
+    itemSub.className = 'item-sub';
+    itemSub.textContent = show.sub || (show.duration ? `${Math.floor(show.duration / 60)}m${show.duration % 60}s` : '');
+
+    itemText.appendChild(itemTitle);
+    itemText.appendChild(itemSub);
+
+    const itemActions = document.createElement('div');
+    itemActions.className = 'dock-item-actions';
+
+    const playBtn = document.createElement('button');
+    playBtn.className = 'btn-dock-play';
+    playBtn.textContent = (currentActiveShowCard && currentActiveShowCard.dataset.showKey === show.id && (showDirector.isPlaying || currentPlaybackMode === 'youtube'))
+      ? t('btn_playing_show', currentLang)
+      : t('btn_play_show', currentLang);
+
     playBtn.addEventListener('click', async (e) => {
       e.stopPropagation();
 
@@ -952,7 +996,7 @@ showItems.forEach((card) => {
       }
 
       const folder = card.dataset.folder;
-      if (loadedAudioMap.has(folder)) {
+      if (folder && loadedAudioMap.has(folder)) {
         startShow(card, loadedAudioMap.get(folder).blobUrl, false, false);
         return;
       }
@@ -965,21 +1009,75 @@ showItems.forEach((card) => {
 
       openAudioModal(card);
     });
-  }
 
-  const downloadBtn = card.querySelector('.btn-dock-download');
-  if (downloadBtn) {
+    const downloadBtn = document.createElement('button');
+    downloadBtn.className = 'btn-dock-download';
+    downloadBtn.title = t('btn_download_script_title', currentLang);
+    downloadBtn.setAttribute('aria-label', t('btn_download_script_title', currentLang));
+    downloadBtn.innerHTML = `
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="7 10 12 15 17 10"></polyline>
+        <line x1="12" y1="15" x2="12" y2="3"></line>
+      </svg>
+    `;
+
     downloadBtn.addEventListener('click', async (e) => {
       e.stopPropagation();
-      const folder = card.dataset.folder;
-      const scriptFile = card.dataset.script;
-      if (!folder || !scriptFile) return;
+      if (show.isRemoteBlob) {
+        const scriptUrl = `${import.meta.env.BASE_URL}api/shows?id=${show.id}`;
+        await downloadScriptFile(scriptUrl, `${show.id}.json`, downloadBtn);
+      } else {
+        const folder = card.dataset.folder;
+        const scriptFile = card.dataset.script;
+        if (!folder || !scriptFile) return;
 
-      const scriptUrl = `${import.meta.env.BASE_URL}scripts/shows/${folder}/${scriptFile}`;
-      await downloadScriptFile(scriptUrl, scriptFile, downloadBtn);
+        const scriptUrl = `${import.meta.env.BASE_URL}scripts/shows/${folder}/${scriptFile}`;
+        await downloadScriptFile(scriptUrl, scriptFile, downloadBtn);
+      }
     });
+
+    itemActions.appendChild(playBtn);
+    itemActions.appendChild(downloadBtn);
+
+    card.appendChild(itemText);
+    card.appendChild(itemActions);
+
+    dockShowsView.appendChild(card);
+  });
+
+  if (tabShows) {
+    tabShows.textContent = `${t('tab_shows', currentLang).split('(')[0].trim()} (${showsList.length})`;
   }
-});
+}
+
+async function loadAndRenderShows() {
+  let showsList = [...fallbackShows];
+  try {
+    const res = await fetch(`${import.meta.env.BASE_URL}api/shows`, { cache: 'no-cache' });
+    if (res.ok) {
+      const data = await res.json();
+      if (data && Array.isArray(data.shows) && data.shows.length > 0) {
+        const blobShows = data.shows.map((s) => ({
+          ...s,
+          isRemoteBlob: true
+        }));
+        const merged = [...blobShows];
+        fallbackShows.forEach((fb) => {
+          if (!merged.some((m) => m.id === fb.id)) {
+            merged.push(fb);
+          }
+        });
+        showsList = merged;
+      }
+    }
+  } catch (_) {
+    // Keep fallbackShows on network error
+  }
+  renderShowsList(showsList);
+}
+
+loadAndRenderShows();
 
 // ==========================================================================
 // 5. Language Switcher (VI / EN)
@@ -1054,6 +1152,11 @@ function applyLanguage(lang) {
   // 6. Re-render shell chips if shell view is currently open
   if (currentShellCategory && dockShellsView && dockShellsView.classList.contains('active')) {
     renderShellChips(currentShellCategory);
+  }
+
+  // 7. Re-render shows list for updated button language
+  if (dockShowsView && dockShowsView.classList.contains('active')) {
+    renderShowsList(currentShowsList);
   }
 
   document.documentElement.lang = currentLang;

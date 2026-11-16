@@ -1,0 +1,14 @@
+[build]
+  publish = "dist"
+  command = "npm run build"
+  functions = "netlify/functions"
+
+[[redirects]]
+  from = "/api/shows"
+  to = "/.netlify/functions/shows"
+  status = 200
+
+[[redirects]]
+  from = "/api/shows/*"
+  to = "/.netlify/functions/shows/:splat"
+  status = 200
