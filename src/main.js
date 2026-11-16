@@ -234,17 +234,18 @@ window.addEventListener('click', (event) => {
   if (audioSystem) audioSystem.resumeContext();
   const target = event.target;
   if (
-    target &&
-    (target.tagName === 'A' ||
-      target.tagName === 'BUTTON' ||
-      target.tagName === 'VIDEO' ||
-      target.closest('a') ||
-      target.closest('button') ||
-      target.closest('video') ||
-      target.closest('.experience-dock') ||
-      target.closest('.intro-left-card') ||
-      target.closest('.flow-card') ||
-      target.closest('.navbar-fixed'))
+    currentBlockIndex !== 1 ||
+    (target &&
+      (target.tagName === 'A' ||
+        target.tagName === 'BUTTON' ||
+        target.tagName === 'VIDEO' ||
+        target.closest('a') ||
+        target.closest('button') ||
+        target.closest('video') ||
+        target.closest('.experience-dock') ||
+        target.closest('.intro-left-card') ||
+        target.closest('.flow-card') ||
+        target.closest('.navbar-fixed')))
   ) {
     return;
   }
