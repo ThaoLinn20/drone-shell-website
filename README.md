@@ -1,36 +1,39 @@
-# Shell Drone Animation
+# FDShowStudio Web
 
 <p align="center">
   <strong>English</strong> | <a href="README-vn.md">Tiếng Việt</a>
 </p>
 
-**Shell Drone** is an interactive 3D web application that allows users to simulate and choreograph firework shows combined with artistic drone light shows. The application is designed to deliver immersive visual experiences, built on top of **Three.js** and **Vite**, and packaged into a desktop application using **Electron**.
-
-The software is built with 3 main modules: Show UI, Drone Script Editor UI, and Drone Formation Editor UI.
-
-## Key Features
-
-- **Show UI**: The main screen to simulate and showcase the fireworks and drone performances.
-- **Drone Script Editor UI**: The workspace to edit drone animation scripts, choreograph movement steps for each drone group, and adjust related paths and effects.
-- **Drone Formation Editor UI**: The workspace to design and edit the 3D static drone formations.
+**FDShowStudio Web** is the online web edition of the **FDShowStudio** ecosystem. This version is designed to showcase and promote the flagship FDShowStudio desktop software, while offering an interactive 3D simulation platform that allows users to experience and preview artistic firework and drone light shows directly in the browser without installing any software.
 
 ---
 
-## Highlights
+## Key Features
 
-- **JSON Outputs**: All outputs are exported as `.json` files, making sharing drone models, animations, and choreography sequences extremely flexible and accessible.
+- **Immersive 3D Experience:** Real-time simulation of firework and drone shows powered by Three.js, featuring dynamic lighting, smoke physics, and spatial audio effects.
+- **JSON Script Player:** Seamlessly loads and syncs `.json` choreography sequences designed and exported from the FDShowStudio software.
+- **Audio Sync & YouTube Integration:** Embedded YouTube music playback or local MP3 upload to precisely synchronize musical beats with firework bursts.
+- **Cloud Storage (Netlify Blobs):** Optimized catalogue management and quick loading of sample show scripts with minimal bandwidth consumption.
+- **Multi-language Support (i18n):** User-friendly interface with instant switching between Vietnamese, English, Japanese, and Chinese.
 
-## Download & Installation
+---
 
-### Pre-built Desktop Application (Via GitHub Releases)
-To run the firework and drone show editor directly as a desktop application without configuring a local development environment:
-1. Navigate to the **[GitHub Releases](https://github.com/ThAolInh20/Shell-Drone_3d/releases)** page of the repository.
-2. Locate the latest release (tag) and download the appropriate installer for Windows (e.g., `ShellDroneEditor Setup 1.x.x.exe` or the standalone portable `ShellDroneEditor 1.x.x.exe`).
-3. Extract the downloaded archive and run the `.exe` file inside the extracted folder to start using the application.
+## Ecosystem & Related Projects
 
-## Future Roadmap
+- **[FDShowStudio](https://github.com/ThaoLinn20/Shell-Drone-Editor):** Dedicated desktop application for choreographing, designing timelines, and building detailed 3D firework and drone shows.
+- **[Firework Engine](https://github.com/ThaoLinn20/firework-engine):** Core physics engine library handling particle dynamics, trajectories, and burst effects.
 
-- Building a community platform for sharing drone and show models created directly using this software.
+---
+
+## Tech Stack
+
+- **Frontend:** [Three.js](https://threejs.org/), [Vite](https://vitejs.dev/), JavaScript (ES6+), HTML5 Canvas, Web Audio API
+- **Deployment & Hosting:** [Netlify](https://www.netlify.com/) (Global CDN, Security Headers & SPA Routing)
+
+---
 
 ## Contact
-- Email: aotrame@gmai.com
+
+- **Author:** Nguyễn Phương Nam
+- **Email:** [aotrame@gmail.com](mailto:aotrame@gmail.com)
+- **GitHub:** [@ThaoLinn20](https://github.com/ThaoLinn20)
