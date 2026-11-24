@@ -1,4 +1,9 @@
+# Domain Canonicalization (Redirect .netlify.app traffic to custom domain)
+https://fdshowstudio.netlify.app/*  https://fdshowstudio.website/:splat  301!
+
+# API Endpoints
 /api/shows    /.netlify/functions/shows   200!
 /api/shows/*  /.netlify/functions/shows/:splat 200!
-/*            /index.html                 200
 
+# SPA Routing Fallback
+/*            /index.html                 200
