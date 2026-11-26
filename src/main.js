@@ -1373,3 +1373,72 @@ if (document.readyState === 'complete') {
   window.addEventListener('load', hidePreloader);
   setTimeout(hidePreloader, 3500);
 }
+
+// ==========================================================================
+// Dynamic Site Config Hydration (editable via Admin App)
+// ==========================================================================
+function isSafeHttpUrl(value) {
+  if (!value || typeof value !== 'string') return false;
+  try {
+    const parsed = new URL(value);
+    return parsed.protocol === 'https:' || parsed.protocol === 'http:';
+  } catch {
+    return false;
+  }
+}
+
+function applySiteConfig(config) {
+  if (!config || typeof config !== 'object') return;
+
+  const introUrl = config?.media?.introVideoUrl;
+  if (introUrl && isSafeHttpUrl(introUrl)) {
+    const iframe = document.querySelector('[data-site-config="media.introVideoUrl"]');
+    if (iframe && iframe.getAttribute('src') !== introUrl) {
+      iframe.setAttribute('src', introUrl);
+    }
+  }
+
+  const downloadUrl = config?.downloads?.windowsUrl;
+  if (downloadUrl && isSafeHttpUrl(downloadUrl)) {
+    document.querySelectorAll('[data-site-config="downloads.windowsUrl"]').forEach((el) => {
+      el.setAttribute('href', downloadUrl);
+    });
+  }
+
+  const social = config?.social || {};
+  ['tiktok', 'youtube', 'facebook', 'github'].forEach((channel) => {
+    const entry = social[channel];
+    if (!entry) return;
+    const enabled = entry.enabled !== false;
+    const url = typeof entry.url === 'string' ? entry.url.trim() : '';
+    document.querySelectorAll(`[data-site-config="social.${channel}"]`).forEach((el) => {
+      if (!enabled) {
+        el.style.display = 'none';
+        return;
+      }
+      el.style.display = '';
+      if (url && isSafeHttpUrl(url)) {
+        el.setAttribute('href', url);
+      }
+    });
+  });
+}
+
+async function hydrateSiteConfig() {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 3000);
+  try {
+    const res = await fetch('/api/site-config', {
+      signal: controller.signal
+    });
+    if (!res.ok) return;
+    const config = await res.json();
+    applySiteConfig(config);
+  } catch {
+    // Keep static HTML defaults silently if offline or unconfigured
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+hydrateSiteConfig();

@@ -1,6 +1,7 @@
 # API Endpoints
-/api/shows    /.netlify/functions/shows   200!
-/api/shows/*  /.netlify/functions/shows/:splat 200!
+/api/shows        /.netlify/functions/shows              200!
+/api/shows/*      /.netlify/functions/shows/:splat       200!
+/api/site-config  /.netlify/functions/site-config        200!
 
 # SPA Routing Fallback
 /*            /index.html                 200
