@@ -126,9 +126,11 @@
     }
 
     .loader-logo {
-      color: #00e5ff;
-      filter: drop-shadow(0 0 16px rgba(0, 229, 255, 0.7));
-      animation: loaderSpin 3s linear infinite, loaderPulse 2s ease-in-out infinite alternate;
+      width: 84px;
+      height: 84px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 18px rgba(0, 229, 255, 0.45));
+      animation: loaderPulse 2s ease-in-out infinite alternate;
     }
 
     .loader-glow {
@@ -319,10 +321,7 @@
     <div class="loader-bg-orb loader-orb-2"></div>
     <div class="loader-content">
       <div class="loader-logo-container">
-        <svg class="loader-logo" viewBox="0 0 24 24" width="72" height="72" fill="none" stroke="#00e5ff"
-          stroke-width="1.8">
-          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-        </svg>
+        <img class="loader-logo" src="/icon.png" alt="FDShowStudio" width="84" height="84" />
         <div class="loader-glow"></div>
       </div>
       <h1 class="loader-title">FDSHOW STUDIO</h1>
