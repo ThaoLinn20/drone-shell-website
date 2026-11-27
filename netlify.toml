@@ -13,9 +13,19 @@
   to = "/.netlify/functions/shows/:splat"
   status = 200
 
+[[redirects]]
+  from = "/api/site-config"
+  to = "/.netlify/functions/site-config"
+  status = 200
+
+[[redirects]]
+  from = "/api/site-config/*"
+  to = "/.netlify/functions/site-config/:splat"
+  status = 200
+
 [[headers]]
   for = "/api/*"
   [headers.values]
     Access-Control-Allow-Origin = "*"
-    Access-Control-Allow-Methods = "GET, POST, DELETE, OPTIONS"
+    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
     Access-Control-Allow-Headers = "Content-Type, Authorization"

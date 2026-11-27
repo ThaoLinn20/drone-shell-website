@@ -16,15 +16,17 @@ function jsonResponse(data, status = 200) {
   });
 }
 
-function getAuthKey() {
-  return process.env.SHOWS_API_KEY || 'deo-co-key-dau-ma-tim';
-}
-
 function verifyAuth(req) {
   const authHeader = req.headers.get('authorization') || '';
-  const expectedKey = getAuthKey();
   const token = authHeader.replace(/^Bearer\s+/i, '').trim();
-  return token === expectedKey;
+  if (!token) return false;
+
+  const envKey = (process.env.SHOWS_API_KEY || '').trim();
+  if (envKey) {
+    return token === envKey;
+  }
+  // Fallback defaults if SHOWS_API_KEY is not defined in Netlify environment variables
+  return token === 'fdshow_admin_secret_2026' || token === 'deo-co-key-dau-ma-tim';
 }
 
 function slugify(text) {
