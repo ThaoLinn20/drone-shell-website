@@ -22,11 +22,11 @@ function verifyAuth(req) {
   if (!token) return false;
 
   const envKey = (process.env.SHOWS_API_KEY || '').trim();
-  if (envKey) {
-    return token === envKey;
+  if (!envKey) {
+    console.error('SHOWS_API_KEY is not configured on Netlify environment variables.');
+    return false;
   }
-  // Fallback defaults if SHOWS_API_KEY is not defined in Netlify environment variables
-  return token === 'fdshow_admin_secret_2026' || token === 'deo-co-key-dau-ma-tim';
+  return token === envKey;
 }
 
 function slugify(text) {
