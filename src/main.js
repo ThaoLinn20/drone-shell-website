@@ -86,8 +86,9 @@ if (postProcessing) {
 // Camera targets per section (wide panoramic view for experience block)
 const camTargets = {
   0: { pos: new THREE.Vector3(0, 22, 340), look: new THREE.Vector3(0, 95, 0) },  // Intro block
-  1: { pos: new THREE.Vector3(0, 30, 300), look: new THREE.Vector3(0, 105, 0) }, // Experience block: dock visible
-  2: { pos: new THREE.Vector3(0, 28, 360), look: new THREE.Vector3(0, 105, 0) }  // Community block
+  1: { pos: new THREE.Vector3(0, 24, 330), look: new THREE.Vector3(0, 100, 0) }, // Features block
+  2: { pos: new THREE.Vector3(0, 30, 300), look: new THREE.Vector3(0, 105, 0) }, // Experience block: dock visible
+  3: { pos: new THREE.Vector3(0, 28, 360), look: new THREE.Vector3(0, 105, 0) }  // Community block
 };
 
 // When dock is closed with X button, camera angles up higher to fill viewport
@@ -99,8 +100,8 @@ const camTargetExperienceHidden = {
 let isDockHidden = false;
 
 function updateExperienceCamera() {
-  if (currentBlockIndex === 1) {
-    currentCamTarget = isDockHidden ? camTargetExperienceHidden : camTargets[1];
+  if (currentBlockIndex === 2) {
+    currentCamTarget = isDockHidden ? camTargetExperienceHidden : camTargets[2];
   }
 }
 
@@ -127,7 +128,7 @@ let scrollLockTimeout = null;
 
 function setActiveIndicator(index) {
   currentBlockIndex = index;
-  if (index === 1) {
+  if (index === 2) {
     updateExperienceCamera();
   } else if (camTargets[index]) {
     currentCamTarget = camTargets[index];
@@ -244,7 +245,7 @@ window.addEventListener('click', (event) => {
   if (audioSystem) audioSystem.resumeContext();
   const target = event.target;
   if (
-    currentBlockIndex !== 1 ||
+    currentBlockIndex !== 2 ||
     (target &&
       (target.tagName === 'A' ||
         target.tagName === 'BUTTON' ||
@@ -254,6 +255,8 @@ window.addEventListener('click', (event) => {
         target.closest('video') ||
         target.closest('.experience-dock') ||
         target.closest('.intro-left-card') ||
+        target.closest('.features-carousel-card') ||
+        target.closest('.features-info-card') ||
         target.closest('.flow-card') ||
         target.closest('.navbar-fixed')))
   ) {
@@ -1442,3 +1445,93 @@ async function hydrateSiteConfig() {
 }
 
 hydrateSiteConfig();
+
+// ==========================================================================
+// Software Features Carousel Controller (Auto-play 4 images)
+// ==========================================================================
+function initFeaturesCarousel() {
+  const slides = Array.from(document.querySelectorAll('.carousel-slide'));
+  const dots = Array.from(document.querySelectorAll('.carousel-dot'));
+  const featureItems = Array.from(document.querySelectorAll('.feature-item'));
+  const btnPrev = document.getElementById('btn-carousel-prev');
+  const btnNext = document.getElementById('btn-carousel-next');
+  const viewport = document.getElementById('features-carousel-viewport');
+
+  if (slides.length === 0) return;
+
+  let activeIndex = 0;
+  let autoPlayTimer = null;
+  const AUTO_PLAY_INTERVAL = 3800; // 3.8 seconds per slide
+
+  function goToSlide(index) {
+    activeIndex = (index + slides.length) % slides.length;
+
+    slides.forEach((slide, i) => {
+      slide.classList.toggle('active', i === activeIndex);
+    });
+
+    dots.forEach((dot, i) => {
+      dot.classList.toggle('active', i === activeIndex);
+    });
+
+    featureItems.forEach((item, i) => {
+      item.classList.toggle('active', i === activeIndex);
+    });
+  }
+
+  function startAutoPlay() {
+    stopAutoPlay();
+    autoPlayTimer = setInterval(() => {
+      goToSlide(activeIndex + 1);
+    }, AUTO_PLAY_INTERVAL);
+  }
+
+  function stopAutoPlay() {
+    if (autoPlayTimer) {
+      clearInterval(autoPlayTimer);
+      autoPlayTimer = null;
+    }
+  }
+
+  if (btnPrev) {
+    btnPrev.addEventListener('click', (e) => {
+      e.stopPropagation();
+      goToSlide(activeIndex - 1);
+      startAutoPlay();
+    });
+  }
+
+  if (btnNext) {
+    btnNext.addEventListener('click', (e) => {
+      e.stopPropagation();
+      goToSlide(activeIndex + 1);
+      startAutoPlay();
+    });
+  }
+
+  dots.forEach((dot, i) => {
+    dot.addEventListener('click', (e) => {
+      e.stopPropagation();
+      goToSlide(i);
+      startAutoPlay();
+    });
+  });
+
+  featureItems.forEach((item, i) => {
+    item.addEventListener('click', () => {
+      goToSlide(i);
+      startAutoPlay();
+    });
+  });
+
+  if (viewport) {
+    viewport.addEventListener('mouseenter', stopAutoPlay);
+    viewport.addEventListener('mouseleave', startAutoPlay);
+    viewport.addEventListener('touchstart', stopAutoPlay, { passive: true });
+    viewport.addEventListener('touchend', startAutoPlay, { passive: true });
+  }
+
+  startAutoPlay();
+}
+
+initFeaturesCarousel();

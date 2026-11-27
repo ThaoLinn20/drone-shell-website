@@ -19,10 +19,25 @@ export const translations = {
     // Side Nav Dots
     side_home: '01 Home',
     side_home_title: 'Khối 1: FDShowStudio',
-    side_exp: '02 Trải nghiệm',
-    side_exp_title: 'Khối 2: Khu trải nghiệm',
-    side_community: '03 Tham gia',
-    side_community_title: 'Khối 3: Tham gia & Cộng đồng',
+    side_features: '02 Tính năng',
+    side_features_title: 'Khối 2: Chức năng phần mềm',
+    side_exp: '03 Trải nghiệm',
+    side_exp_title: 'Khối 3: Khu trải nghiệm',
+    side_community: '04 Tham gia',
+    side_community_title: 'Khối 4: Tham gia & Cộng đồng',
+
+    // Block 2: Software Features
+    feat_badge: 'Tính năng phần mềm',
+    feat_title: 'Chức năng chính của phần mềm',
+    feat_subtitle: 'Hệ thống công cụ chuyên nghiệp giúp bạn tự do sáng tạo những kịch bản pháo hoa đẳng cấp.',
+    feat_1_title: 'Không gian trải nghiệm 3D chân thực',
+    feat_1_desc: 'Mô phỏng 3D sống động với vật lý pyrotechnic chuẩn xác, góc nhìn tự do, hiệu ứng ánh sáng khói và âm thanh vòm thực tế.',
+    feat_2_title: 'Tạo kịch bản pháo hoa',
+    feat_2_desc: 'Biên tập timeline đa rãnh chuyên nghiệp, bắt nhịp nhạc chính xác, phối hợp các đợt bắn pháo hoa theo thời gian thực.',
+    feat_3_title: 'Thiết kế pháo hoa',
+    feat_3_desc: 'Tùy biến quỹ đạo bắn (Wave Curve Trajectory), cấu trúc hình khối, số lượng hạt, màu sắc và hiệu ứng nổ không giới hạn.',
+    feat_4_title: 'Lưu trữ và chia sẻ mẫu pháo và kịch bản',
+    feat_4_desc: 'Thư viện Preset tích hợp (Shell, Comet), lưu trữ và xuất nhập file JSON chuẩn xác, dễ dàng chia sẻ cùng cộng đồng.',
 
     // Block 1: Intro
     intro_badge: 'Phần mềm thiết kế 3D',
@@ -124,10 +139,25 @@ export const translations = {
     // Side Nav Dots
     side_home: '01 Home',
     side_home_title: 'Block 1: FDShowStudio',
-    side_exp: '02 Experience',
-    side_exp_title: 'Block 2: Experience Arena',
-    side_community: '03 Community',
-    side_community_title: 'Block 3: Community & Join',
+    side_features: '02 Features',
+    side_features_title: 'Block 2: Software Features',
+    side_exp: '03 Experience',
+    side_exp_title: 'Block 3: Experience Arena',
+    side_community: '04 Community',
+    side_community_title: 'Block 4: Community & Join',
+
+    // Block 2: Software Features
+    feat_badge: 'Software Features',
+    feat_title: 'Core Software Capabilities',
+    feat_subtitle: 'A professional suite of tools empowering you to design breathtaking 3D firework choreography.',
+    feat_1_title: 'Realistic 3D Experience Environment',
+    feat_1_desc: 'Vibrant 3D simulation with accurate pyrotechnic physics, free-camera navigation, realistic smoke lighting, and spatial audio.',
+    feat_2_title: 'Choreography & Timeline Scripting',
+    feat_2_desc: 'Professional multi-track timeline choreographing, precision musical beat matching, and real-time firing sequence coordination.',
+    feat_3_title: 'Firework & Trajectory Design',
+    feat_3_desc: 'Customizable firing trajectories (Wave Curve Trajectory), geometric structures, star particle counts, colors, and burst patterns.',
+    feat_4_title: 'Preset Storage & Choreography Sharing',
+    feat_4_desc: 'Integrated preset library (Shell, Comet), standard JSON import/export, and seamless choreography sharing with the community.',
 
     // Block 1: Intro
     intro_badge: '3D Design Suite',
@@ -229,10 +259,25 @@ export const translations = {
     // Side Nav Dots
     side_home: '01 ホーム',
     side_home_title: 'ブロック1: FDShowStudio',
-    side_exp: '02 体験',
-    side_exp_title: 'ブロック2: 3D体験エリア',
-    side_community: '03 参加',
-    side_community_title: 'ブロック3: コミュニティ',
+    side_features: '02 機能',
+    side_features_title: 'ブロック2: ソフトウェア機能',
+    side_exp: '03 体験',
+    side_exp_title: 'ブロック3: 3D体験エリア',
+    side_community: '04 参加',
+    side_community_title: 'ブロック4: コミュニティ',
+
+    // Block 2: Software Features
+    feat_badge: 'ソフトウェア機能',
+    feat_title: 'ソフトウェアの主な機能',
+    feat_subtitle: '最高峰の3D花火演出を自由に創作できるプロ仕様のツール群。',
+    feat_1_title: 'リアルな3D体験空間',
+    feat_1_desc: '正確な火薬物理シミュレーション、自由なカメラ視点、リアルな煙と照明、立体音響で再現。',
+    feat_2_title: '花火タイムライン演出制作',
+    feat_2_desc: 'プロ仕様のマルチトラック・タイムライン、高精度な楽曲ビート同期、リアルタイムな打ち上げ制御。',
+    feat_3_title: '花火デザイン＆弾道設計',
+    feat_3_desc: '波形弾道（Wave Curve）の自由調整、幾何学構造、星粒数、色彩、破裂効果を自在に設計。',
+    feat_4_title: 'プリセット保存と演出共有',
+    feat_4_desc: '内蔵プリセットライブラリ（Shell, Comet）、標準JSONの入出力、コミュニティ間での容易な共有。',
 
     // Block 1: Intro
     intro_badge: '3Dデザインソフトウェア',
@@ -334,10 +379,25 @@ export const translations = {
     // Side Nav Dots
     side_home: '01 首頁',
     side_home_title: '區塊 1: FDShowStudio',
-    side_exp: '02 體驗',
-    side_exp_title: '區塊 2: 3D體驗區',
-    side_community: '03 社群',
-    side_community_title: '區塊 3: 加入社群',
+    side_features: '02 功能',
+    side_features_title: '區塊 2: 軟體核心功能',
+    side_exp: '03 體驗',
+    side_exp_title: '區塊 3: 3D體驗區',
+    side_community: '04 社群',
+    side_community_title: '區塊 4: 加入社群',
+
+    // Block 2: Software Features
+    feat_badge: '軟體核心功能',
+    feat_title: '軟體主要功能介紹',
+    feat_subtitle: '專業級工具套件，讓您自由創作令人驚豔的3D煙火編排。',
+    feat_1_title: '逼真的3D體驗空間',
+    feat_1_desc: '逼真的3D模擬，具備精確的煙火物理、自由視角、真實煙霧光效與立體環繞音效。',
+    feat_2_title: '煙火腳本編排與時間軸',
+    feat_2_desc: '專業級多軌時間軸編輯，精準對齊音樂節奏，即時協調整體煙火發射序列。',
+    feat_3_title: '煙火與發射軌跡設計',
+    feat_3_desc: '自訂發射軌跡（Wave Curve）、幾何結構、星芒粒子數量、色彩與綻放效果，創意不受限。',
+    feat_4_title: '預設庫存儲與腳本分享',
+    feat_4_desc: '內建預設庫（Shell, Comet），支援標準JSON檔案匯入與匯出，輕鬆與社群交流分享。',
 
     // Block 1: Intro
     intro_badge: '3D 設計軟體',
